@@ -1,0 +1,102 @@
+---
+title: "Ulkopuolelle jätetty toimialat"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path = "fig_exluded/",
+  collapse = TRUE,
+  comment = "#>"
+)
+
+devtools::load_all()
+
+library(tidyverse)
+library(ggptt)
+
+set_ptt()
+
+```
+
+```{r data}
+
+data("dat_nama_10_a64")
+
+countries <- c("FI", "SE", "DE", "UK", "FR", "DK", "IT", "NL", "NO", "EU15")
+# countries <- c("FI", "SE")
+highlight <- "FI"
+
+```
+
+
+```{r dropped}
+dropped <- sort(c(dropped_I, dropped_II))
+
+knitr::kable(tibble(code = dropped,
+                    name = eurostat::label_eurostat(dropped, dic = "nace_r2")))
+
+```
+```{r share}
+
+dat_share <- dat_nama_10_a64 %>% 
+  filter(geo == "FI",
+         nace_r2 %in% c("TOTAL", dropped)) %>% 
+  group_by(geo, time) %>% 
+  mutate(share = 100 * EMP_DC_THS_PER/EMP_DC_THS_PER[nace_r2 == "TOTAL"]) %>% 
+  ungroup() 
+
+dat_share %>% 
+  filter(time == max(time),
+         nace_r2 != "TOTAL") %>% 
+  select(nace_r2, "Työlliset" = EMP_DC_THS_PER, Osuus = share, "Arvonlisäys" = B1G_CP_MNAC) %>% 
+  bind_rows(bind_cols(tibble(nace_r2 = "Yhteensä"), summarise_at(., c("Työlliset", "Osuus", "Arvonlisäys"), sum))) %>% 
+  mutate(Toimiala = statfitools::sf_recode(unique(nace_r2), "koodi", "nimike", class = "toimiala", year = 2008)) %>% 
+  select(Koodi = nace_r2, Toimiala, "Työlliset", Osuus, "Arvonlisäys") %>% 
+  mutate(va_l = Arvonlisäys / Työlliset) %>% 
+  knitr::kable(digits = 0)
+
+dat_share %>% 
+  filter(nace_r2 != "TOTAL") %>% 
+  ggplot(aes(time, share, colour = nace_r2)) +
+  geom_line()
+  
+
+
+
+```
+
+```{r prod_plots, fig.height=10, fig.width=10}
+
+pdat_exl_prod <- dat_nama_10_a64 %>% 
+  filter(geo %in% countries,
+         nace_r2 %in% dropped,
+         nace_r2 != "U",
+         time > 1999) %>% 
+  droplevels() %>% 
+  group_by(nace_r2, geo) %>% 
+  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  mutate(nace_txt = statfitools::sf_recode(nace_r2, from = "koodi", to = "nimike", class = "toimiala", year = 2008),
+         geo = eurostat::label_eurostat(geo, dic = "geo", countrycode = "cldr.short.fi")) 
+
+pdat_exl_prod %>% 
+  ggplot(aes(time, prod07, colour = geo)) +
+  facet_wrap(~ nace_txt, scales = "free") +
+  geom_line() +
+  labs(y = "Indeksi 2007 = 100") +
+  the_title_blank(c("x", "l"))
+  
+  
+pdat_exl_prod %>% 
+  select(time, nace_r2, nace_txt, geo, indeksi = prod07) %>% 
+  spread(geo, indeksi) %>% 
+  split(.$nace_r2) %>% 
+  openxlsx::write.xlsx(file = "fig_exluded/pdat_exl_prod.xlsx") 
+
+
+```
+

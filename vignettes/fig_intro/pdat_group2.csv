@@ -1,0 +1,361 @@
+"";"time";"service_group";"geo";"indeksi"
+"1";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";77,2974370469745
+"2";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";81,6998564496338
+"3";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";84,3644710634552
+"4";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";87,8525813742723
+"5";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";89,5150838904522
+"6";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";92,3904612870719
+"7";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";98,982582473306
+"8";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";100
+"9";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";99,9010268345499
+"10";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";96,3661089630698
+"11";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";94,7314929471616
+"12";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";97,4766673634526
+"13";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";101,060621078345
+"14";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";100,759932587559
+"15";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";102,049007520277
+"16";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";103,070617756001
+"17";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";103,543315992868
+"18";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Saksa";106,198559534471
+"19";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";90,5861774593565
+"20";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";91,214228948667
+"21";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";91,3645860518928
+"22";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";92,1293199857711
+"23";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";93,0234760178315
+"24";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";95,569242561124
+"25";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";99,2746039722415
+"26";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";100
+"27";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";92,125494305922
+"28";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";91,0241051271873
+"29";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";97,4046021984009
+"30";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";97,8118213476028
+"31";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";98,5526480802227
+"32";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";101,208370331379
+"33";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";102,644403576811
+"34";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";104,536041239914
+"35";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";102,637333953019
+"36";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Tanska";103,644293959413
+"37";2000;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";90,4574570728002
+"38";2001;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";91,9516150625763
+"39";2002;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";92,8660421474755
+"40";2003;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";93,8437819056814
+"41";2004;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";95,2289704048023
+"42";2005;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";96,6546725551456
+"43";2006;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";98,8101348529098
+"44";2007;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";100
+"45";2008;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";98,8129158787042
+"46";2009;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";95,8434614587791
+"47";2010;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";97,5369499212231
+"48";2011;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";99,3814452053193
+"49";2012;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";100,044871525774
+"50";2013;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";100,977512770013
+"51";2014;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";102,579822168588
+"52";2015;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";103,853595283182
+"53";2016;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";103,957963229866
+"54";2017;"Kauppa, kuljetus, hotelli ja ravintola";"EU15";105,419838418844
+"55";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";83,7515845796561
+"56";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";88,903761934189
+"57";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";88,2214687640674
+"58";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";89,8396566239627
+"59";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";93,3157768037516
+"60";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";95,8099294581132
+"61";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";94,5968947595809
+"62";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";100
+"63";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";102,916289087755
+"64";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";94,6455465008436
+"65";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";99,4045246493403
+"66";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";104,961443995546
+"67";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";106,052845910204
+"68";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";103,583576341465
+"69";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";101,842367794665
+"70";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";99,9417227382547
+"71";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";103,280536845893
+"72";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Suomi";106,306506372875
+"73";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";95,7785884321718
+"74";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";96,923278243238
+"75";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";97,4495276147236
+"76";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";96,4769601748636
+"77";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";96,0946683157256
+"78";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";96,9524912481077
+"79";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";99,5827245326052
+"80";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";100
+"81";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";99,4664504744161
+"82";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";95,8398748803817
+"83";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";96,9781128963822
+"84";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";99,172808556614
+"85";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";99,1204622079374
+"86";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";100,340226460807
+"87";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";102,064529587244
+"88";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";103,419444389956
+"89";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";103,561773925056
+"90";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Ranska";105,930092988608
+"91";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";100,688208732339
+"92";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";101,082709384047
+"93";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";97,8765748804985
+"94";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";96,2285454503858
+"95";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";98,385066111982
+"96";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";100,493801248046
+"97";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";99,8815433761768
+"98";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";100
+"99";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";99,0351881448736
+"100";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";94,6782386045382
+"101";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";97,1104516252465
+"102";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";98,2037924141829
+"103";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";96,0257559062874
+"104";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";97,2222066453381
+"105";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";98,8956785790355
+"106";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";100,279807674847
+"107";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";99,9940722343737
+"108";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Italia";100,548668442526
+"109";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";88,0253631700376
+"110";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";88,1261283500057
+"111";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";87,7997974258866
+"112";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";90,414203614714
+"113";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";92,5134424717802
+"114";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";96,3011139416956
+"115";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";97,6063623532041
+"116";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";100
+"117";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";100,770674396088
+"118";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";96,7487691451139
+"119";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";100,79096387213
+"120";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";103,830840137139
+"121";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";104,557418391332
+"122";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";107,084785669269
+"123";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";109,412299932407
+"124";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";110,816847742766
+"125";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";110,698114539989
+"126";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Alankomaat";112,761313864921
+"127";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";80,8745429464678
+"128";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";83,0262005036871
+"129";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";87,0105428101154
+"130";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";90,4343131062309
+"131";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";95,1378159533792
+"132";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";98,0554618137663
+"133";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";99,5939392685908
+"134";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";100
+"135";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";97,5867143970768
+"136";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";94,7682077674652
+"137";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";95,693299912918
+"138";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";97,7897843489354
+"139";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";100,96605810255
+"140";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";104,046512765727
+"141";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";106,669007180195
+"142";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";109,005219910871
+"143";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";111,545190837187
+"144";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Ruotsi";112,502850632576
+"145";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";84,0894943318442
+"146";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";85,5168066448577
+"147";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";88,7108984062227
+"148";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";90,4599743770859
+"149";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";92,9311008028406
+"150";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";93,6635321097286
+"151";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";96,9022449048665
+"152";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";100
+"153";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";96,9744508110247
+"154";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";93,0317116749607
+"155";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";95,2297400629848
+"156";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";96,5627655499282
+"157";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";95,3147534332152
+"158";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";96,1378118154061
+"159";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";98,9825942943402
+"160";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";100,839623632739
+"161";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";101,413246455618
+"162";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Britannia";NA
+"163";2000;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";81,5079527155017
+"164";2001;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";84,192124014232
+"165";2002;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";85,6968879499792
+"166";2003;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";88,4463864873491
+"167";2004;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";90,1608388565532
+"168";2005;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";92,4127704932136
+"169";2006;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";99,214013788608
+"170";2007;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";100
+"171";2008;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";96,0801366333901
+"172";2009;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";95,9930819129782
+"173";2010;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";99,2448024641687
+"174";2011;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";101,606915945492
+"175";2012;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";103,759284104441
+"176";2013;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";106,846264559595
+"177";2014;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";108,868102874599
+"178";2015;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";110,15109489651
+"179";2016;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";112,288417717733
+"180";2017;"Kauppa, kuljetus, hotelli ja ravintola";"Norja";NA
+"181";2000;"Muut palvelut";"Saksa";102,538136679712
+"182";2001;"Muut palvelut";"Saksa";104,950700810992
+"183";2002;"Muut palvelut";"Saksa";106,439704224128
+"184";2003;"Muut palvelut";"Saksa";103,124171934002
+"185";2004;"Muut palvelut";"Saksa";101,878140931319
+"186";2005;"Muut palvelut";"Saksa";99,6557117183803
+"187";2006;"Muut palvelut";"Saksa";97,5596924136786
+"188";2007;"Muut palvelut";"Saksa";100
+"189";2008;"Muut palvelut";"Saksa";101,233837553242
+"190";2009;"Muut palvelut";"Saksa";96,7278090061413
+"191";2010;"Muut palvelut";"Saksa";96,2890038316363
+"192";2011;"Muut palvelut";"Saksa";97,2279949000279
+"193";2012;"Muut palvelut";"Saksa";98,9632630088317
+"194";2013;"Muut palvelut";"Saksa";99,7838193799115
+"195";2014;"Muut palvelut";"Saksa";101,412504171327
+"196";2015;"Muut palvelut";"Saksa";101,349710063689
+"197";2016;"Muut palvelut";"Saksa";100,860289227858
+"198";2017;"Muut palvelut";"Saksa";NA
+"199";2000;"Muut palvelut";"Tanska";90,6655331672363
+"200";2001;"Muut palvelut";"Tanska";90,4702825091847
+"201";2002;"Muut palvelut";"Tanska";90,3876288433836
+"202";2003;"Muut palvelut";"Tanska";94,3720542033831
+"203";2004;"Muut palvelut";"Tanska";98,4388990912662
+"204";2005;"Muut palvelut";"Tanska";102,108630526944
+"205";2006;"Muut palvelut";"Tanska";100,884825524355
+"206";2007;"Muut palvelut";"Tanska";100
+"207";2008;"Muut palvelut";"Tanska";104,150154858039
+"208";2009;"Muut palvelut";"Tanska";104,442077665018
+"209";2010;"Muut palvelut";"Tanska";105,608881913671
+"210";2011;"Muut palvelut";"Tanska";106,778066000049
+"211";2012;"Muut palvelut";"Tanska";107,338445715588
+"212";2013;"Muut palvelut";"Tanska";111,620458124586
+"213";2014;"Muut palvelut";"Tanska";112,476433330014
+"214";2015;"Muut palvelut";"Tanska";117,599001234736
+"215";2016;"Muut palvelut";"Tanska";118,136357192532
+"216";2017;"Muut palvelut";"Tanska";120,695593242606
+"217";2000;"Muut palvelut";"EU15";94,2451475067047
+"218";2001;"Muut palvelut";"EU15";95,5300414486785
+"219";2002;"Muut palvelut";"EU15";96,5780557969021
+"220";2003;"Muut palvelut";"EU15";97,2753759892615
+"221";2004;"Muut palvelut";"EU15";97,0823654355689
+"222";2005;"Muut palvelut";"EU15";97,0647700540985
+"223";2006;"Muut palvelut";"EU15";97,8124640696207
+"224";2007;"Muut palvelut";"EU15";100
+"225";2008;"Muut palvelut";"EU15";100,069830546699
+"226";2009;"Muut palvelut";"EU15";97,7832462058997
+"227";2010;"Muut palvelut";"EU15";99,1631417128541
+"228";2011;"Muut palvelut";"EU15";99,6819358487168
+"229";2012;"Muut palvelut";"EU15";100,198296228167
+"230";2013;"Muut palvelut";"EU15";101,410412763921
+"231";2014;"Muut palvelut";"EU15";102,171056882294
+"232";2015;"Muut palvelut";"EU15";103,557907744945
+"233";2016;"Muut palvelut";"EU15";103,383278952696
+"234";2017;"Muut palvelut";"EU15";NA
+"235";2000;"Muut palvelut";"Suomi";92,8855843188069
+"236";2001;"Muut palvelut";"Suomi";96,8141998618974
+"237";2002;"Muut palvelut";"Suomi";96,1286629399205
+"238";2003;"Muut palvelut";"Suomi";93,5776681235303
+"239";2004;"Muut palvelut";"Suomi";98,8030198786721
+"240";2005;"Muut palvelut";"Suomi";96,6038131092823
+"241";2006;"Muut palvelut";"Suomi";96,2683395601677
+"242";2007;"Muut palvelut";"Suomi";100
+"243";2008;"Muut palvelut";"Suomi";97,5296995071764
+"244";2009;"Muut palvelut";"Suomi";94,6183126011052
+"245";2010;"Muut palvelut";"Suomi";95,7925596163268
+"246";2011;"Muut palvelut";"Suomi";97,9553912941959
+"247";2012;"Muut palvelut";"Suomi";100,320932513145
+"248";2013;"Muut palvelut";"Suomi";100,278037674223
+"249";2014;"Muut palvelut";"Suomi";99,3708650749752
+"250";2015;"Muut palvelut";"Suomi";101,332319697743
+"251";2016;"Muut palvelut";"Suomi";101,413570465088
+"252";2017;"Muut palvelut";"Suomi";102,573052997559
+"253";2000;"Muut palvelut";"Ranska";89,7884995614531
+"254";2001;"Muut palvelut";"Ranska";88,6032746262965
+"255";2002;"Muut palvelut";"Ranska";92,3882410782041
+"256";2003;"Muut palvelut";"Ranska";94,7380619626008
+"257";2004;"Muut palvelut";"Ranska";95,4703249608049
+"258";2005;"Muut palvelut";"Ranska";96,0030753214134
+"259";2006;"Muut palvelut";"Ranska";100,413550456415
+"260";2007;"Muut palvelut";"Ranska";100
+"261";2008;"Muut palvelut";"Ranska";100,894627671187
+"262";2009;"Muut palvelut";"Ranska";98,1830262683926
+"263";2010;"Muut palvelut";"Ranska";99,2278690596335
+"264";2011;"Muut palvelut";"Ranska";99,291691295282
+"265";2012;"Muut palvelut";"Ranska";99,7840708215458
+"266";2013;"Muut palvelut";"Ranska";99,770106013457
+"267";2014;"Muut palvelut";"Ranska";100,744417298988
+"268";2015;"Muut palvelut";"Ranska";101,486881291995
+"269";2016;"Muut palvelut";"Ranska";101,550391931633
+"270";2017;"Muut palvelut";"Ranska";NA
+"271";2000;"Muut palvelut";"Italia";106,43942194066
+"272";2001;"Muut palvelut";"Italia";108,729106368145
+"273";2002;"Muut palvelut";"Italia";109,276380508362
+"274";2003;"Muut palvelut";"Italia";108,53192731768
+"275";2004;"Muut palvelut";"Italia";104,087373707366
+"276";2005;"Muut palvelut";"Italia";101,332126277749
+"277";2006;"Muut palvelut";"Italia";99,6930090918907
+"278";2007;"Muut palvelut";"Italia";100
+"279";2008;"Muut palvelut";"Italia";98,0302653831155
+"280";2009;"Muut palvelut";"Italia";97,3339338309991
+"281";2010;"Muut palvelut";"Italia";96,9278658439304
+"282";2011;"Muut palvelut";"Italia";94,4222466277779
+"283";2012;"Muut palvelut";"Italia";91,8540636087221
+"284";2013;"Muut palvelut";"Italia";92,6992802895138
+"285";2014;"Muut palvelut";"Italia";92,8282318844759
+"286";2015;"Muut palvelut";"Italia";91,5409210472658
+"287";2016;"Muut palvelut";"Italia";91,784385913064
+"288";2017;"Muut palvelut";"Italia";91,4972423695298
+"289";2000;"Muut palvelut";"Alankomaat";92,1509824894151
+"290";2001;"Muut palvelut";"Alankomaat";96,562044305921
+"291";2002;"Muut palvelut";"Alankomaat";97,5038399307927
+"292";2003;"Muut palvelut";"Alankomaat";98,9717328984928
+"293";2004;"Muut palvelut";"Alankomaat";97,4653604140565
+"294";2005;"Muut palvelut";"Alankomaat";99,4098461729254
+"295";2006;"Muut palvelut";"Alankomaat";100,163408082134
+"296";2007;"Muut palvelut";"Alankomaat";100
+"297";2008;"Muut palvelut";"Alankomaat";100,988262656945
+"298";2009;"Muut palvelut";"Alankomaat";100,657854070312
+"299";2010;"Muut palvelut";"Alankomaat";99,9950570325696
+"300";2011;"Muut palvelut";"Alankomaat";99,6866959302909
+"301";2012;"Muut palvelut";"Alankomaat";100,016292120064
+"302";2013;"Muut palvelut";"Alankomaat";99,6142994754627
+"303";2014;"Muut palvelut";"Alankomaat";99,7913054518005
+"304";2015;"Muut palvelut";"Alankomaat";99,5872163602206
+"305";2016;"Muut palvelut";"Alankomaat";99,1984489826171
+"306";2017;"Muut palvelut";"Alankomaat";99,5374060143513
+"307";2000;"Muut palvelut";"Ruotsi";75,6217374258004
+"308";2001;"Muut palvelut";"Ruotsi";76,8953532058705
+"309";2002;"Muut palvelut";"Ruotsi";79,7000670756929
+"310";2003;"Muut palvelut";"Ruotsi";84,7324958580522
+"311";2004;"Muut palvelut";"Ruotsi";90,4280969235321
+"312";2005;"Muut palvelut";"Ruotsi";94,1235997253653
+"313";2006;"Muut palvelut";"Ruotsi";100,189222217987
+"314";2007;"Muut palvelut";"Ruotsi";100
+"315";2008;"Muut palvelut";"Ruotsi";97,3113574440531
+"316";2009;"Muut palvelut";"Ruotsi";98,0520077176375
+"317";2010;"Muut palvelut";"Ruotsi";100,437890183402
+"318";2011;"Muut palvelut";"Ruotsi";102,744624408447
+"319";2012;"Muut palvelut";"Ruotsi";104,884302929025
+"320";2013;"Muut palvelut";"Ruotsi";107,226643809434
+"321";2014;"Muut palvelut";"Ruotsi";110,674980922291
+"322";2015;"Muut palvelut";"Ruotsi";124,815849327501
+"323";2016;"Muut palvelut";"Ruotsi";122,741146693747
+"324";2017;"Muut palvelut";"Ruotsi";NA
+"325";2000;"Muut palvelut";"Britannia";80,8146214867426
+"326";2001;"Muut palvelut";"Britannia";84,068367199856
+"327";2002;"Muut palvelut";"Britannia";84,8867487117557
+"328";2003;"Muut palvelut";"Britannia";88,9543248087806
+"329";2004;"Muut palvelut";"Britannia";90,8431270922407
+"330";2005;"Muut palvelut";"Britannia";92,9458267338055
+"331";2006;"Muut palvelut";"Britannia";95,089988704738
+"332";2007;"Muut palvelut";"Britannia";100
+"333";2008;"Muut palvelut";"Britannia";101,940803679258
+"334";2009;"Muut palvelut";"Britannia";97,894109354615
+"335";2010;"Muut palvelut";"Britannia";103,363369314455
+"336";2011;"Muut palvelut";"Britannia";103,900120746444
+"337";2012;"Muut palvelut";"Britannia";104,608397646277
+"338";2013;"Muut palvelut";"Britannia";105,957034988031
+"339";2014;"Muut palvelut";"Britannia";105,685066481361
+"340";2015;"Muut palvelut";"Britannia";108,498886357752
+"341";2016;"Muut palvelut";"Britannia";108,062579930981
+"342";2017;"Muut palvelut";"Britannia";NA
+"343";2000;"Muut palvelut";"Norja";83,4708843951023
+"344";2001;"Muut palvelut";"Norja";86,7400067390282
+"345";2002;"Muut palvelut";"Norja";88,1640849290936
+"346";2003;"Muut palvelut";"Norja";93,2535611219964
+"347";2004;"Muut palvelut";"Norja";98,7321795607451
+"348";2005;"Muut palvelut";"Norja";100,743624424049
+"349";2006;"Muut palvelut";"Norja";99,0887004034748
+"350";2007;"Muut palvelut";"Norja";100
+"351";2008;"Muut palvelut";"Norja";100,01447116039
+"352";2009;"Muut palvelut";"Norja";102,77710726796
+"353";2010;"Muut palvelut";"Norja";105,11106067954
+"354";2011;"Muut palvelut";"Norja";103,956633197677
+"355";2012;"Muut palvelut";"Norja";106,706199233911
+"356";2013;"Muut palvelut";"Norja";109,312020432226
+"357";2014;"Muut palvelut";"Norja";108,796936332286
+"358";2015;"Muut palvelut";"Norja";107,295453597599
+"359";2016;"Muut palvelut";"Norja";107,086504771588
+"360";2017;"Muut palvelut";"Norja";NA

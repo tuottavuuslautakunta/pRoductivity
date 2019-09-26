@@ -1,0 +1,205 @@
+---
+title: "Tuottavuus"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_intro/",
+  collapse = TRUE,
+  comment = "#>"
+)
+
+devtools::load_all()
+
+library(tidyverse)
+library(ggptt)
+
+set_ptt()
+
+```
+
+```{r data}
+
+data(dat_klems, labels_klems, dat_stan, dat_nama_10_a64_market)
+
+dat_nama_market <- dat_nama_10_a64_market %>% 
+  mutate(nace = eurostat::label_eurostat(nace_r2, dic = "nace_r2"),
+         industry = as_factor(industry))
+
+countries <- c("FI", "SE", "DE", "EU15")
+countries2 <- c("FI", "SE", "DE", "UK", "FR", "DK", "IT", "NL", "NO", "EU15")
+# countries <- c("FI", "SE")
+highlight <- "FI"
+
+```
+
+
+# Työn tuottavuus
+
+```{r lp_total_market}
+
+
+dat_klems %>% 
+  filter(var == "LP_I",
+         code %in% c("TOT", "MARKT"),
+         time > 1994) %>% 
+  filter(geo %in% c(countries)) %>%
+  mutate(geo = fct_relevel(geo, countries, after = Inf),
+         bigger = geo %in% highlight) %>% 
+  ggplot(aes(time, values, colour = country, group = geo, size = bigger)) +
+  # scale_colour_manual(values = c(ptt_pal(length(countries)), "grey90")) +
+  scale_size_manual(values = c(1, 2), guide = "none") +
+  geom_line() + 
+  facet_wrap(~ code)+
+  the_title_blank(c("x", "l")) +
+  ylab("index 2010 = 100") 
+
+```
+```{r lp_market_growth}
+
+
+dat_klems %>% 
+  filter(var == "LP1_Q",
+         code %in% c( "MARKT"),
+         time > 1994) %>% 
+  filter(geo %in% c(countries)) %>%
+  mutate(geo = fct_relevel(geo, countries, after = Inf),
+         bigger = geo %in% highlight) %>% 
+  ggplot(aes(time, values, colour = country, group = geo, size = bigger)) +
+  # scale_colour_manual(values = c(ptt_pal(length(countries)), "grey90")) +
+  scale_size_manual(values = c(1, 2), guide = "none") +
+  geom_line() + 
+  geom_h0() +
+  the_title_blank(c("x", "l")) +
+  ylab("%")
+
+```
+
+```{r stan}
+
+dat_stan %>% 
+  filter(time > 1994) %>% 
+  ggplot(aes(time, lp_ind05, colour = geo)) +
+  geom_line() +
+  facet_wrap(~industry)
+
+```
+
+```{r own_market_manu, fig.height=15, fig.width=15}
+
+dat_nama_market %>% 
+  filter(geo %in% countries,
+         time > 2000,
+         sektori == "C") %>% 
+  group_by(nace_r2, geo) %>% 
+  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  ggplot(aes(time, prod07, colour = geo)) +
+  facet_wrap(~ nace, scales = "free") +
+  geom_line()
+  
+
+```
+```{r own_market_service, fig.height=10, fig.width=14}
+
+dat_nama_market %>% 
+  filter(geo %in% countries,
+         time > 2000,
+         !(sektori %in% c("C", "D", "E"))) %>% 
+  group_by(nace_r2, geo) %>% 
+  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  ggplot(aes(time, prod07, colour = geo)) +
+  facet_wrap(~ line_wrap(nace, 50)) +
+  geom_line()
+  
+
+```
+
+```{r own_market_service_all}
+
+dat_nama_market %>% 
+  filter(geo %in% countries2,
+         time > 1999,
+         !(sektori %in% c("C", "D", "E", "F"))) %>%
+  droplevels() %>% 
+  # mutate(time = as.factor(time)) %>% 
+  complete(time = full_seq(time, 1), nace_r2, geo) %>% 
+  group_by(geo, time) %>% 
+  summarise_at(c("B1G_PYP_MNAC", "B1G_CP_MNAC", "EMP_DC_THS_HW"), sum, na.rm = FALSE) %>% 
+  group_by(geo) %>%
+  mutate(va_fp = statfitools::fp(B1G_CP_MNAC, B1G_PYP_MNAC, time, 2010)) %>% 
+  mutate(prod = va_fp / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  ggplot(aes(time, prod07, colour = geo)) +
+  geom_line()
+  
+
+```
+
+```{r own_market_service_2groups}
+
+pdat_2groups <- dat_nama_market %>% 
+  filter(geo %in% countries2,
+         time > 1999,
+         !(sektori %in% c("C", "D", "E", "F"))) %>%
+  droplevels() %>% 
+  # mutate(time = as.factor(time)) %>% 
+  complete(time = full_seq(time, 1), nace_r2, geo) %>% 
+  mutate(service_group = fct_recode(nace_r2, 
+                                    "Kauppa, kuljetus, hotelli ja ravintola" = "G",
+                                    "Kauppa, kuljetus, hotelli ja ravintola" = "I",
+                                    "Kauppa, kuljetus, hotelli ja ravintola" = "H"),
+         service_group = fct_other(service_group, "Kauppa, kuljetus, hotelli ja ravintola", other_level = "Muut palvelut")) %>% 
+  group_by(service_group, geo, time) %>% 
+  summarise_at(c("B1G_PYP_MNAC", "B1G_CP_MNAC", "EMP_DC_THS_HW"), sum, na.rm = FALSE) %>% 
+  group_by(service_group, geo) %>%
+  mutate(va_fp = statfitools::fp(B1G_CP_MNAC, B1G_PYP_MNAC, time, 2010)) %>% 
+  mutate(prod = va_fp / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  mutate(bigger = geo %in% highlight,
+         geo = eurostat::label_eurostat(geo, dic = "geo", countrycode = "cldr.short.fi"))
+
+pdat_2groups %>% 
+  ggplot(aes(time, prod07, colour = geo, size = bigger)) +
+  facet_wrap(~ line_wrap(service_group, 50)) +
+  geom_line() +
+  scale_size_manual(values = c(1,2), guide = "none") +
+  labs(y = "Indeksi 2007 = 100") +
+  the_title_blank(c("x", "l"))
+
+pdat_2groups %>% 
+  select(time, service_group, geo, indeksi = prod07) %>% 
+  spread(geo, indeksi) %>% 
+  split(.$service_group) %>% 
+  openxlsx::write.xlsx(file = "fig_intro/pdat_group2.xlsx") 
+  
+
+```
+
+```{r own_market_service_abs, fig.height=15, fig.width=15}
+
+dat_nama_market %>% 
+  filter(geo == "SE",
+         time > 2000,
+         !(sektori %in% c("C", "D", "E"))) %>% 
+  group_by(nace_r2, geo) %>% 
+  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  select(time, nace, B1G_CP_MNAC, B1G_CLV10_MEUR, EMP_DC_THS_PER, prod) %>% 
+  gather(vars, values, -time, -nace) %>% 
+  ggplot(aes(time, values)) +
+  facet_grid(vars ~ nace, scales = "free") +
+  geom_line()
+  
+
+```

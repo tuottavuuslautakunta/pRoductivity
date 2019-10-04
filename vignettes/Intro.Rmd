@@ -59,6 +59,7 @@ dat_klems %>%
   ylab("index 2010 = 100") 
 
 ```
+
 ```{r lp_market_growth}
 
 
@@ -105,6 +106,24 @@ dat_nama_market %>%
   
 
 ```
+
+```{r own_market_forest, fig.height=15, fig.width=15}
+
+dat_nama_market %>% 
+  filter(geo %in% countries,
+         time > 2000,
+         sektori == "C") %>% 
+  group_by(nace_r2, geo) %>% 
+  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+         prod07 = 100 * prod/prod[time == 2007]) %>%
+  ungroup() %>% 
+  ggplot(aes(time, prod07, colour = geo)) +
+  facet_wrap(~ nace, scales = "free") +
+  geom_line()
+  
+
+```
+
 ```{r own_market_service, fig.height=10, fig.width=14}
 
 dat_nama_market %>% 

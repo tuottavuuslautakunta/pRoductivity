@@ -2,8 +2,8 @@
 load_all()
 library(eurostat)
 
-nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num")
-nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num")
+nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num", cache = FALSE)
+nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", cache = FALSE)
 
 
 nama_10_a64 <- nama_10_a64_0 %>%

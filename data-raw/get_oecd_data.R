@@ -2,11 +2,14 @@
 # OECD data
 
 library(OECD)
+library(tidyverse)
 
 dataset_list <- get_datasets()
-search_dataset("STAN", data = dataset_list)
+search_dataset("STAN", data = dataset_list) # %>% View()
+search_dataset("National account", data = dataset_list) # %>% View()
 
 stan_str <- get_data_structure("STANI4_2016")
+NAAG_str <- get_data_structure("NAAG")
 
 ind_list <- stan_str$IND %>%
   filter(label %in% c(" Business sector services excluding Real estate", " Manufacturing [C]",

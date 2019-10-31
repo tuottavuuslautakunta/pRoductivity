@@ -59,7 +59,8 @@ dat_nama_10_a64 <-
            nace_r2 == "M_N" ~ "D69T82",
            nace_r2 == "R" ~ "D90T93",
            nace_r2 == "S" ~ "D94T96",
-           TRUE ~ NA_character_))
+           TRUE ~ NA_character_)) %>%
+  mutate(industry = as_factor(industry))
 
 dat_nama_10_a64_keep_I <- dat_nama_10_a64 %>%
   filter(!is.na(industry)) %>%
@@ -78,12 +79,16 @@ dat_nama_10_a64_keep_I %>%
   pull(nace_r2) %>%
   levels()
 
+# Also E ja F
+
 dropped_II <- c("B", "R", "S")
 
 dat_nama_10_a64_market <- dat_nama_10_a64_keep_I %>%
   filter(industry %in% keep_II) %>%
   droplevels()
 
+# dat_nama_10_a64_market %>%
+#   distinct(nace_r2, industry)
 
 
 use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_10_a64_market, dropped_I, dropped_II, overwrite = TRUE)

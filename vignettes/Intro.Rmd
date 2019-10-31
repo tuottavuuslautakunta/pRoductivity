@@ -40,8 +40,11 @@ start_time <- 2000
 ```{r data_var}
 
 dat_nama_market %>% 
-  names() %>% 
-  tibble(label = eurostat::label_eurostat_vars(., dic = "unit"))
+  names() %>% tibble(code = .) %>% 
+  separate(code, c("code2", "unit"), sep = "__", remove = FALSE) %>% 
+  mutate(var_label = eurostat::label_eurostat(code2, dic = "na_item"),
+         unit_label = eurostat::label_eurostat(replace_na(unit, "NA"), dic = "unit")) %>% 
+  select(-code2, -unit)
 
 ```
 
@@ -50,26 +53,43 @@ dat_nama_market %>%
 
 Eurostat tiedoista Ruotsista puuttuvat C20 ja C21, Norjasta C19, C20, C21 
 
-```{r data_check}
+```{r data_check_market}
 
 dat_nama_market %>% 
   filter(geo %in% countries,
          time >= start_time) %>% 
   pivot_longer(B1G__CLV10_MEUR:EMP_DC__THS_PER, names_to = "vars", values_to = "values") %>% 
   drop_na(values) %>% 
+  filter(vars %in% c("B1G__PYP_MNAC", "EMP_DC__THS_HW")) %>% 
   group_by(geo, nace_r2, vars) %>% 
   summarise(tmin = min(time), 
          tmax = max(time)) %>% 
   ungroup() %>% 
   ggplot(aes(geo, ymin = tmin, ymax = tmax, colour = vars)) +
     facet_wrap(~ nace_r2) +
-    geom_linerange(position = position_dodge(width = 0.5)) +
+    geom_linerange(position = position_dodge(width = 1)) +
     coord_flip() 
-+
-    geom_hline(yintercept = as.numeric(as.Date("1995-01-01")))
+
 ```
 
+```{r data_check_main}
 
+dat_nama_main %>% 
+  filter(geo %in% countries,
+         time >= start_time) %>% 
+  pivot_longer(B1G__CLV10_MEUR:EMP_DC__THS_PER, names_to = "vars", values_to = "values") %>% 
+  drop_na(values) %>% 
+  filter(vars %in% c("B1G__PYP_MNAC", "EMP_DC__THS_HW", "EMP_DC__THS_PER")) %>%
+  group_by(geo, nace_r2, vars) %>% 
+  summarise(tmin = min(time), 
+         tmax = max(time)) %>% 
+  ungroup() %>% 
+  ggplot(aes(geo, ymin = tmin, ymax = tmax, colour = vars)) +
+    facet_wrap(~ nace_r2) +
+    geom_linerange(position = position_dodge(width = 0.5), width = 2) +
+    coord_flip() 
+
+```
 
 # Työn tuottavuus
 
@@ -115,7 +135,7 @@ dat_klems %>%
 
 ```{r stan}
 
-dat_stan %>% 
+dat_stan_main %>% 
   filter(time > 1994) %>% 
   ggplot(aes(time, lp_ind05, colour = geo)) +
   geom_line() +

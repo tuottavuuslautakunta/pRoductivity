@@ -3,6 +3,7 @@
 
 library(OECD)
 library(tidyverse)
+library(countrycode)
 
 dataset_list <- get_datasets()
 search_dataset("STAN", data = dataset_list) # %>% View()
@@ -11,12 +12,28 @@ search_dataset("National account", data = dataset_list) # %>% View()
 stan_str <- get_data_structure("STANI4_2016")
 NAAG_str <- get_data_structure("NAAG")
 
-ind_list <- stan_str$IND %>%
-  filter(label %in% c(" Business sector services excluding Real estate", " Manufacturing [C]",
-                      " Non-agriculture business sector excluding Real estate", " High R&D intensive activities (2-digit definition)")) %>%
-  pull(id)
 
-dat_stan_0 <- get_dataset("STANI4_2016", filter = list(c("USA", "FIN", "SWE"), c("HRSN", "VALK"), ind_list))
+stan_str$VAR %>% knitr::kable()
+stan_str$IND %>% knitr::kable()
+stan_str$LOCATION %>% knitr::kable()
+# ind_list <- stan_str$IND %>%
+#   filter(label %in% c(" Business sector services excluding Real estate", " Manufacturing [C]",
+#                       " Non-agriculture business sector excluding Real estate", " High R&D intensive activities (2-digit definition)")) %>%
+#   pull(id)
+
+ind_list <- unique(dat_nama_10_a64_market$industry)
+ind_list_main <- setNames(names(main_nace), main_nace)
+
+location_list <- c("USA", "FIN", "SWE", "NOR", "GBR")
+location_list_main <- c("USA")
+
+# Huom!
+var_list <- c(B1G__CP_MNAC = "VALU", B1G__CLV10_MNAC = "VALK", B1G_PYP_MNAC = "VKPY",
+              EMP_DC__THS_HW = "EMPN", EMP_DC__MIL_HW = "HRSN")
+
+dat_stan_0 <- get_dataset("STANI4_2016", filter = list(location_list, c("VALU", "VALK", "VKPY", "EMPN", "HRSN"), ind_list))
+
+dat_stan_main_0 <- get_dataset("STANI4_2016", filter = list(location_list_main, var_list, ind_list_main))
 
 dat_stan <-
   dat_stan_0 %>%
@@ -34,8 +51,21 @@ dat_stan <-
          lp_ind05 = 100 * lp/lp[time == 2005]) %>%
   ungroup()
 
+dat_stan_main <-
+  dat_stan_main_0 %>%
+  transmute(geo = countrycode(LOCATION, "iso3c", "eurostat"),
+         vars = fct_recode(VAR, !!!var_list),
+         ind = fct_recode(IND, !!!ind_list_main),
+         time = as.numeric(obsTime),
+         values = obsValue) %>%
+  spread(vars, values) %>%
+  mutate(EMP_DC__THS_HW = EMP_DC__MIL_HW * 1000) %>%
+  group_by(geo, ind) %>%
+  mutate(B1G_PYP_MNAC = statfitools::pp(cp = B1G__CP_MNAC, fp = B1G__CLV10_MNAC, time = time)) %>%
+  ungroup()
 
-use_data(dat_stan, overwrite = TRUE)
+
+use_data(dat_stan, dat_stan_main, overwrite = TRUE)
 
 ## Population
 

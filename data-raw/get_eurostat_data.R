@@ -7,7 +7,7 @@ nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", 
 
 
 nama_10_a64 <- nama_10_a64_0 %>%
-  filter(unit %in% c("CLV10_MEUR", "CP_MNAC", "PYP_MNAC"),
+  filter(unit %in% c("CLV10_MEUR", "CLV10_MNAC", "CP_MNAC", "PYP_MNAC"),
          na_item == "B1G") %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
@@ -70,7 +70,7 @@ dropped_I <- c("A", "K", "L", "O", "P", "Q", "T", "U")
 
 
 keep_II <- c("D10T12", "D13T15", "D16", "D17", "D18", "D19T23", "D24T25",
-             "D26", "D27" , "D28", "D29T30", "D31T33", "D35T39", "D41T43",
+             "D26", "D27" , "D28", "D29T30", "D31T33", "D41T43",
              "D45T47", "D49T53", "D55T56", "D58T60", "D61", "D62T63", "D69T82")
 
 dat_nama_10_a64_keep_I %>%
@@ -93,3 +93,16 @@ dat_nama_market <- dat_nama_10_a64_keep_I %>%
 
 
 use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_market, dropped_I, dropped_II, overwrite = TRUE)
+
+
+# Main industries
+
+main_nace <- c(D10T33 = "C", D41T43 = "F", D45T47 = "G", D49T53 = "H",
+               D55T56 = "I", D58T63 = "J", D69T75 = "M", D77T82 = "N")
+
+dat_nama_main <- dat_nama_10_a64 %>%
+  filter(nace_r2 %in% main_nace) %>%
+  droplevels()
+
+# dat_nama_main %>% distinct(nace_r2, industry)
+

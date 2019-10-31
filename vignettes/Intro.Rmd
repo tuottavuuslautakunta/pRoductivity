@@ -24,10 +24,9 @@ set_ptt()
 
 ```{r data}
 
-data(dat_klems, labels_klems, dat_stan, dat_nama_10_a64_market)
+data(dat_klems, labels_klems, dat_stan, dat_nama_market)
 
-dat_nama_market <- dat_nama_10_a64_market %>% 
-  mutate(nace = eurostat::label_eurostat(nace_r2, dic = "nace_r2"))
+
 
 countries_short <- c("FI", "SE", "DE", "EU15")
 countries <- c("FI", "SE", "DE", "UK", "FR", "DK", "IT", "NL", "NO", "EU15")
@@ -38,6 +37,15 @@ start_time <- 2000
 
 ```
 
+```{r data_var}
+
+dat_nama_market %>% 
+  names() %>% 
+  tibble(label = eurostat::label_eurostat_vars(., dic = "unit"))
+
+```
+
+
 # Datan tarkastus
 
 Eurostat tiedoista Ruotsista puuttuvat C20 ja C21, Norjasta C19, C20, C21 
@@ -47,7 +55,7 @@ Eurostat tiedoista Ruotsista puuttuvat C20 ja C21, Norjasta C19, C20, C21
 dat_nama_market %>% 
   filter(geo %in% countries,
          time >= start_time) %>% 
-  pivot_longer(B1G_CLV10_MEUR:EMP_DC_THS_PER, names_to = "vars", values_to = "values") %>% 
+  pivot_longer(B1G__CLV10_MEUR:EMP_DC__THS_PER, names_to = "vars", values_to = "values") %>% 
   drop_na(values) %>% 
   group_by(geo, nace_r2, vars) %>% 
   summarise(tmin = min(time), 
@@ -122,7 +130,7 @@ dat_nama_market %>%
          time > 2000,
          sektori == "C") %>% 
   group_by(nace_r2, geo) %>% 
-  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+  mutate(prod = B1G__CLV10_MEUR / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
   ggplot(aes(time, prod07, colour = geo)) +
@@ -139,7 +147,7 @@ dat_nama_market %>%
          time > 2000,
          sektori == "C") %>% 
   group_by(nace_r2, geo) %>% 
-  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+  mutate(prod = B1G__CLV10_MEUR / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
   ggplot(aes(time, prod07, colour = geo)) +
@@ -156,7 +164,7 @@ dat_nama_market %>%
          time > 2000,
          !(sektori %in% c("C", "D", "E"))) %>% 
   group_by(nace_r2, geo) %>% 
-  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+  mutate(prod = B1G__CLV10_MEUR / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
   ggplot(aes(time, prod07, colour = geo)) +
@@ -169,17 +177,17 @@ dat_nama_market %>%
 ```{r own_market_service_all}
 
 dat_nama_market %>% 
-  filter(geo %in% countries2,
+  filter(geo %in% countries,
          time > 1999,
          !(sektori %in% c("C", "D", "E", "F"))) %>%
   droplevels() %>% 
   # mutate(time = as.factor(time)) %>% 
   complete(time = full_seq(time, 1), nace_r2, geo) %>% 
   group_by(geo, time) %>% 
-  summarise_at(c("B1G_PYP_MNAC", "B1G_CP_MNAC", "EMP_DC_THS_HW"), sum, na.rm = FALSE) %>% 
+  summarise_at(c("B1G__PYP_MNAC", "B1G__CP_MNAC", "EMP_DC__THS_HW"), sum, na.rm = FALSE) %>% 
   group_by(geo) %>%
-  mutate(va_fp = statfitools::fp(B1G_CP_MNAC, B1G_PYP_MNAC, time, 2010)) %>% 
-  mutate(prod = va_fp / EMP_DC_THS_HW,
+  mutate(va_fp = statfitools::fp(B1G__CP_MNAC, B1G__PYP_MNAC, time, 2010)) %>% 
+  mutate(prod = va_fp / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
   ggplot(aes(time, prod07, colour = geo)) +
@@ -191,7 +199,7 @@ dat_nama_market %>%
 ```{r own_market_service_2groups}
 
 pdat_2groups <- dat_nama_market %>% 
-  filter(geo %in% countries2,
+  filter(geo %in% countries,
          time > 1999,
          !(sektori %in% c("C", "D", "E", "F"))) %>%
   droplevels() %>% 
@@ -203,10 +211,10 @@ pdat_2groups <- dat_nama_market %>%
                                     "Kauppa, kuljetus, hotelli ja ravintola" = "H"),
          service_group = fct_other(service_group, "Kauppa, kuljetus, hotelli ja ravintola", other_level = "Muut palvelut")) %>% 
   group_by(service_group, geo, time) %>% 
-  summarise_at(c("B1G_PYP_MNAC", "B1G_CP_MNAC", "EMP_DC_THS_HW"), sum, na.rm = FALSE) %>% 
+  summarise_at(c("B1G__PYP_MNAC", "B1G__CP_MNAC", "EMP_DC__THS_HW"), sum, na.rm = FALSE) %>% 
   group_by(service_group, geo) %>%
-  mutate(va_fp = statfitools::fp(B1G_CP_MNAC, B1G_PYP_MNAC, time, 2010)) %>% 
-  mutate(prod = va_fp / EMP_DC_THS_HW,
+  mutate(va_fp = statfitools::fp(B1G__CP_MNAC, B1G__PYP_MNAC, time, 2010)) %>% 
+  mutate(prod = va_fp / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
   mutate(bigger = geo %in% highlight,
@@ -220,11 +228,11 @@ pdat_2groups %>%
   labs(y = "Indeksi 2007 = 100") +
   the_title_blank(c("x", "l"))
 
-pdat_2groups %>% 
-  select(time, service_group, geo, indeksi = prod07) %>% 
-  spread(geo, indeksi) %>% 
-  split(.$service_group) %>% 
-  openxlsx::write.xlsx(file = "fig_intro/pdat_group2.xlsx") 
+# pdat_2groups %>% 
+#   select(time, service_group, geo, indeksi = prod07) %>% 
+#   spread(geo, indeksi) %>% 
+#   split(.$service_group) %>% 
+#   openxlsx::write.xlsx(file = "fig_intro/pdat_group2.xlsx") 
   
 
 ```
@@ -236,10 +244,10 @@ dat_nama_market %>%
          time > 2000,
          !(sektori %in% c("C", "D", "E"))) %>% 
   group_by(nace_r2, geo) %>% 
-  mutate(prod = B1G_CLV10_MEUR / EMP_DC_THS_HW,
+  mutate(prod = B1G__CLV10_MEUR / EMP_DC__THS_HW,
          prod07 = 100 * prod/prod[time == 2007]) %>%
   ungroup() %>% 
-  select(time, nace, B1G_CP_MNAC, B1G_CLV10_MEUR, EMP_DC_THS_PER, prod) %>% 
+  select(time, nace, B1G__CP_MNAC, B1G__CLV10_MEUR, EMP_DC__THS_PER, prod) %>% 
   gather(vars, values, -time, -nace) %>% 
   ggplot(aes(time, values)) +
   facet_grid(vars ~ nace, scales = "free") +

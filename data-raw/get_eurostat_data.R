@@ -9,14 +9,14 @@ nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", 
 nama_10_a64 <- nama_10_a64_0 %>%
   filter(unit %in% c("CLV10_MEUR", "CP_MNAC", "PYP_MNAC"),
          na_item == "B1G") %>%
-  unite(vars, na_item, unit) %>%
+  unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values)
 
 nama_10_a64_e <- nama_10_a64_e_0 %>%
   filter(unit %in% c("THS_HW", "THS_PER"),
          na_item == "EMP_DC") %>%
-  unite(vars, na_item, unit) %>%
+  unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values)
 
@@ -83,12 +83,13 @@ dat_nama_10_a64_keep_I %>%
 
 dropped_II <- c("B", "R", "S")
 
-dat_nama_10_a64_market <- dat_nama_10_a64_keep_I %>%
+dat_nama_market <- dat_nama_10_a64_keep_I %>%
   filter(industry %in% keep_II) %>%
-  droplevels()
+  droplevels() %>%
+  mutate(nace = eurostat::label_eurostat(nace_r2, dic = "nace_r2"))
 
 # dat_nama_10_a64_market %>%
 #   distinct(nace_r2, industry)
 
 
-use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_10_a64_market, dropped_I, dropped_II, overwrite = TRUE)
+use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_market, dropped_I, dropped_II, overwrite = TRUE)

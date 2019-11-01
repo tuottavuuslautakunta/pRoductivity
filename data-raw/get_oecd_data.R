@@ -70,6 +70,6 @@ use_data(dat_stan, overwrite = TRUE)
 use_data(dat_stan_main, overwrite = TRUE)
 ## Population
 
-search_dataset("population", data = dataset_list)
-
-pop_str <- get_data_structure("ALFS_POP_LABOUR")
+# search_dataset("population", data = dataset_list)
+#
+# pop_str <- get_data_structure("ALFS_POP_LABOUR")

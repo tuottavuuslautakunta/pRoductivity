@@ -102,7 +102,9 @@ main_nace <- c(D10T33 = "C", D41T43 = "F", D45T47 = "G", D49T53 = "H",
 
 dat_nama_main <- dat_nama_10_a64 %>%
   filter(nace_r2 %in% main_nace) %>%
+  select(-sektori, -industry) %>%
   droplevels()
 
 # dat_nama_main %>% distinct(nace_r2, industry)
 
+use_data(dat_nama_main, overwrite = TRUE)

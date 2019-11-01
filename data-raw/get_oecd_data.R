@@ -29,7 +29,7 @@ location_list_main <- c("USA")
 
 # Huom!
 var_list <- c(B1G__CP_MNAC = "VALU", B1G__CLV10_MNAC = "VALK", B1G_PYP_MNAC = "VKPY",
-              EMP_DC__THS_HW = "EMPN", EMP_DC__MIL_HW = "HRSN")
+              EMP_DC__THS_PER = "EMPN", EMP_DC__MIL_HW = "HRSN")
 
 dat_stan_0 <- get_dataset("STANI4_2016", filter = list(location_list, c("VALU", "VALK", "VKPY", "EMPN", "HRSN"), ind_list))
 
@@ -55,18 +55,19 @@ dat_stan_main <-
   dat_stan_main_0 %>%
   transmute(geo = countrycode(LOCATION, "iso3c", "eurostat"),
          vars = fct_recode(VAR, !!!var_list),
-         ind = fct_recode(IND, !!!ind_list_main),
+         nace_r2 = fct_recode(IND, !!!ind_list_main),
          time = as.numeric(obsTime),
          values = obsValue) %>%
   spread(vars, values) %>%
   mutate(EMP_DC__THS_HW = EMP_DC__MIL_HW * 1000) %>%
-  group_by(geo, ind) %>%
-  mutate(B1G_PYP_MNAC = statfitools::pp(cp = B1G__CP_MNAC, fp = B1G__CLV10_MNAC, time = time)) %>%
+  select(- EMP_DC__MIL_HW) %>%
+  group_by(geo, nace_r2) %>%
+  mutate(B1G__PYP_MNAC = statfitools::pp(cp = B1G__CP_MNAC, fp = B1G__CLV10_MNAC, time = time)) %>%
   ungroup()
 
 
-use_data(dat_stan, dat_stan_main, overwrite = TRUE)
-
+use_data(dat_stan, overwrite = TRUE)
+use_data(dat_stan_main, overwrite = TRUE)
 ## Population
 
 search_dataset("population", data = dataset_list)

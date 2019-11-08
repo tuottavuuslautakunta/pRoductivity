@@ -1,0 +1,161 @@
+---
+title: "SSCA"
+author: "Janne Huovari"
+date: "8 11 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+devtools::load_all()
+library(here)
+library(tidyverse)
+
+
+```
+
+```{r}
+
+
+######################
+### SSCA - Example ###
+######################
+
+#Data should be provided in the same format as the example dataset below:
+
+#(1) Long format
+#(2) No missing values
+
+data <- readRDS(here("data/ssca_data_example.rds"))
+
+
+data %>% 
+  filter(geo == "FI") %>% 
+  mutate(V_FP = statfitools::fp(V_CP, V_PYP, year, 2010),
+         LP = V_FP / L) %>% 
+  # select(geo, year, LP, d_LP, cvol_LP) %>% 
+  gather(vars, values, -geo, -year) %>% 
+  ggplot(aes(year, values)) +
+  facet_wrap(~ vars, scales = "free") +
+  geom_line()
+
+
+
+```
+
+```{r}
+###########################
+### Deploying the model ###
+###########################
+
+ssca_dat <- dat_main_groups %>% 
+  filter(nace0 == "manu")
+
+
+est_periods <- 1996:2007
+eval_periods <- 2008:2016
+all_periods <- c(est_periods, eval_periods)
+
+#Preparing the data for the model
+z.list <- z.prep(longdata = data.frame(data),
+                 unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "cvol_LP",
+                 time_var = "year",
+                 intervention = eval_periods[1],
+                 first_date = 1996,
+                 last_date = eval_periods[length(eval_periods)],
+                 start_date = est_periods[1],
+                 normalize = "no",
+                 drop_countries = c())
+
+z.list <- z.prep(longdata = data.frame(ssca_dat),
+                 unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "lp_ind",
+                 time_var = "time",
+                 intervention = eval_periods[1],
+                 first_date = 1996,
+                 last_date = eval_periods[length(eval_periods)],
+                 start_date = est_periods[1],
+                 normalize = "no",
+                 drop_countries = c())
+
+
+#Estimating the model
+w.list <- w.opt(z.list)
+
+#Leave-one-out' robustness check
+loo.obj <- loo.fun(z.list)
+
+
+###############
+### Results ###
+###############
+
+### Country weights ###
+W_star <- w.list$W_star
+W_star
+#OR
+round(W_star,2)[which(round(W_star,2) != 0)]
+
+### Normalized RMSE Loss ###
+comp.rmse(z.list, W_star)
+
+#############
+### Plots ###
+#############
+
+the_title <- "ssca_example"
+
+plot.fit(z.list, 
+         W_star, 
+         start_date = est_periods[1], 
+         title = the_title, 
+         intervention_date = eval_periods[1]-1,
+         LOO = loo.obj, 
+         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
+         )
+
+plot.diff(z.list, 
+          W_star, 
+          intervention = eval_periods[1]-1, 
+          title = the_title, 
+          history = TRUE, 
+          LOO = loo.obj, 
+          scale = 32,
+          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
+
+
+##############
+
+#The plots and the data for the plots can also be directly written in pdf and csv formats, 
+#respectively, to a files named according to 'the_title' by specifying 'write_csv' and 'write_pdf'
+#arguments according to the example below.
+
+
+plot.fit(z.list, 
+         W_star, 
+         start_date = est_periods[1], 
+         title = the_title, 
+         intervention_date = eval_periods[1]-1,
+         LOO = loo.obj, 
+         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"),
+         write_csv = paste0(the_title, ".csv"), 
+         write_pdf = paste0(the_title, ".pdf"))
+
+plot.diff(z.list, 
+          W_star, 
+          intervention = eval_periods[1]-1, 
+          title = the_title, 
+          history = TRUE, 
+          LOO = loo.obj, 
+          scale = 32,
+          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"),
+          write_csv = paste0(the_title, "_diff.csv"), 
+          write_pdf = paste0(the_title, "_diff.pdf"))
+
+
+```
+

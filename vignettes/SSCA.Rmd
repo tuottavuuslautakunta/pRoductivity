@@ -12,10 +12,18 @@ devtools::load_all()
 library(here)
 library(tidyverse)
 
+est_periods <- 1996:2007
+eval_periods <- 2008:2016
+all_periods <- c(est_periods, eval_periods)
+
+ssca_dat <- data_main_groups %>% 
+  group_by(geo, nace0) %>% 
+  mutate(lp_ind =  100 * lp_ind/lp_ind[time == 1995]) %>% 
+  ungroup()
 
 ```
 
-```{r}
+```{r, eval=FALSE, include=FALSE}
 
 
 ######################
@@ -40,38 +48,24 @@ data %>%
   facet_wrap(~ vars, scales = "free") +
   geom_line()
 
-
+unique(data$geo) %>% dput()
 
 ```
 
-```{r}
+# Yksityinen sektori
+
+```{r private}
 ###########################
 ### Deploying the model ###
 ###########################
 
-ssca_dat <- dat_main_groups %>% 
-  filter(nace0 == "manu")
 
 
-est_periods <- 1996:2007
-eval_periods <- 2008:2016
-all_periods <- c(est_periods, eval_periods)
 
-#Preparing the data for the model
-z.list <- z.prep(longdata = data.frame(data),
-                 unit_var = "geo",
-                 target_unit = "FI",
-                 value_var = "cvol_LP",
-                 time_var = "year",
-                 intervention = eval_periods[1],
-                 first_date = 1996,
-                 last_date = eval_periods[length(eval_periods)],
-                 start_date = est_periods[1],
-                 normalize = "no",
-                 drop_countries = c())
-
-z.list <- z.prep(longdata = data.frame(ssca_dat),
-                 unit_var = "geo",
+z.list <- ssca_dat %>% 
+  filter(nace0 == "private") %>% 
+  data.frame() %>% 
+  z.prep(unit_var = "geo",
                  target_unit = "FI",
                  value_var = "lp_ind",
                  time_var = "time",
@@ -107,7 +101,7 @@ comp.rmse(z.list, W_star)
 ### Plots ###
 #############
 
-the_title <- "ssca_example"
+the_title <- "Yksityinen sektori"
 
 plot.fit(z.list, 
          W_star, 
@@ -128,12 +122,58 @@ plot.diff(z.list,
           legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
 
 
-##############
 
-#The plots and the data for the plots can also be directly written in pdf and csv formats, 
-#respectively, to a files named according to 'the_title' by specifying 'write_csv' and 'write_pdf'
-#arguments according to the example below.
 
+```
+
+
+# Teollisuus
+
+```{r manu}
+###########################
+### Deploying the model ###
+###########################
+
+z.list <- ssca_dat %>% 
+  filter(nace0 == "manu") %>% 
+  data.frame() %>% 
+  z.prep(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "lp_ind",
+                 time_var = "time",
+                 intervention = eval_periods[1],
+                 first_date = 1996,
+                 last_date = eval_periods[length(eval_periods)],
+                 start_date = est_periods[1],
+                 normalize = "no",
+                 drop_countries = c())
+
+
+#Estimating the model
+w.list <- w.opt(z.list)
+
+#Leave-one-out' robustness check
+loo.obj <- loo.fun(z.list)
+
+
+###############
+### Results ###
+###############
+
+### Country weights ###
+W_star <- w.list$W_star
+W_star
+#OR
+round(W_star,2)[which(round(W_star,2) != 0)]
+
+### Normalized RMSE Loss ###
+comp.rmse(z.list, W_star)
+
+#############
+### Plots ###
+#############
+
+the_title <- "Teollisuus"
 
 plot.fit(z.list, 
          W_star, 
@@ -141,9 +181,8 @@ plot.fit(z.list,
          title = the_title, 
          intervention_date = eval_periods[1]-1,
          LOO = loo.obj, 
-         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"),
-         write_csv = paste0(the_title, ".csv"), 
-         write_pdf = paste0(the_title, ".pdf"))
+         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
+         )
 
 plot.diff(z.list, 
           W_star, 
@@ -152,10 +191,74 @@ plot.diff(z.list,
           history = TRUE, 
           LOO = loo.obj, 
           scale = 32,
-          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"),
-          write_csv = paste0(the_title, "_diff.csv"), 
-          write_pdf = paste0(the_title, "_diff.pdf"))
-
+          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
 
 ```
 
+# Palvelut
+
+```{r service}
+###########################
+### Deploying the model ###
+###########################
+
+z.list <- ssca_dat %>% 
+  filter(nace0 == "service") %>% 
+  data.frame() %>% 
+  z.prep(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "lp_ind",
+                 time_var = "time",
+                 intervention = eval_periods[1],
+                 first_date = 1996,
+                 last_date = eval_periods[length(eval_periods)],
+                 start_date = est_periods[1],
+                 normalize = "no",
+                 drop_countries = c())
+
+
+#Estimating the model
+w.list <- w.opt(z.list)
+
+#Leave-one-out' robustness check
+loo.obj <- loo.fun(z.list)
+
+
+###############
+### Results ###
+###############
+
+### Country weights ###
+W_star <- w.list$W_star
+W_star
+#OR
+round(W_star,2)[which(round(W_star,2) != 0)]
+
+### Normalized RMSE Loss ###
+comp.rmse(z.list, W_star)
+
+#############
+### Plots ###
+#############
+
+the_title <- "Palvelut"
+
+plot.fit(z.list, 
+         W_star, 
+         start_date = est_periods[1], 
+         title = the_title, 
+         intervention_date = eval_periods[1]-1,
+         LOO = loo.obj, 
+         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
+         )
+
+plot.diff(z.list, 
+          W_star, 
+          intervention = eval_periods[1]-1, 
+          title = the_title, 
+          history = TRUE, 
+          LOO = loo.obj, 
+          scale = 32,
+          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
+
+```

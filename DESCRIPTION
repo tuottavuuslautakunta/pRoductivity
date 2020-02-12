@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Author: Janne Huovari <janne.huovari@ptt.fi> [aut,cre]
 Description: What the package does (one paragraph).
 Depends: R (>= 3.5.1), tidyverse, ggptt
-Imports: readr, OECD, eurostat, countrycode, statfitools
+Imports: readr, OECD, eurostat, countrycode, statfitools, tidypredict
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

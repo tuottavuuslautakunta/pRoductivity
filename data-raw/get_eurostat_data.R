@@ -97,7 +97,7 @@ use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_market, dropped_I, dr
 
 # Main industries
 
-main_nace <- c(D10T33 = "C", D41T43 = "F", D45T47 = "G", D49T53 = "H",
+main_nace <- c(D10T33 = "C", D26 = "C26",  D41T43 = "F", D45T47 = "G", D49T53 = "H",
                D55T56 = "I", D58T63 = "J", D69T75 = "M", D77T82 = "N")
 
 dat_nama_main <- dat_nama_10_a64 %>%

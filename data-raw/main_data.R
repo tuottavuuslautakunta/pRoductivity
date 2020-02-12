@@ -1,4 +1,4 @@
-#
+# Main data
 
 
 library(tidyverse)
@@ -23,7 +23,16 @@ data_main <-
   bind_rows(filter(dat_stan_main, time >= min(dat_nama_main$time))) %>%
   filter(time >= start_time_main,
          geo %in% countries) %>%
+  complete(geo, time, nace_r2) %>%
   mutate(geo_name = fct_recode(geo, !!!countries))
+
+
+visdat::vis_dat(data_main)
+
+data_main %>%
+  filter(is.na(EMP_DC__THS_PER)) %>%
+  distinct(geo, time)
+
 
 data_main_groups <- data_main %>%
   gather(vars, values, -time, - geo, -geo_name, - nace_r2) %>%

@@ -4,10 +4,9 @@ library(OECD)
 library(tidyverse)
 library(countrycode)
 
+devtools::load_all()
 
 # dataset_list <- get_datasets()
-
-start_year <- 1997
 
 # dataset_list %>%
 #   filter(id %in% c("SNA_TABLE6A", "SNA_TABLE7A")) %>%
@@ -23,9 +22,6 @@ start_year <- 1997
 sna_geo <- countrycode(c("US", "JP"), "eurostat", "iso3c")
 
 # Industries
-main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
-              VI = "I", VJ = "J", VM = "M", VN = "N")
-
 sna_activity <- setNames(names(main_nace_sna), main_nace_sna)
 
 # Transactions
@@ -43,7 +39,7 @@ sna7a_transact <- c(
 # Measeures
 sna_measures <-   c(
   CP_MNAC = "C",   # current prices
-  CLV_MNAC = "V",  # Constant prices
+  CLV15_MNAC = "V",  # Constant prices
   PYP_MNAC = "VP" # previous year prices
 )
 
@@ -109,7 +105,9 @@ dat_oecd_sna_nace_imput <-
          SAL_DC__THS_PER = coalesce(SAL_DC__THS_PER, sal_approx)) %>%
   select(-emp_approx, -sal_approx) %>%
   # Approx EMP_DC__THS_HW base on EMP_DC__THS_PER and SAL_DC__THS_HW and SAL_DC__THS_PER
-  mutate(EMP_DC__THS_HW = if_else(is.na(EMP_DC__THS_HW), EMP_DC__THS_PER * SAL_DC__THS_HW / SAL_DC__THS_PER, EMP_DC__THS_HW))
+  mutate(EMP_DC__THS_HW = if_else(is.na(EMP_DC__THS_HW), EMP_DC__THS_PER * SAL_DC__THS_HW / SAL_DC__THS_PER, EMP_DC__THS_HW)) %>%
+  # drop M and N for Japan for missing
+  filter(!(geo == "JP" & nace_r2 %in% c("M", "N")))
 
 # visdat::vis_dat(dat_oecd_sna_nace_imput)
 

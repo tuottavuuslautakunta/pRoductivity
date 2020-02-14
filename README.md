@@ -36,6 +36,9 @@ Sweden:
 UK:
 * Industry data from t-2
 
+Euroarea
+* Only from 2000
+
 ### OECD data
 
 #### Annual national accounts
@@ -67,3 +70,4 @@ Imputed values:
  * Employment data is extrapolated using linear reggression for USA and Japan based on jobs data. For USA 1997-? and for Japan 2015-.
  * USA industries 1997 based on total (TODO)
  * EMP_DC__THS_HW is approximated with EMP_DC__THS_PER x SAL_DC__THS_HW / SAL_DC__THS_PER for USA and JAPAN.
+ * M and N have been dropped for Japan due to missing values

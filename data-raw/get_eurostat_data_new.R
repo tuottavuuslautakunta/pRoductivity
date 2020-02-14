@@ -7,7 +7,7 @@ dat_nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "nu
 
 
 dat_nama_10_a64 <- dat_nama_10_a64_0 %>%
-  filter(unit %in% c("CLV10_MEUR", "CLV10_MNAC", "CP_MNAC", "PYP_MNAC"),
+  filter(unit %in% c("CLV15_MEUR", "CLV15_MNAC", "CP_MNAC", "PYP_MNAC"),
          na_item == "B1G") %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
@@ -36,24 +36,24 @@ dat_eurostat_nace_imput <-
                      .))
 
 
-visdat::vis_dat(dat_eurostat_nace_imput)
-
-nrow(dat_eurostat_nace)
-
+# visdat::vis_dat(dat_eurostat_nace_imput)
+#
+# nrow(dat_eurostat_nace)
+#
 filter(dat_eurostat_nace_imput) %>%
   filter(time != "2018") %>%
   # filter(nace_r2 != "C26") %>%
-  # filter(nace_r2 != "N") %>%
+  filter(!(geo == "EA12" & time < 2000)) %>%
   filter(!(geo == "UK" & time == 2017))  %>%
   visdat::vis_dat()
+# #
+# #
+# dat_eurostat_nace_imput %>%
+#   filter(is.na(EMP_DC__THS_HW)) %>%
+#   distinct(time, nace_r2, geo)
 
 
-dat_eurostat_nace_imput %>%
-  filter(is.na(EMP_DC__THS_HW)) %>%
-  distinct(time, nace_r2, geo)
-
-
-use_data(dat_eurostat_nace, overwrite = TRUE)
+use_data(dat_eurostat_nace, dat_eurostat_nace_imput, overwrite = TRUE)
 
 
 

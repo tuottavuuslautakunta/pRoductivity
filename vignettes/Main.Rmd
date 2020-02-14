@@ -9,6 +9,8 @@ output: rmarkdown::html_document
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   fig.path = "fig_intro/",
+  fig.width = 9,
+  fig.height = 4,
   collapse = TRUE,
   comment = "#>"
 )
@@ -19,26 +21,19 @@ library(tidyverse)
 library(glue)
 library(ggptt)
 
-set_ptt()
+# set_ptt()
+
+tula_pal <- function(n) c("#6495ED", "#6E8B3D", "#EE7600", "#8B3E2F", "#8968CD", "#f03b20", "grey75")[1:n]
+
+set_gg(theme_ptt(), tula_pal)
 
 # Data
 
-data("dat_stan_main", "dat_nama_main")
+data("data_main", "data_main_groups")
 
-countries <- c(Suomi = "FI", Ruotsi = "SE", Saksa = "DE", Britannia = "UK", 
-                        Ranska = "FR", Tanska = "DK", Italia = "IT", Alankomaat = "NL", 
-                        Norja = "NO", EU15 = "EU15", USA = "US")
-
-
-
-start_time <- 2000
-base_year <- 2008
 
 high_country <- "Suomi"
-
-dat_main_groups <- data_main_groups %>% 
-  filter(time >= start_time)
-
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
 
 
 ```
@@ -46,7 +41,7 @@ dat_main_groups <- data_main_groups %>%
 
 ```{r lp}
 
-dat_main_groups %>% 
+data_main_groups %>% 
   ggplot(aes(time, lp_ind, colour = geo)) +
   facet_wrap(~ nace0) +
   geom_line()
@@ -55,25 +50,68 @@ dat_main_groups %>%
 
 ```{r lp_private}
 
-dat_main_groups %>% 
+data_main_groups %>% 
   filter(nace0 == "private") %>% 
   prod_ind_plot()
   
 ```
 
+```{r lp_private_high}
+
+data_main_groups %>% 
+  filter(nace0 == "private") %>% 
+  prod_ind_plot_high()
+
+  
+```
+
+```{r lp_private_ex26_high}
+
+data_main_groups %>% 
+  filter(nace0 == "private_ex26") %>% 
+  prod_ind_plot_high()
+
+  
+```
+
 ```{r lp_manu}
 
-dat_main_groups %>% 
+data_main_groups %>% 
   filter(nace0 == "manu") %>% 
   prod_ind_plot()
   
 ```
 
+```{r lp_manu_high}
+
+data_main_groups %>% 
+  filter(nace0 == "manu") %>% 
+  prod_ind_plot_high()
+
+  
+```
+
+```{r lp_manu_ex_high}
+
+data_main_groups %>% 
+  filter(nace0 == "manu_ex26") %>% 
+  prod_ind_plot_high()
+
+  
+```
 
 ```{r lp_service}
 
-dat_main_groups %>% 
+data_main_groups %>% 
   filter(nace0 == "service") %>% 
   prod_ind_plot() 
 
+```
+```{r lp_serv_high}
+
+data_main_groups %>% 
+  filter(nace0 == "service") %>% 
+  prod_ind_plot_high()
+
+  
 ```

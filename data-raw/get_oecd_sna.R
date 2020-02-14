@@ -42,8 +42,8 @@ sna7a_transact <- c(
 
 # Measeures
 sna_measures <-   c(
-  CP_NAC = "C",   # current prices
-  CLV_NAC = "V",  # Constant prices
+  CP_MNAC = "C",   # current prices
+  CLV_MNAC = "V",  # Constant prices
   PYP_MNAC = "VP" # previous year prices
 )
 
@@ -109,9 +109,9 @@ dat_oecd_sna_nace_imput <-
          SAL_DC__THS_PER = coalesce(SAL_DC__THS_PER, sal_approx)) %>%
   select(-emp_approx, -sal_approx) %>%
   # Approx EMP_DC__THS_HW base on EMP_DC__THS_PER and SAL_DC__THS_HW and SAL_DC__THS_PER
-  mutate(EMP_DC__THS_HW = ifelse(is.na(EMP_DC__THS_HW), EMP_DC__THS_PER * SAL_DC__THS_HW / SAL_DC__THS_PER, EMP_DC__THS_HW))
+  mutate(EMP_DC__THS_HW = if_else(is.na(EMP_DC__THS_HW), EMP_DC__THS_PER * SAL_DC__THS_HW / SAL_DC__THS_PER, EMP_DC__THS_HW))
 
-# visdat::vis_dat(dat_oecd_sna_nace)
+# visdat::vis_dat(dat_oecd_sna_nace_imput)
 
 # filter(dat_oecd_sna_nace_imput, geo == "JP") %>%
 #   filter(time != "2018") %>%

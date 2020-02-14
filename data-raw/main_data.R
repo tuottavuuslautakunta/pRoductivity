@@ -8,9 +8,12 @@ devtools::load_all()
 
 data("dat_stan_main", "dat_nama_main")
 
-countries0 <- c("AT", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI",
-               "FR", "IT", "LT", "NL", "NO", "PT", "RO", "SE", "SI", "SK", "UK",
-               "US")
+countries0 <- c("AT", "DE", "DK", "EL", "ES", "FI",
+               "FR", "IT", "NL", "NO", "PT", "SE", "UK",
+               "US", "JP")
+
+main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
+                   VI = "I", VJ = "J", VM = "M", VN = "N")
 
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi"))
 

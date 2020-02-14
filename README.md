@@ -18,6 +18,24 @@ Datasets:
  * data_main, data with main industry classification plus C26.
  * data_main_groups, data with main groupings
 
+### Eurostat data
+
+#### Annual national accounts
+
+From:
+* National accounts aggregates by industry (up to NACE A*64) (nama_10_a64) 	 
+* National accounts employment data by industry (up to NACE A*64) (nama_10_a64_e)
+
+##### Missing:
+
+t-1 for many
+
+Sweden:
+* J 2015 employment data. An error as series is different form nama_10_a10_e. Imputed by 2014 and 2016 mean.
+
+UK:
+* Industry data from t-2
+
 ### OECD data
 
 #### Annual national accounts

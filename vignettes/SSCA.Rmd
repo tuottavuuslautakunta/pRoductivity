@@ -16,9 +16,12 @@ est_periods <- 1996:2007
 eval_periods <- 2008:2016
 all_periods <- c(est_periods, eval_periods)
 
+data(data_main_groups)
+
 ssca_dat <- data_main_groups %>% 
+  complete(geo, nace0, time) %>% 
   group_by(geo, nace0) %>% 
-  mutate(lp_ind =  100 * lp_ind/lp_ind[time == 1995]) %>% 
+  mutate(lp_ind =  100 * lp_ind/lp_ind[time == 1997]) %>% 
   ungroup()
 
 ```
@@ -48,7 +51,80 @@ data %>%
   facet_wrap(~ vars, scales = "free") +
   geom_line()
 
-unique(data$geo) %>% dput()
+
+
+```
+
+```{r demo}
+###########################
+### Deploying the model ###
+###########################
+
+
+
+
+z.list <- data %>% 
+  data.frame() %>% 
+  z.prep(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "cvol_LP",
+                 time_var = "year",
+                 intervention = eval_periods[1],
+                 first_date = 1996,
+                 last_date = eval_periods[length(eval_periods)],
+                 start_date = est_periods[1],
+                 normalize = "no",
+                 drop_countries = c())
+
+
+#Estimating the model
+w.list <- w.opt(z.list)
+
+#Leave-one-out' robustness check
+loo.obj <- loo.fun(z.list)
+
+
+###############
+### Results ###
+###############
+
+### Country weights ###
+W_star <- w.list$W_star
+W_star
+#OR
+round(W_star,2)[which(round(W_star,2) != 0)]
+
+### Normalized RMSE Loss ###
+comp.rmse(z.list, W_star)
+
+#############
+### Plots ###
+#############
+
+z.list$Z0
+
+the_title <- "Yksityinen sektori"
+
+plot.fit(z.list, 
+         W_star, 
+         start_date = est_periods[1], 
+         title = the_title, 
+         intervention_date = eval_periods[1]-1,
+         LOO = loo.obj, 
+         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
+         )
+
+plot.diff(z.list, 
+          W_star, 
+          intervention = eval_periods[1]-1, 
+          title = the_title, 
+          history = TRUE, 
+          LOO = loo.obj, 
+          scale = 32,
+          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
+
+
+
 
 ```
 

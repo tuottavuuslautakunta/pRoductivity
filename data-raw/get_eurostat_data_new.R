@@ -7,8 +7,8 @@ dat_nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num", 
 dat_nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", cache = FALSE)
 
 dat_nama_10_gdp <- dat_nama_10_gdp_0 %>%
-  filter(unit %in% c("CLV10_MEUR", "CLV10_MNAC", "CP_MNAC"),
-         na_item %in% c("B1GQ", "P6", "P61", "B11")) %>%
+  filter(unit %in% c("CLV15_MEUR", "CLV15_MNAC", "CP_MNAC"),
+         na_item %in% c("B1GQ", "P6", "P61", "P62", "B11")) %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values)
@@ -98,23 +98,28 @@ dat_eurostat_nace_23_imput <-
   mutate_if(is.numeric, ~if_else((nace_r2 == "C20_C21" & is.na(.)), 100, 0)) %>%
   ungroup()
 
-visdat::vis_dat(dat_eurostat_nace_23)
+# visdat::vis_dat(dat_eurostat_nace_23)
 
-filter(dat_eurostat_nace_23_imput) %>%
-  filter(time != "2018") %>%
-  filter(!(geo == "BG" & nace_r2 %in% c("C20", "C21"))) %>%
-  filter(!(geo == "EE" & nace_r2 %in% c("C20", "C21"))) %>%
-  filter((!geo == "SE" & nace_r2 %in% c("C20", "C21"))) %>%
-  filter((!geo == "NO" & nace_r2 %in% c("C20", "C21"))) %>%
-  # # filter(nace_r2 != "C26") %>%
-  filter(!(geo == "EA12" & time < 2000)) %>%
-  filter(!(geo == "UK" & time == 2017))  %>%
-  # filter(is.na(EMP_DC__THS_HW)) %>%
-  # distinct(time, nace_r2, geo)
-  visdat::vis_dat()
+# filter(dat_eurostat_nace_23_imput) %>%
+#   filter(time != "2018") %>%
+#   filter(!(geo == "BG" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter(!(geo == "EE" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter((!geo == "SE" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter((!geo == "NO" & nace_r2 %in% c("C20", "C21"))) %>%
+#   # # filter(nace_r2 != "C26") %>%
+#   filter(!(geo == "EA12" & time < 2000)) %>%
+#   filter(!(geo == "UK" & time == 2017))  %>%
+#   # filter(is.na(EMP_DC__THS_HW)) %>%
+#   # distinct(time, nace_r2, geo)
+#   visdat::vis_dat()
+
+data_eurostat_total <-
+  dat_nama_10_gdp %>%
+  filter(time >= start_year) %>%
+  complete(time, geo)
 
 use_data(dat_eurostat_nace, dat_eurostat_nace_imput, overwrite = TRUE)
-use_data(dat_eurostat_nace_23, overwrite = TRUE)
+use_data(dat_eurostat_nace_23, data_eurostat_total, overwrite = TRUE)
 
 
 

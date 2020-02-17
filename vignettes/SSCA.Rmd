@@ -21,7 +21,8 @@ data(data_main_groups)
 ssca_dat <- data_main_groups %>% 
   complete(geo, nace0, time) %>% 
   group_by(geo, nace0) %>% 
-  mutate(lp_ind =  100 * lp_ind/lp_ind[time == 1997]) %>% 
+  mutate(lp_ind =  100 * lp_ind/lp_ind[time == 2008],
+         lp_ind10 =  100 * lp_ind/lp_ind[time == 2010]) %>% 
   ungroup()
 
 ```
@@ -138,26 +139,13 @@ plot.diff(z.list,
 
 
 
-z.list <- ssca_dat %>% 
+private_ssca <- ssca_dat %>% 
   filter(nace0 == "private") %>% 
-  data.frame() %>% 
-  z.prep(unit_var = "geo",
+  ssca_est(unit_var = "geo",
                  target_unit = "FI",
                  value_var = "lp_ind",
-                 time_var = "time",
-                 intervention = eval_periods[1],
-                 first_date = 1996,
-                 last_date = eval_periods[length(eval_periods)],
-                 start_date = est_periods[1],
-                 normalize = "no",
-                 drop_countries = c())
-
-
-#Estimating the model
-w.list <- w.opt(z.list)
-
-#Leave-one-out' robustness check
-loo.obj <- loo.fun(z.list)
+                 time_var = "time", est_periods = est_periods, eval_periods = eval_periods)
+  
 
 
 ###############
@@ -165,111 +153,97 @@ loo.obj <- loo.fun(z.list)
 ###############
 
 ### Country weights ###
-W_star <- w.list$W_star
-W_star
-#OR
-round(W_star,2)[which(round(W_star,2) != 0)]
+private_ssca$w_list$W_star
 
 ### Normalized RMSE Loss ###
-comp.rmse(z.list, W_star)
+comp.rmse(private_ssca$z_list, private_ssca$w_list$W_star)
 
 #############
 ### Plots ###
 #############
 
-the_title <- "Yksityinen sektori"
 
-plot.fit(z.list, 
-         W_star, 
-         start_date = est_periods[1], 
-         title = the_title, 
-         intervention_date = eval_periods[1]-1,
-         LOO = loo.obj, 
-         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
-         )
 
-plot.diff(z.list, 
-          W_star, 
-          intervention = eval_periods[1]-1, 
-          title = the_title, 
-          history = TRUE, 
-          LOO = loo.obj, 
-          scale = 32,
-          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
+ssca_plot("Yksityinen sektori", ssca_obj = private_ssca)
 
 
 
 
+```
+
+```{r private_11}
+
+private_ssca_11 <- ssca_dat %>% 
+  filter(nace0 == "private") %>% 
+  ssca_est(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "lp_ind",
+                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)
+  
+ssca_plot("Yksityinen sektori", ssca_obj = private_ssca_11)
 ```
 
 
 # Teollisuus
 
 ```{r manu}
-###########################
-### Deploying the model ###
-###########################
 
-z.list <- ssca_dat %>% 
+manu_ssca_11 <- ssca_dat %>% 
   filter(nace0 == "manu") %>% 
-  data.frame() %>% 
-  z.prep(unit_var = "geo",
+  ssca_est(unit_var = "geo",
                  target_unit = "FI",
                  value_var = "lp_ind",
-                 time_var = "time",
-                 intervention = eval_periods[1],
-                 first_date = 1996,
-                 last_date = eval_periods[length(eval_periods)],
-                 start_date = est_periods[1],
-                 normalize = "no",
-                 drop_countries = c())
-
-
-#Estimating the model
-w.list <- w.opt(z.list)
-
-#Leave-one-out' robustness check
-loo.obj <- loo.fun(z.list)
-
-
-###############
-### Results ###
-###############
-
-### Country weights ###
-W_star <- w.list$W_star
-W_star
-#OR
-round(W_star,2)[which(round(W_star,2) != 0)]
-
-### Normalized RMSE Loss ###
-comp.rmse(z.list, W_star)
-
-#############
-### Plots ###
-#############
-
-the_title <- "Teollisuus"
-
-plot.fit(z.list, 
-         W_star, 
-         start_date = est_periods[1], 
-         title = the_title, 
-         intervention_date = eval_periods[1]-1,
-         LOO = loo.obj, 
-         legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
-         )
-
-plot.diff(z.list, 
-          W_star, 
-          intervention = eval_periods[1]-1, 
-          title = the_title, 
-          history = TRUE, 
-          LOO = loo.obj, 
-          scale = 32,
-          legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta"))
+                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)
+  
+ssca_plot("Teollisuus", ssca_obj = manu_ssca_11)
 
 ```
+ 
+# Vienti
+
+```{r exp}
+
+exp_ssca_data <- data_total %>% 
+  group_by(geo) %>% 
+  mutate(p6_ind = rebase(P6__CLV15_MNAC, time, 2010),
+         p61_ind = rebase(P61__CLV15_MNAC, time, 2010),
+         p62_ind = rebase(P62__CLV15_MNAC, time, 2010)) 
+
+exp_ssca <- exp_ssca_data %>% 
+  ssca_est(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "p6_ind",
+                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)
+  
+ssca_plot("Vienti", ssca_obj = exp_ssca)
+
+```
+
+```{r exp_g}
+
+
+exp_g_ssca <- exp_ssca_data %>% 
+  ssca_est(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "p61_ind",
+                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)
+  
+ssca_plot("Tavaroiden vienti", ssca_obj = exp_g_ssca)
+
+``` 
+
+```{r exp_s}
+
+
+exp_s_ssca <- exp_ssca_data %>% 
+  ssca_est(unit_var = "geo",
+                 target_unit = "FI",
+                 value_var = "p62_ind",
+                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)
+  
+ssca_plot("Palveluiden vienti", ssca_obj = exp_s_ssca)
+
+``` 
 
 # Palvelut
 

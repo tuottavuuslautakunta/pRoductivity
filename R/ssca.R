@@ -205,3 +205,30 @@ loo.fun <- function(z.list) {
 
   ret
 }
+
+
+ssca_est <- function(data, unit_var, target_unit, value_var, time_var, est_periods, eval_periods){
+
+  z.list <- data %>%
+    data.frame() %>%
+    z.prep(unit_var = unit_var,
+           target_unit = target_unit,
+           value_var = value_var,
+           time_var = "time",
+           intervention = eval_periods[1],
+           first_date = est_periods[1],
+           last_date = eval_periods[length(eval_periods)],
+           start_date = est_periods[1],
+           normalize = "no",
+           drop_countries = c())
+
+
+  #Estimating the model
+  w.list <- w.opt(z.list)
+
+  #Leave-one-out' robustness check
+  loo.obj <- loo.fun(z.list)
+
+  ret <- list(z_list = z.list, w_list = w.list, loo.obj = loo.obj)
+  ret
+}

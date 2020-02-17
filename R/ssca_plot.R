@@ -26,8 +26,8 @@ ssca_plot_data <- function(z_list, W_star, LOO = loo.obj){
   ret
 }
 
-ssca_plot <- function(z_list, W_star, LOO = loo.obj, legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")){
-  pdat_ts <- ssca_plot_data(z_list = z_list, W_star = W_star, LOO = LOO)
+ssca_plot <- function(title, ssca_obj, legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")){
+  pdat_ts <- ssca_plot_data(z_list = ssca_obj$z_list, W_star = ssca_obj$w_list$W_star, LOO = ssca_obj$loo.obj)
   pdat <- bind_cols(year = c(time(pdat_ts)), as_tibble(pdat_ts))
   pdat_long <- gather(pdat, vars, values, -year) %>%
     mutate(
@@ -43,7 +43,8 @@ ssca_plot <- function(z_list, W_star, LOO = loo.obj, legend_arg = c("Suomi", "Sy
     scale_colour_manual(values = c(tula_pal(2), "grey75")) +
     scale_size_manual(values = c(2,2,1), guide = "none") +
     the_legend_bot() +
-    the_title_blank(c("l", "x"))
+    the_title_blank(c("l", "x")) +
+    ggtitle(title)
 }
 
 plot.fit <-

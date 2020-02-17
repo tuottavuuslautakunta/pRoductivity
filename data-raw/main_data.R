@@ -84,5 +84,12 @@ data_main_groups <- data_main %>%
   mutate(geo_name = fct_relevel(geo_name, rev(names(countries))))
 
 
+data_total <-
+  data_eurostat_total %>%
+  select(-contains("MEUR")) %>%
+  bind_rows(select(data_oecd_total, all_of(names(.))))
+
+
+
 usethis::use_data(data_main, overwrite = TRUE)
 usethis::use_data(data_main_groups, overwrite = TRUE)

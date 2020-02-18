@@ -6,7 +6,7 @@ library(tidyverse)
 devtools::load_all()
 
 start_year <- 1995
-base_year <- 2008
+base_year <- 2010
 
 countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI",
                 "FR", "IT", "NL", "NO", "PT", "SE", "UK",
@@ -58,7 +58,8 @@ data_main <-
   bind_rows(select(dat_oecd_sna_nace_imput, all_of(names(.)))) %>%
   # filter(time >= start_time_main,
   #        geo %in% countries) %>%
-  mutate(geo_name = fct_recode(geo, !!!countries))
+  mutate(geo_name = fct_recode(geo, !!!countries),
+         geo = as_factor(geo))
 
 
 # visdat::vis_dat(data_main)
@@ -87,9 +88,14 @@ data_main_groups <- data_main %>%
 data_total <-
   data_eurostat_total %>%
   select(-contains("MEUR")) %>%
-  bind_rows(select(data_oecd_total, all_of(names(.))))
+  bind_rows(select(data_oecd_total, all_of(names(.)))) %>%
+  filter(geo %in% countries) %>%
+  mutate(geo_name = fct_recode(geo, !!!countries),
+         geo_name = fct_relevel(geo_name, rev(names(countries))))
 
 
 
-usethis::use_data(data_main, overwrite = TRUE)
+
+
+usethis::use_data(data_main, data_total, overwrite = TRUE)
 usethis::use_data(data_main_groups, overwrite = TRUE)

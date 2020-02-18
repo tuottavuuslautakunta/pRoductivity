@@ -23,13 +23,13 @@ library(ggptt)
 
 # set_ptt()
 
-tula_pal <- function(n) c("#6495ED", "#6E8B3D", "#EE7600", "#8B3E2F", "#8968CD", "#f03b20", "grey75")[1:n]
 
-set_gg(theme_ptt(), tula_pal)
+
+set_gg(theme_ptt(), ptt_pal)
 
 # Data
 
-data("data_main", "data_main_groups")
+data("data_main", "data_main_groups", "ssca_lp_ind10", "ssca_lp_ind", "scca_exp")
 
 
 high_country <- "Suomi"
@@ -44,17 +44,11 @@ high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
 data_main_groups %>% 
   ggplot(aes(time, lp_ind, colour = geo)) +
   facet_wrap(~ nace0) +
-  geom_line()
+  geom_line() 
 
 ```
 
-```{r lp_private}
-
-data_main_groups %>% 
-  filter(nace0 == "private") %>% 
-  prod_ind_plot()
-  
-```
+# Yksityinen sektori
 
 ```{r lp_private_high}
 
@@ -62,8 +56,12 @@ data_main_groups %>%
   filter(nace0 == "private") %>% 
   prod_ind_plot_high()
 
+ssca_plot("Yksityinen sektori, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "private")[["ssca_obj_08"]][[1]])
+ssca_plot("Yksityinen sektori, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "private")[["ssca_obj_10"]][[1]])
   
 ```
+
+# Yksityinen ilman 26
 
 ```{r lp_private_ex26_high}
 
@@ -71,25 +69,25 @@ data_main_groups %>%
   filter(nace0 == "private_ex26") %>% 
   prod_ind_plot_high()
 
+ssca_plot("Yksityinen sektori ilman 26, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "private_ex26")[["ssca_obj_08"]][[1]])
+ssca_plot("Yksityinen sektori ilman 26, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "private_ex26")[["ssca_obj_10"]][[1]])
   
 ```
+
+# Teollisuus
 
 ```{r lp_manu}
 
 data_main_groups %>% 
   filter(nace0 == "manu") %>% 
-  prod_ind_plot()
-  
-```
-
-```{r lp_manu_high}
-
-data_main_groups %>% 
-  filter(nace0 == "manu") %>% 
   prod_ind_plot_high()
 
+ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
+ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
   
 ```
+
+# Teollisuus ilman 26
 
 ```{r lp_manu_ex_high}
 
@@ -97,21 +95,56 @@ data_main_groups %>%
   filter(nace0 == "manu_ex26") %>% 
   prod_ind_plot_high()
 
+ssca_plot("Teollisuus ilman 26, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu_ex26")[["ssca_obj_08"]][[1]])
+ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu_ex26")[["ssca_obj_10"]][[1]])
   
 ```
 
-```{r lp_service}
+# Palvelut
 
-data_main_groups %>% 
-  filter(nace0 == "service") %>% 
-  prod_ind_plot() 
-
-```
 ```{r lp_serv_high}
 
 data_main_groups %>% 
   filter(nace0 == "service") %>% 
   prod_ind_plot_high()
 
+ssca_plot("Palvelut, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "service")[["ssca_obj_08"]][[1]])
+ssca_plot("Palvelut, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "service")[["ssca_obj_10"]][[1]])
   
+```
+
+# Vienti
+
+```{r export}
+
+scca_exp$p6_ind$z_list$theCall$longdata %>% 
+  mutate(lp_ind = p6_ind) %>% 
+  prod_ind_plot_high()
+
+ssca_plot("Vienti", ssca_obj = scca_exp$p6_ind)
+
+```
+
+# Tavaroiden vienti
+
+```{r export_g}
+
+scca_exp$p61_ind$z_list$theCall$longdata %>% 
+  mutate(lp_ind = p61_ind) %>% 
+  prod_ind_plot_high()
+
+ssca_plot("Tavaroiden vienti", ssca_obj = scca_exp$p61_ind)
+
+```
+
+# Palveluiden vienti
+
+```{r export_s}
+
+scca_exp$p62_ind$z_list$theCall$longdata %>% 
+  mutate(lp_ind = p62_ind) %>% 
+  prod_ind_plot_high()
+
+ssca_plot("Palveluiden vienti", ssca_obj = scca_exp$p62_ind)
+
 ```

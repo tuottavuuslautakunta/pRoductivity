@@ -3,7 +3,7 @@
 
 ssca_data_parse <- function(z_list = z.list, W_star, only_synt = FALSE){
   if (only_synt){
-    ret <- ts(rbind(z_list$Z0, z_list$Z0_post) %*% W_star, start = start(Z0), frequency = 1)
+    ret <- ts(rbind(z_list$Z0, z_list$Z0_post) %*% W_star, start = start(z_list$Z0), frequency = 1)
   } else{
     Z1 <- z_list$Z1
     Z0 <- z_list$Z0

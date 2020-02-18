@@ -157,4 +157,4 @@ data_oecd_total <- dat_oecd_sna %>%
   droplevels() %>%
   complete(time, geo, nace_r2)
 
-usethis::use_data(dat_oecd_sna_nace, dat_oecd_sna_nace_imput, dat_oecd_sna, overwrite = TRUE)
+usethis::use_data(dat_oecd_sna_nace, dat_oecd_sna_nace_imput, data_oecd_total, overwrite = TRUE)

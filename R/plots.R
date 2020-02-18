@@ -28,6 +28,7 @@ prod_ind_plot_high <- function(data){
     ggplot(aes(time, lp_ind, group = geo_name, colour = high_names, size = geo_name == high_country)) +
     geom_line(alpha = 0.9) +
     scale_size_manual(values = c(1.5,2.5), guide = "none") +
+    scale_colour_manual(values = tula_pal(7)) +
     guides(colour = guide_legend()) +
     the_title_blank(c("x", "l")) +
     labs(y = glue("Indeksi, {base_year} = 100"))

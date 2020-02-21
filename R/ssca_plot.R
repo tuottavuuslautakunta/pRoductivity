@@ -1,7 +1,13 @@
-#' Plot functions for ssca
+# Plot functions for ssca
+#
+
+
+#' Parse data from ssca_object
+#'
+#' @param
 #'
 
-ssca_data_parse <- function(z_list = z.list, W_star, only_synt = FALSE){
+ssca_data_parse <- function(z_list = z_list, W_star, only_synt = FALSE){
   if (only_synt){
     ret <- ts(rbind(z_list$Z0, z_list$Z0_post) %*% W_star, start = start(z_list$Z0), frequency = 1)
   } else{
@@ -16,27 +22,32 @@ ssca_data_parse <- function(z_list = z.list, W_star, only_synt = FALSE){
   ret
 }
 
-ssca_plot_data <- function(z_list, W_star, LOO = loo.obj){
+ssca_plot_data <- function(ssca_obj){
+  z_list = ssca_obj$z_list
+  W_star = ssca_obj$w_list$W_star
+  LOO = ssca_obj$loo_obj
+
   main <- ssca_data_parse(z_list = z_list, W_star = W_star)
 
-  alt0 <- purrr::map(LOO, ~ssca_data_parse(.x$z.list, .x$W_star, only_synt = TRUE))
+  alt0 <- purrr::map(LOO, ~ssca_data_parse(.x$z_list, .x$W_star, only_synt = TRUE))
   alt <- do.call("cbind", alt0)
-  ret <- cbind(main, alt)
-  colnames(ret) <- c(colnames(main), paste0("alt_", seq_len(ncol(alt))))
-  ret
+  pdat_ts <- cbind(main, alt)
+  colnames(pdat_ts) <- c(colnames(main), paste0("alt_", seq_len(ncol(alt))))
+  pdat <- bind_cols(year = c(time(pdat_ts)), as_tibble(pdat_ts))
+  pdat_long <- gather(pdat, vars, values, -year) %>%
+    mutate(vars = as_factor(vars))
+  pdat_long
 }
 
 ssca_plot <- function(title, ssca_obj, legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")){
-  pdat_ts <- ssca_plot_data(z_list = ssca_obj$z_list, W_star = ssca_obj$w_list$W_star, LOO = ssca_obj$loo.obj)
-  pdat <- bind_cols(year = c(time(pdat_ts)), as_tibble(pdat_ts))
-  pdat_long <- gather(pdat, vars, values, -year) %>%
+  pdat <- ssca_plot_data(ssca_obj) %>%
     mutate(
       var_names = fct_other(vars, keep = c("Z1", "real_full", "syn_fit"), other_level = legend_arg[3]),
       var_names = recode_factor(var_names,
                                      real_full = legend_arg[1],
                                      syn_fit = legend_arg[2]
                                      ))
-  pdat_long %>%
+  pdat %>%
     filter(vars != "Z1") %>%
     ggplot(aes(year, values, group = vars, colour = var_names, size = var_names)) +
     geom_line() +
@@ -46,6 +57,50 @@ ssca_plot <- function(title, ssca_obj, legend_arg = c("Suomi", "Synteettinen kon
     the_title_blank(c("l", "x")) +
     ggtitle(title)
 }
+
+ssca_plot_level <- function(ssca_pdat,
+                            title = "b. Suomi ja synteettinen kontrolli",
+                            ylab = "Indeksi, 2008 = 100",
+                            legend_arg = c("Suomi", "Synteettinen kontrolli", "Vaihtoehtoiset")){
+  pdat <- ssca_pdat %>%
+    mutate(
+      vars = fct_relevel(vars, "syn_fit", "real_full", after = Inf),
+      var_names = fct_other(vars, keep = c("Z1", "real_full", "syn_fit"), other_level = legend_arg[3]),
+      var_names = recode_factor(var_names,
+                                real_full = legend_arg[1],
+                                syn_fit = legend_arg[2])
+      )
+
+  pdat %>%
+    filter(var_names != "Z1") %>%
+    droplevels() %>%
+    ggplot(aes(year, values, group = vars, colour = var_names, size = var_names)) +
+    geom_line() +
+    scale_colour_manual(values = c(tula_pal(1), "grey50", "grey75")) +
+    scale_size_manual(values = c(2,1.5,1), guide = "none") +
+    # the_legend_bot() +
+    the_title_blank(c("l", "x")) +
+    labs(title = title ,y = ylab) +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm")) +
+    geom_vline(xintercept = 2008, size = 0.5, linetype = "dashed")
+}
+
+
+ssca_plot_diff <- function(ssca_pdat,
+                           title = "b. Ero synteettiseen kontrolliin",
+                           ylab = "%",
+                           legend_arg = c("Suomi", "Synteettinen kontrolli", "Vaihtoehtoiset")){
+  ssca_pdat %>%
+    group_by(year) %>%
+    mutate(values = 100 * (values / values[vars == "syn_fit"] -1)) %>%
+    ungroup() %>%
+    ssca_plot_level(title = title, ylab = ylab, legend_arg = legend_arg)
+
+}
+
+
+
+
 
 plot.fit <-
   function(z.list,

@@ -199,7 +199,7 @@ loo.fun <- function(z.list) {
     W_star.temp <- w.list.temp$W_star
 
     temp.obj <- list(z.list.temp, W_star.temp)
-    names(temp.obj) <- c("z.list", "W_star")
+    names(temp.obj) <- c("z_list", "W_star")
     ret[[i]] <- temp.obj
   }
 
@@ -229,6 +229,6 @@ ssca_est <- function(data, unit_var, target_unit, value_var, time_var, est_perio
   #Leave-one-out' robustness check
   loo.obj <- loo.fun(z.list)
 
-  ret <- list(z_list = z.list, w_list = w.list, loo.obj = loo.obj)
+  ret <- list(z_list = z.list, w_list = w.list, loo_obj = loo.obj)
   ret
 }

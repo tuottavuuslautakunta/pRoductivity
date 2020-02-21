@@ -9,8 +9,8 @@ output: rmarkdown::html_document
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   fig.path = "fig_intro/",
-  fig.width = 9,
-  fig.height = 4,
+  fig.width = 10,
+  fig.height = 8,
   collapse = TRUE,
   comment = "#>"
 )
@@ -20,6 +20,7 @@ devtools::load_all()
 library(tidyverse)
 library(glue)
 library(ggptt)
+library(patchwork)
 
 # set_ptt()
 
@@ -70,21 +71,41 @@ data_main_groups %>%
   prod_ind_plot_high()
 
 ssca_plot("Yksityinen sektori ilman 26, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "private_ex26")[["ssca_obj_08"]][[1]])
-ssca_plot("Yksityinen sektori ilman 26, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "private_ex26")[["ssca_obj_10"]][[1]])
-  
+
+
 ```
 
 # Teollisuus
 
 ```{r lp_manu}
 
-data_main_groups %>% 
-  filter(nace0 == "manu") %>% 
-  prod_ind_plot_high()
+p1_manu <- data_main_groups %>% 
+  filter(nace0 == "manu", time >= 2000) %>% 
+  prod_ind_plot_high() +
+  ggtitle("a. Suomi ja vertailumaat") +
+  theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
-ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
-ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
+# ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
+# ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
+
+ssca_pdata <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]]) %>% 
+  filter(year >= 2000)
   
+p3_manu <- ssca_pdata %>% 
+  ssca_plot_diff() 
+
+p2_manu <- ssca_pdata %>% 
+  ssca_plot_level() 
+
+p1_manu / ((p2_manu | p3_manu) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
+
+ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
+ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
+ggsave(here::here("figures/manu.png"), width = 10, height = 8)
+ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
+ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
+ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
 ```
 
 # Teollisuus ilman 26

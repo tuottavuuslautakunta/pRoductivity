@@ -71,3 +71,7 @@ Imputed values:
  * USA industries 1997 based on total (TODO)
  * EMP_DC__THS_HW is approximated with EMP_DC__THS_PER x SAL_DC__THS_HW / SAL_DC__THS_PER for USA and JAPAN.
  * M and N have been dropped for Japan due to missing values
+
+
+TODO:
+- compnet

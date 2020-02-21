@@ -44,20 +44,20 @@ ssca_lp_ind <- ssca_dat %>%
                  value_var = "lp_ind",
                  time_var = "time", est_periods = 1996:2011, eval_periods = 2012:2017)))
   
-ssca_lp_ind10 <- ssca_dat %>% 
-  nest(data = -nace0) %>% 
-  mutate(ssca_obj_08 = map(data, ~ssca_est(.x, unit_var = "geo",
-                 target_unit = "FI",
-                 value_var = "lp_ind10",
-                 time_var = "time", est_periods = 1996:2007, eval_periods = 2008:2017)),
-         ssca_obj_10 = map(data, ~ssca_est(.x, unit_var = "geo",
-                 target_unit = "FI",
-                 value_var = "lp_ind10",
-                 time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)),
-         ssca_obj_11 = map(data, ~ssca_est(.x, unit_var = "geo",
-                 target_unit = "FI",
-                 value_var = "lp_ind10",
-                 time_var = "time", est_periods = 1996:2011, eval_periods = 2012:2017)))
+# ssca_lp_ind10 <- ssca_dat %>% 
+#   nest(data = -nace0) %>% 
+#   mutate(ssca_obj_08 = map(data, ~ssca_est(.x, unit_var = "geo",
+#                  target_unit = "FI",
+#                  value_var = "lp_ind10",
+#                  time_var = "time", est_periods = 1996:2007, eval_periods = 2008:2017)),
+#          ssca_obj_10 = map(data, ~ssca_est(.x, unit_var = "geo",
+#                  target_unit = "FI",
+#                  value_var = "lp_ind10",
+#                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)),
+#          ssca_obj_11 = map(data, ~ssca_est(.x, unit_var = "geo",
+#                  target_unit = "FI",
+#                  value_var = "lp_ind10",
+#                  time_var = "time", est_periods = 1996:2011, eval_periods = 2012:2017)))
 
 # est_periods <- 
 #   list(t_08 = list(est_periods = 1996:2007, eval_periods = 2008:2017),
@@ -85,7 +85,7 @@ scca_exp <- map(set_names(c("p6_ind", "p61_ind", "p62_ind")),
                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017))
 
 
-usethis::use_data(ssca_lp_ind10, ssca_lp_ind, scca_exp, overwrite = TRUE)
+usethis::use_data(ssca_lp_ind, scca_exp, overwrite = TRUE)
 
 
 

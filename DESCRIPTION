@@ -16,10 +16,11 @@ Imports: readr,
          tidypredict, 
          patchwork,
          usethis
+Suggests: knitr,
+    rmarkdown,
+    devtools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Suggests: knitr,
-    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 7.1.0

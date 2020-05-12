@@ -136,6 +136,7 @@ dat_oecd_sna_nace_imput <-
   # drop M and N for Japan for missing
   filter(!(geo == "JP" & nace_r2 %in% c("M", "N")))
 
+
 # visdat::vis_dat(dat_oecd_sna_nace_imput)
 
 # filter(dat_oecd_sna_nace_imput, geo == "JP") %>%

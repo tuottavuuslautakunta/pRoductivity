@@ -49,7 +49,8 @@ usethis::use_data(start_year, base_year, countries, main_nace_sna, nace_stan, ov
 
 ## Data used
 # update:
-source("data-raw/get_eurostat_data.R")
+# source("data-raw/get_eurostat_data.R")
+# source("data-raw/get_oecd.sna.R")
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 

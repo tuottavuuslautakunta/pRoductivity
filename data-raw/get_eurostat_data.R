@@ -1,5 +1,9 @@
 
-load_all()
+devtools::load_all()
+
+library(dplyr)
+library(tidyr)
+library(forcats)
 library(eurostat)
 
 dat_nama_10_gdp_0 <- eurostat::get_eurostat("nama_10_gdp", time_format = "num", cache = FALSE)

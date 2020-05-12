@@ -12,11 +12,13 @@ The goal of pRoductivity is to ...
 
 ## Data
 
-Dataset are combined in data-raw/main_data.R
+Datasets are combined in data-raw/main_data.R
 
 Datasets:
  * data_main, data with main industry classification plus C26.
  * data_main_groups, data with main groupings
+
+
 
 ### Eurostat data
 

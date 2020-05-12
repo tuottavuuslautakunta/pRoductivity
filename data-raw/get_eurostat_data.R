@@ -2,109 +2,125 @@
 load_all()
 library(eurostat)
 
-nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num", cache = FALSE)
-uninama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", cache = FALSE)
+dat_nama_10_gdp_0 <- eurostat::get_eurostat("nama_10_gdp", time_format = "num", cache = FALSE)
+dat_nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num", cache = FALSE)
+dat_nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", cache = FALSE)
 
-
-nama_10_a64 <- nama_10_a64_0 %>%
-  filter(unit %in% c("CLV10_MEUR", "CLV10_MNAC", "CP_MNAC", "PYP_MNAC"),
-         na_item == "B1G") %>%
+dat_nama_10_gdp <- dat_nama_10_gdp_0 %>%
+  filter(unit %in% c("CLV15_MEUR", "CLV15_MNAC", "CP_MNAC"),
+         na_item %in% c("B1GQ", "P6", "P61", "P62", "B11")) %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values)
 
-nama_10_a64_e <- nama_10_a64_e_0 %>%
+dat_nama_10_a64 <- dat_nama_10_a64_0 %>%
+  filter(unit %in% c("CLV15_MEUR", "CLV15_MNAC", "CP_MNAC", "PYP_MNAC"),
+         na_item %in% c("B1G", "D1")) %>%
+  unite(vars, na_item, unit, sep = "__") %>%
+  mutate(vars = as_factor(vars)) %>%
+  spread(vars, values) %>%
+  select(- D1__CLV15_MEUR, -D1__CLV15_MNAC, -D1__PYP_MNAC)
+
+dat_nama_10_a64_e <- dat_nama_10_a64_e_0 %>%
   filter(unit %in% c("THS_HW", "THS_PER"),
-         na_item == "EMP_DC") %>%
+         na_item %in% c("EMP_DC", "SAL_DC")) %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values)
 
-dat_nama_10_a64 <-
-  nama_10_a64 %>%
-  left_join(nama_10_a64_e, by = c("nace_r2", "geo", "time")) %>%
+
+# Main
+dat_eurostat_nace <-
+  dat_nama_10_a64 %>%
+  left_join(dat_nama_10_a64_e, by = c("nace_r2", "geo", "time")) %>%
   mutate_at(c("geo", "nace_r2"), as_factor) %>%
-  mutate(sektori = as_factor(substr(nace_r2, 1, 1)),
-         sektori = recode(sektori, M = "M_N", N = "M_N")) %>%
-  # lisää sektoritason keskimääräiset tunnit ?
-  #
-  # Valitut toimialat
-  mutate(industry = case_when(
-           nace_r2 == "B" ~ "D05T09",
-           nace_r2 == "C10-C12" ~ "D10T12",
-           nace_r2 == "C13-C15" ~ "D13T15",
-           nace_r2 == "C16" ~ "D16",
-           nace_r2 == "C17" ~ "D17",
-           nace_r2 == "C18" ~ "D18",
-           nace_r2 == "C19" ~ "D19T23",
-           nace_r2 == "C20"  ~ "D19T23",
-           nace_r2 == "C21" ~ "D19T23",
-           nace_r2 == "C22_C23" ~ "D19T23",
-           nace_r2 == "C24_C25" ~ "D24T25",
-           nace_r2 == "C24_C25" ~ "D24T25",
-           nace_r2 == "C26"  ~ "D26",
-           nace_r2 == "C27" ~ "D27",
-           nace_r2 == "C28" ~ "D28",
-           nace_r2 == "C29_C30" ~ "D29T30",
-           nace_r2 == "C31-C33" ~ "D31T33",
-           nace_r2 == "D" ~ "D35T39",
-           nace_r2 == "E" ~ "D35T39",
-           nace_r2 == "F" ~ "D41T43",
-           nace_r2 == "G" ~ "D45T47",
-           nace_r2 == "H" ~ "D49T53",
-           nace_r2 == "I" ~ "D55T56",
-           nace_r2 == "J58-J60" ~ "D58T60",
-           nace_r2 == "J61" ~ "D61",
-           nace_r2 == "J62_J63" ~ "D62T63",
-           nace_r2 == "M_N" ~ "D69T82",
-           nace_r2 == "R" ~ "D90T93",
-           nace_r2 == "S" ~ "D94T96",
-           TRUE ~ NA_character_)) %>%
-  mutate(industry = as_factor(industry))
-
-dat_nama_10_a64_keep_I <- dat_nama_10_a64 %>%
-  filter(!is.na(industry)) %>%
-  droplevels()
-
-dropped_I <- c("A", "K", "L", "O", "P", "Q", "T", "U")
-
-
-keep_II <- c("D10T12", "D13T15", "D16", "D17", "D18", "D19T23", "D24T25",
-             "D26", "D27" , "D28", "D29T30", "D31T33", "D41T43",
-             "D45T47", "D49T53", "D55T56", "D58T60", "D61", "D62T63", "D69T82")
-
-dat_nama_10_a64_keep_I %>%
-  filter(!(industry %in% keep_II)) %>%
+  filter(nace_r2 %in% main_nace_sna, geo %in% countries, time >= start_year) %>%
   droplevels() %>%
-  pull(nace_r2) %>%
-  levels()
+  complete(geo, time, nace_r2)
 
-# Also E ja F
 
-dropped_II <- c("B", "R", "S")
+dat_eurostat_nace_imput <-
+  dat_eurostat_nace %>%
+  # Impute confidental 2015 for J in SE
+  mutate_at(c("EMP_DC__THS_HW", "SAL_DC__THS_HW", "EMP_DC__THS_PER", "SAL_DC__THS_PER"),
+            ~if_else(geo == "SE" & nace_r2 == "J" & time == 2015 & is.na(.),
+                     mean(c(.[geo == "SE" & nace_r2 == "J" & time == 2014], .[geo == "SE" & nace_r2 == "J" & time == 2016])),
+                     .))
 
-dat_nama_market <- dat_nama_10_a64_keep_I %>%
-  filter(industry %in% keep_II) %>%
+
+
+# visdat::vis_dat(dat_eurostat_nace_imput)
+#
+# nrow(dat_eurostat_nace)
+#
+# filter(dat_eurostat_nace_imput) %>%
+#   filter(time != "2018") %>%
+#   # filter(nace_r2 != "C26") %>%
+#   filter(!(geo == "EA12" & time < 2000)) %>%
+#   filter(!(geo == "UK" & time == 2017))  %>%
+#   # filter(is.na(EMP_DC__THS_HW)) %>%
+#   # distinct(time, nace_r2, geo)
+#   visdat::vis_dat()
+# #
+# #
+# dat_eurostat_nace_imput %>%
+  # filter(is.na(EMP_DC__THS_HW)) %>%
+  # distinct(time, nace_r2, geo)
+
+# Detailed
+
+dat_eurostat_nace_23 <-
+  dat_nama_10_a64 %>%
+  left_join(dat_nama_10_a64_e, by = c("nace_r2", "geo", "time")) %>%
+  mutate_at(c("geo", "nace_r2"), as_factor) %>%
+  filter(nace_r2 %in% names(nace_stan), geo %in% countries, time >= start_year) %>%
   droplevels() %>%
-  mutate(nace = eurostat::label_eurostat(nace_r2, dic = "nace_r2"))
+  complete(geo, time, nace_r2)
 
-# dat_nama_10_a64_market %>%
-#   distinct(nace_r2, industry)
+dat_eurostat_nace_23_imput <-
+  dat_eurostat_nace_23 %>%
+  mutate(nace_r2 = fct_recode(nace_r2, C20_C21 = "C20", C20_C21 = "C21")) %>%
+  group_by(geo, time, nace_r2) %>%
+  summarise_all(sum) %>%
+  group_by(geo, time) %>%
+  mutate_if(is.numeric, ~if_else((nace_r2 == "C20_C21" & is.na(.)),
+                                 .[nace_r2 == "C"] - sum(.[nace_r2 %in% c("C10-C12", "C13-C15", "C16-C18","C19",
+                                                          "C22_C23", "C24_C25", "C26", "C27", "C28", "C29_C30",
+                                                         "C31-C33")]), .)) %>%
+  ungroup()
+
+dat_eurostat_nace_23_imput <-
+  dat_eurostat_nace_23 %>%
+  mutate(nace_r2 = fct_recode(nace_r2, C20_C21 = "C20", C20_C21 = "C21")) %>%
+  group_by(geo, time, nace_r2) %>%
+  summarise_all(sum) %>%
+  group_by(geo, time) %>%
+  mutate_if(is.numeric, ~if_else((nace_r2 == "C20_C21" & is.na(.)), 100, 0)) %>%
+  ungroup()
+
+# visdat::vis_dat(dat_eurostat_nace_23)
+
+# filter(dat_eurostat_nace_23_imput) %>%
+#   filter(time != "2018") %>%
+#   filter(!(geo == "BG" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter(!(geo == "EE" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter((!geo == "SE" & nace_r2 %in% c("C20", "C21"))) %>%
+#   filter((!geo == "NO" & nace_r2 %in% c("C20", "C21"))) %>%
+#   # # filter(nace_r2 != "C26") %>%
+#   filter(!(geo == "EA12" & time < 2000)) %>%
+#   filter(!(geo == "UK" & time == 2017))  %>%
+#   # filter(is.na(EMP_DC__THS_HW)) %>%
+#   # distinct(time, nace_r2, geo)
+#   visdat::vis_dat()
+
+data_eurostat_total <-
+  dat_nama_10_gdp %>%
+  filter(time >= start_year) %>%
+  complete(time, geo)
+
+usethis::use_data(dat_eurostat_nace, dat_eurostat_nace_imput, overwrite = TRUE)
+usethis::use_data(dat_eurostat_nace_23, data_eurostat_total, overwrite = TRUE)
 
 
-use_data(dat_nama_10_a64, dat_nama_10_a64_keep_I, dat_nama_market, dropped_I, dropped_II, overwrite = TRUE)
 
 
-# Main industries
-
-main_nace <- c(D10T33 = "C", D26 = "C26",  D41T43 = "F", D45T47 = "G", D49T53 = "H",
-               D55T56 = "I", D58T63 = "J", D69T75 = "M", D77T82 = "N")
-
-dat_nama_main <- dat_nama_10_a64 %>%
-  filter(nace_r2 %in% main_nace) %>%
-  select(-sektori, -industry) %>%
-  droplevels()
-
-# dat_nama_main %>% distinct(nace_r2, industry)
-
-use_data(dat_nama_main, overwrite = TRUE)

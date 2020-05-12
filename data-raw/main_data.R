@@ -6,7 +6,7 @@ library(tidyverse)
 devtools::load_all()
 
 start_year <- 1995
-base_year <- 2010
+base_year <- 2008
 
 countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI",
                 "FR", "IT", "NL", "NO", "PT", "SE", "UK",
@@ -47,6 +47,9 @@ nace_stan <- c(
 
 usethis::use_data(start_year, base_year, countries, main_nace_sna, nace_stan, overwrite = TRUE)
 
+## Data used
+# update:
+source("data-raw/get_eurostat_data.R")
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 

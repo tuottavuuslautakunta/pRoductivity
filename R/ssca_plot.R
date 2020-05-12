@@ -4,7 +4,9 @@
 
 #' Parse data from ssca_object
 #'
-#' @param
+#' @param z_list a z_list
+#' @param w_star a w_star
+#' @param only_synt
 #'
 
 ssca_data_parse <- function(z_list = z_list, W_star, only_synt = FALSE){

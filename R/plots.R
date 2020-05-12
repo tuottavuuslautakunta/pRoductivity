@@ -2,7 +2,7 @@
 #'
 #' @param data a data to plot
 #'
-#' @import ggplot
+#' @import ggplot2
 #' @export
 #'
 prod_ind_plot <- function(data){
@@ -19,7 +19,7 @@ prod_ind_plot <- function(data){
 #' @param data a data to plot
 #'
 #' @export
-#' @import dplyr, ggplot
+#' @import dplyr, ggplot2
 #'
 prod_ind_plot_high <- function(data){
   mutate(data, high_names = fct_other(geo_name, keep = c(high_country, high_countries), other_level = "muut"),

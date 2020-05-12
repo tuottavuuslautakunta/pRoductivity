@@ -15,13 +15,13 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-devtools::load_all()
 
 library(tidyverse)
 library(glue)
 library(ggptt)
 library(patchwork)
 
+devtools::load_all()
 # set_ptt()
 
 

@@ -15,7 +15,8 @@ Imports: readr,
          statfitools, 
          tidypredict, 
          patchwork,
-         usethis
+         usethis,
+         ggptt
 Suggests: knitr,
     rmarkdown,
     devtools

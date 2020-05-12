@@ -6,6 +6,13 @@
 \usage{
 ssca_data_parse(z_list = z_list, W_star, only_synt = FALSE)
 }
+\arguments{
+\item{z_list}{a z_list}
+
+\item{only_synt}{}
+
+\item{w_star}{a w_star}
+}
 \description{
 Parse data from ssca_object
 }

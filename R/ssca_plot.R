@@ -8,6 +8,8 @@
 #' @param w_star a w_star
 #' @param only_synt
 #'
+#' @export
+#'
 
 ssca_data_parse <- function(z_list = z_list, W_star, only_synt = FALSE){
   if (only_synt){
@@ -24,6 +26,13 @@ ssca_data_parse <- function(z_list = z_list, W_star, only_synt = FALSE){
   ret
 }
 
+#' Get plot data from ssca_obj
+#'
+#' @param ssca_obj a ssca_obj.
+#'
+#' @export
+#' @import dplyr
+
 ssca_plot_data <- function(ssca_obj){
   z_list = ssca_obj$z_list
   W_star = ssca_obj$w_list$W_star
@@ -36,12 +45,27 @@ ssca_plot_data <- function(ssca_obj){
   pdat_ts <- cbind(main, alt)
   colnames(pdat_ts) <- c(colnames(main), paste0("alt_", seq_len(ncol(alt))))
   pdat <- bind_cols(year = c(time(pdat_ts)), as_tibble(pdat_ts))
-  pdat_long <- gather(pdat, vars, values, -year) %>%
+  pdat_long <- tidyr::gather(pdat, vars, values, -year) %>%
     mutate(vars = as_factor(vars))
   pdat_long
 }
 
-ssca_plot <- function(title, ssca_obj, legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")){
+
+#' Plot ssca object
+#'
+#'
+#' @param title
+#' @param ssca_obj
+#' @param legend_arg
+#'
+#' @export
+#' @import dplyr ggplot2 forcats
+
+
+ssca_plot <- function(title,
+                      ssca_obj,
+                      legend_arg = c("Suomi", "Synteettinen kontrolli",
+                                     "Yksi maa jätetty pois maajoukosta")){
   pdat <- ssca_plot_data(ssca_obj) %>%
     mutate(
       var_names = fct_other(vars, keep = c("Z1", "real_full", "syn_fit"), other_level = legend_arg[3]),

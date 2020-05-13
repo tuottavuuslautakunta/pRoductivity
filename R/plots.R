@@ -21,7 +21,7 @@ prod_ind_plot <- function(data){
 #' @param high_countries Countries highlighted by line colour.
 #'
 #' @export
-#' @import dplyr, ggplot2
+#' @import dplyr ggplot2
 #'
 prod_ind_plot_high <- function(data, high_country, high_countries){
   mutate(data,

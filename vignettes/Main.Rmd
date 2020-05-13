@@ -22,9 +22,6 @@ library(ggptt)
 library(patchwork)
 
 devtools::load_all()
-# set_ptt()
-
-
 
 set_gg(theme_ptt(), ptt_pal)
 
@@ -95,7 +92,8 @@ p3_manu <- ssca_pdata %>%
   ssca_plot_diff() 
 
 p2_manu <- ssca_pdata %>% 
-  ssca_plot_level() 
+  ssca_plot_level() +
+  guides(colour = "none")
 
 p1_manu / ((p2_manu | p3_manu) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
 

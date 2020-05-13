@@ -15,8 +15,13 @@ The goal of pRoductivity is to ...
 Datasets are combined in data-raw/main_data.R
 
 Datasets:
- * data_main, data with main industry classification plus C26.
- * data_main_groups, data with main groupings
+Detailed:
+ * data_main, data from with main industry classification plus C26.
+ * data_main_groups, data with main groupings private, private_ex26, manu, manu_ex26, service
+Shorter publication lag:
+ * data_main10, data with aggregate industry classification.
+ * data_main10_groups, data with main groupings private, private_ex26, manu, manu_ex26, service
+ 
 
 
 
@@ -25,10 +30,15 @@ Datasets:
 #### Annual national accounts
 
 From:
-* National accounts aggregates by industry (up to NACE A*64) (nama_10_a64) 	 
-* National accounts employment data by industry (up to NACE A*64) (nama_10_a64_e)
+* National accounts aggregates by industry (up to NACE A*64) (nama_10_a64) and nama_10_a10	 
+* National accounts employment data by industry (up to NACE A*64) (nama_10_a64_e) and nama_10_a10e
 
-##### Missing:
+##### Misssing dat_eurostat_nace10_imput;
+
+Estonia
+* Hours for 1995-1999. Imputed based on persons and 2000.
+
+##### Missing dat_eurostat_nace_imput:
 
 t-1 for many
 

@@ -85,5 +85,6 @@ Imputed values:
  * M and N have been dropped for Japan due to missing values
 
 
-TODO:
-- compnet
+## Simple Syntethic Control Analysis
+
+

@@ -16,13 +16,16 @@ prod_ind_plot <- function(data){
 
 #' Productivity index plot with highlighting
 #'
-#' @param data a data to plot
+#' @param data A data to plot.
+#' @param high_country A country highlighted by line size.
+#' @param high_countries Countries highlighted by line colour.
 #'
 #' @export
 #' @import dplyr, ggplot2
 #'
-prod_ind_plot_high <- function(data){
-  mutate(data, high_names = fct_other(geo_name, keep = c(high_country, high_countries), other_level = "muut"),
+prod_ind_plot_high <- function(data, high_country, high_countries){
+  mutate(data,
+         high_names = fct_other(geo_name, keep = c(high_country, high_countries), other_level = "muut"),
          high_names = fct_relevel(high_names, c(high_country, high_countries), after = 0),
          geo_name = fct_relevel(geo_name, c(high_countries, high_country), after = Inf)) %>%
     ggplot(aes(time, lp_ind, group = geo_name, colour = high_names, size = geo_name == high_country)) +

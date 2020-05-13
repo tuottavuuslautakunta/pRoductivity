@@ -1,5 +1,5 @@
 ---
-title: "Päätoimialat"
+title: "Raportin luvun 3 kuviot"
 author: "Janne Huovari"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_document
@@ -36,22 +36,60 @@ high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
 
 ```
 
-```{r data_stat}
 
-data_main10_groups %>% 
-  filter(nace0 == "private") %>% 
-  ggplot(aes(time, geo, fill = is.na(lp_ind))) +
-  geom_tile()
+```{r private}
+data <- ssca_lp_ind$model$private$z_list$theCall$longdata
 
-```
+p1 <- ssca10_lp_ind$model$private$z_list$theCall$longdata %>% 
+  filter(time >= 2000) %>% 
+  prod_ind_plot_high(high_country, high_countries) +
+  ggtitle("a. Suomi ja vertailumaat") +
+  theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
 
-```{r lp}
 
-data_main_groups %>% 
-  ggplot(aes(time, lp_ind, colour = geo)) +
-  facet_wrap(~ nace0) +
-  geom_line() 
+
+p1_manu <- data_main_groups %>% 
+  filter(nace0 == "manu", time >= 2000) %>% 
+  prod_ind_plot_high() +
+  ggtitle("a. Suomi ja vertailumaat") +
+  theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+
+# ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
+# ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
+
+ssca_pdata1 <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]]) %>% 
+  filter(year >= 2000)
+
+ssca_pdata3 <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_96"]][[1]]) %>% 
+  filter(year >= 2000)
+
+ppdat <- 
+  bind_rows(ssca_pdata, ssca_pdata2, ssca_pdata1, ssca_pdata3, .id = "id")
+
+ppdat %>% 
+  filter(vars == "syn_fit") %>% 
+  group_by(id) %>% 
+  mutate(values = rebase(values, year, 2008)) %>% 
+  ungroup() %>% 
+  ggplot(aes(year, values, colour = id)) +
+  geom_line()
+  
+p3_manu <- ssca_pdata %>% 
+  ssca_plot_diff() 
+
+p2_manu <- ssca_pdata %>% 
+  ssca_plot_level() +
+  guides(colour = "none")
+
+p1_manu / ((p2_manu | p3_manu) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
+
+data %>% distinct(geo, geo_name)  
+    mutate( 
+         high_names = fct_other(geo_name, keep = c(high_country, high_countries), other_level = "muut"),
+         high_names = fct_relevel(high_names, c(high_country, high_countries), after = 0),
+         geo_name = fct_relevel(geo_name, c(high_countries, high_country), after = Inf)) %>% 
+  distinct(geo, geo_name, high_names)
 
 ```
 
@@ -94,22 +132,8 @@ p1_manu <- data_main_groups %>%
 # ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
 # ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
 
-ssca_pdata1 <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]]) %>% 
+ssca_pdata <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]]) %>% 
   filter(year >= 2000)
-
-ssca_pdata3 <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_96"]][[1]]) %>% 
-  filter(year >= 2000)
-
-ppdat <- 
-  bind_rows(ssca_pdata, ssca_pdata2, ssca_pdata1, ssca_pdata3, .id = "id")
-
-ppdat %>% 
-  filter(vars == "syn_fit") %>% 
-  group_by(id) %>% 
-  mutate(values = rebase(values, year, 2008)) %>% 
-  ungroup() %>% 
-  ggplot(aes(year, values, colour = id)) +
-  geom_line()
   
 p3_manu <- ssca_pdata %>% 
   ssca_plot_diff() 

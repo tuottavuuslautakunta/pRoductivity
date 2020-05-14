@@ -36,3 +36,34 @@ prod_ind_plot_high <- function(data, high_country, high_countries){
     the_title_blank(c("x", "l")) +
     labs(y = glue("Indeksi, {base_year} = 100"))
 }
+
+
+#' Plot triptych
+#'
+#' One large level plot and two ssca plots
+#'
+#' @param ssca_obj a ssca_obj.
+#' @param high_country A country highlighted by line size.
+#' @param high_countries Countries highlighted by line colour.
+#'
+#' @export
+#' @import dplyr ggplot2 patchwork
+
+trip_plot <- function(ssca_obj, high_country, high_countries){
+
+  p1 <-
+    ssca_obj$z_list$theCall$longdata %>%
+    filter(time >= 2000) %>%
+    prod_ind_plot_high(high_country, high_countries) +
+    ggtitle("a. Suomi ja vertailumaat") +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+
+  ssca_pdata <- ssca_plot_data(ssca_obj) %>%
+    filter(year >= 2000)
+
+  p2 <- ssca_plot_level(ssca_pdata) + guides(colour = "none")
+  p3 <- ssca_plot_diff(ssca_pdata)
+
+
+  p1 / ((p2 | p3) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
+}

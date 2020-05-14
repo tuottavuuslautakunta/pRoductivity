@@ -12,7 +12,10 @@ knitr::opts_chunk$set(
   fig.width = 10,
   fig.height = 8,
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
 )
 
 
@@ -31,101 +34,16 @@ data("data_main", "data_main_groups", "ssca_lp_ind10", "ssca_lp_ind", "scca_exp"
 
 
 high_country <- "Suomi"
-high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Alankomaat")
 
 
 ```
 
+## Yksityinen sektori
 
 ```{r private}
 
-p1 <- 
-  ssca10_lp_ind$model$private$z_list$theCall$longdata %>% 
-  filter(time >= 2000) %>% 
-  prod_ind_plot_high(high_country, high_countries) +
-  ggtitle("a. Suomi ja vertailumaat") +
-  theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
-
-ssca_pdata <- ssca_plot_data(ssca10_lp_ind$model$private) %>% 
-  filter(year >= 2000)
-
-p2 <- ssca_plot_level(ssca_pdata)
-p3 <- ssca_plot_diff(ssca_pdata)
-
-
-p1 / ((p2 | p3) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
-
-### Country weights ###
-W_star <- ssca10_lp_ind$model$private$w_list$W_star
-z_list <- ssca10_lp_ind$model$private$z_list
-
-
-w_star_short <- round(W_star,2)[which(round(W_star,2) != 0)]
-
-table_dat <- tibble(
-  maa = fct_recode(names(w_star_short), !!!countries),
-  paino = w_star_short
-)
-### Normalized RMSE Loss ###
-rmse <- round(comp.rmse(z_list, W_star), 2)
-
-library(gt)
-
-gt(table_dat) %>% 
-  tab_header(subtitle = paste0("Normalized RMSE Loss: ", rmse), title = "Tulokset")
-
-```
-
-# Yksityinen sektori
-
-```{r lp_private_high}
-
-data_main_groups %>% 
-  filter(nace0 == "private") %>% 
-  prod_ind_plot_high()
-
-ssca_plot("Yksityinen sektori, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "private")[["ssca_obj_08"]][[1]])
-ssca_plot("Yksityinen sektori, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "private")[["ssca_obj_10"]][[1]])
-  
-```
-
-# Yksityinen ilman 26
-
-```{r lp_private_ex26_high}
-
-data_main_groups %>% 
-  filter(nace0 == "private_ex26") %>% 
-  prod_ind_plot_high()
-
-ssca_plot("Yksityinen sektori ilman 26, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "private_ex26")[["ssca_obj_08"]][[1]])
-
-
-```
-
-# Teollisuus
-
-```{r lp_manu}
-
-p1_manu <- data_main_groups %>% 
-  filter(nace0 == "manu", time >= 2000) %>% 
-  prod_ind_plot_high() +
-  ggtitle("a. Suomi ja vertailumaat") +
-  theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
-
-# ssca_plot("Teollisuus, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]])
-# ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu")[["ssca_obj_10"]][[1]])
-
-ssca_pdata <- ssca_plot_data(filter(ssca_lp_ind, nace0 == "manu")[["ssca_obj_08"]][[1]]) %>% 
-  filter(year >= 2000)
-  
-p3_manu <- ssca_pdata %>% 
-  ssca_plot_diff() 
-
-p2_manu <- ssca_pdata %>% 
-  ssca_plot_level() +
-  guides(colour = "none")
-
-p1_manu / ((p2_manu | p3_manu) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))
+trip_plot(ssca_obj = ssca10_lp_ind$model$private, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -134,37 +52,83 @@ p1_manu / ((p2_manu | p3_manu) + plot_layout(guides = "collect")) + plot_layout(
 # ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
 
+
+ssca_table(ssca10_lp_ind$model$private)
+
+
 ```
 
-# Teollisuus ilman 26
 
-```{r lp_manu_ex_high}
+## Yksityinen sektori ilman elektroniikkateollisuutta
 
-data_main_groups %>% 
-  filter(nace0 == "manu_ex26") %>% 
-  prod_ind_plot_high()
 
-ssca_plot("Teollisuus ilman 26, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "manu_ex26")[["ssca_obj_08"]][[1]])
-ssca_plot("Teollisuus, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "manu_ex26")[["ssca_obj_10"]][[1]])
-  
+```{r private_ex26}
+
+trip_plot(ssca_lp_ind$model$private_ex26, high_country, high_countries)
+
+ssca_table(ssca_lp_ind$model$private_ex26)
+
 ```
 
-# Palvelut
+## Teollisuus
 
-```{r lp_serv_high}
 
-data_main_groups %>% 
-  filter(nace0 == "service") %>% 
-  prod_ind_plot_high()
+```{r manu}
 
-ssca_plot("Palvelut, 2008 = 100", ssca_obj = filter(ssca_lp_ind, nace0 == "service")[["ssca_obj_08"]][[1]])
-ssca_plot("Palvelut, 2010 = 100", ssca_obj = filter(ssca_lp_ind10, nace0 == "service")[["ssca_obj_10"]][[1]])
-  
+trip_plot(ssca10_lp_ind$model$manu, high_country, high_countries)
+
+# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
+
+ssca_table(ssca10_lp_ind$model$manu)
+
 ```
+
+
+
+
+## Teollisuus ilman elektroniikkateollisuutta
+
+```{r manu_ex26}
+
+trip_plot(ssca_lp_ind$model$manu_ex26, high_country, high_countries)
+
+# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
+
+ssca_table(ssca_lp_ind$model$manu_ex26)
+
+```
+
+## Palvelut
+
+
+
+```{r service}
+
+trip_plot(ssca10_lp_ind$model$service, high_country, high_countries)
+
+
+ssca_table(ssca10_lp_ind$model$service)
+
+```
+
+
+
 
 # Vienti
 
-```{r export}
+```{r export, eval=FALSE}
 
 scca_exp$p6_ind$z_list$theCall$longdata %>% 
   mutate(lp_ind = p6_ind) %>% 
@@ -176,7 +140,7 @@ ssca_plot("Vienti", ssca_obj = scca_exp$p6_ind)
 
 # Tavaroiden vienti
 
-```{r export_g}
+```{r export_g, eval=FALSE}
 
 scca_exp$p61_ind$z_list$theCall$longdata %>% 
   mutate(lp_ind = p61_ind) %>% 
@@ -188,7 +152,7 @@ ssca_plot("Tavaroiden vienti", ssca_obj = scca_exp$p61_ind)
 
 # Palveluiden vienti
 
-```{r export_s}
+```{r export_s, eval=FALSE}
 
 scca_exp$p62_ind$z_list$theCall$longdata %>% 
   mutate(lp_ind = p62_ind) %>% 

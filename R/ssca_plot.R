@@ -118,8 +118,9 @@ ssca_plot_diff <- function(ssca_pdat,
                            legend_arg = c("Suomi", "Synteettinen kontrolli", "Vaihtoehtoiset")){
   ssca_pdat %>%
     group_by(year) %>%
-    mutate(values = 100 * (values / values[vars == "syn_fit"] -1)) %>%
+    mutate(values = 100 * (values[vars == "real_full"]  / values -1)) %>%
     ungroup() %>%
+    mutate(vars = forcats::fct_recode(vars, real_full = "syn_fit", syn_fit = "real_full")) %>%
     ssca_plot_level(title = title, ylab = ylab, legend_arg = legend_arg)
 
 }

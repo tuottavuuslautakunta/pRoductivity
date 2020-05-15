@@ -23,7 +23,7 @@ prod_ind_plot <- function(data){
 #' @export
 #' @import dplyr ggplot2
 #'
-prod_ind_plot_high <- function(data, high_country, high_countries){
+prod_ind_plot_high <- function(data, base_year, high_country, high_countries){
   mutate(data,
          high_names = fct_other(geo_name, keep = c(high_country, high_countries), other_level = "muut"),
          high_names = fct_relevel(high_names, c(high_country, high_countries), after = 0),
@@ -49,20 +49,20 @@ prod_ind_plot_high <- function(data, high_country, high_countries){
 #' @export
 #' @import dplyr ggplot2 patchwork
 
-trip_plot <- function(ssca_obj, high_country, high_countries){
+trip_plot <- function(ssca_obj, base_year, high_country, high_countries){
 
   p1 <-
     ssca_obj$z_list$theCall$longdata %>%
     filter(time >= 2000) %>%
-    prod_ind_plot_high(high_country, high_countries) +
+    prod_ind_plot_high(base_year, high_country, high_countries) +
     ggtitle("a. Suomi ja vertailumaat") +
     theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
   ssca_pdata <- ssca_plot_data(ssca_obj) %>%
     filter(year >= 2000)
 
-  p2 <- ssca_plot_level(ssca_pdata) + guides(colour = "none")
-  p3 <- ssca_plot_diff(ssca_pdata)
+  p2 <- ssca_plot_level(ssca_pdata, base_year) + guides(colour = "none")
+  p3 <- ssca_plot_diff(ssca_pdata, base_year)
 
 
   p1 / ((p2 | p3) + plot_layout(guides = "collect")) + plot_layout(heights = c(3, 2))

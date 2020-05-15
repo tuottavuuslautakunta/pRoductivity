@@ -8,7 +8,7 @@ output: rmarkdown::html_document
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  fig.path = "fig_intro/",
+  fig.path = "fig_report/",
   fig.width = 10,
   fig.height = 8,
   collapse = TRUE,
@@ -43,7 +43,7 @@ high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Alankomaat
 
 ```{r private}
 
-trip_plot(ssca_obj = ssca10_lp_ind$model$private, high_country, high_countries)
+trip_plot(ssca_obj = ssca10_lp_ind$model$private, base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -64,7 +64,7 @@ ssca_table(ssca10_lp_ind$model$private)
 
 ```{r private_ex26}
 
-trip_plot(ssca_lp_ind$model$private_ex26, high_country, high_countries)
+trip_plot(ssca_lp_ind$model$private_ex26, base_year, high_country, high_countries)
 
 ssca_table(ssca_lp_ind$model$private_ex26)
 
@@ -75,7 +75,7 @@ ssca_table(ssca_lp_ind$model$private_ex26)
 
 ```{r manu}
 
-trip_plot(ssca10_lp_ind$model$manu, high_country, high_countries)
+trip_plot(ssca10_lp_ind$model$manu, base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -96,7 +96,7 @@ ssca_table(ssca10_lp_ind$model$manu)
 
 ```{r manu_ex26}
 
-trip_plot(ssca_lp_ind$model$manu_ex26, high_country, high_countries)
+trip_plot(ssca_lp_ind$model$manu_ex26, base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -116,7 +116,7 @@ ssca_table(ssca_lp_ind$model$manu_ex26)
 
 ```{r service}
 
-trip_plot(ssca10_lp_ind$model$service, high_country, high_countries)
+trip_plot(ssca10_lp_ind$model$service, base_year, high_country, high_countries)
 
 
 ssca_table(ssca10_lp_ind$model$service)

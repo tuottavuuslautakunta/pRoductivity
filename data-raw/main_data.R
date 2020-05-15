@@ -6,7 +6,7 @@ library(tidyverse)
 devtools::load_all()
 
 start_year <- 1995
-base_year <- 2008
+base_year <- 2007
 
 countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI",
                 "FR", "IT", "NL", "NO", "PT", "SE", "UK",

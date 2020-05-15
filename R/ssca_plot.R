@@ -84,9 +84,9 @@ ssca_plot <- function(title,
     ggtitle(title)
 }
 
-ssca_plot_level <- function(ssca_pdat,
+ssca_plot_level <- function(ssca_pdat, base_year,
                             title = "b. Suomi ja synteettinen kontrolli",
-                            ylab = "Indeksi, 2008 = 100",
+                            ylab = paste0("Indeksi, ", base_year, " = 100"),
                             legend_arg = c("Suomi", "Synteettinen kontrolli", "Vaihtoehtoiset")){
   pdat <- ssca_pdat %>%
     mutate(
@@ -108,11 +108,11 @@ ssca_plot_level <- function(ssca_pdat,
     the_title_blank(c("l", "x")) +
     labs(title = title ,y = ylab) +
     theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm")) +
-    geom_vline(xintercept = 2008, size = 0.5, linetype = "dashed")
+    geom_vline(xintercept = base_year, size = 0.5, linetype = "dashed")
 }
 
 
-ssca_plot_diff <- function(ssca_pdat,
+ssca_plot_diff <- function(ssca_pdat, base_year,
                            title = "b. Ero synteettiseen kontrolliin",
                            ylab = "%",
                            legend_arg = c("Suomi", "Synteettinen kontrolli", "Vaihtoehtoiset")){
@@ -121,7 +121,7 @@ ssca_plot_diff <- function(ssca_pdat,
     mutate(values = 100 * (values[vars == "real_full"]  / values -1)) %>%
     ungroup() %>%
     mutate(vars = forcats::fct_recode(vars, real_full = "syn_fit", syn_fit = "real_full")) %>%
-    ssca_plot_level(title = title, ylab = ylab, legend_arg = legend_arg)
+    ssca_plot_level(base_year = base_year, title = title, ylab = ylab, legend_arg = legend_arg)
 
 }
 

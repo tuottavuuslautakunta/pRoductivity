@@ -8,12 +8,16 @@ devtools::load_all()
 start_year <- 1995
 base_year <- 2007
 
-countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI",
-                "FR", "IT", "NL", "NO", "PT", "SE", "UK",
+
+
+countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU", "LT", "LV",
+                "FR", "IT", "NL", "NO", "PT", "SE", "UK", "CY", "IE", "PL", "SI", "SK",
                 "US", "JP", "EA12")
 
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi",
                                                            custom_match = c(EA12 = "Euroalue-12")))
+
+weight_geos <- setdiff(countries, c("US", "JP", "EA12"))
 
 main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
                    VI = "I", VJ = "J", VM = "M", VN = "N")
@@ -73,7 +77,6 @@ data_main <-
 # visdat::vis_dat(data_main)
 
 
-
 data_main_groups <- data_main %>%
   gather(vars, values, -time, - geo, -geo_name, - nace_r2) %>%
   group_by(geo, geo_name, time, vars) %>%
@@ -91,7 +94,17 @@ data_main_groups <- data_main %>%
          lp_10 = b1g__clv10_mnac / EMP_DC__THS_HW,
          lp_ind = 100 * lp_10/lp_10[time == base_year]) %>%
   ungroup() %>%
+  complete(nesting(geo, geo_name), nace0, time) %>%
+  group_by(geo, nace0) %>%
+  mutate(lp_ind =  rebase(lp_ind, time, base_year),
+         va_ind =  rebase(b1g__clv10_mnac, time, base_year),
+         h_ind = rebase(EMP_DC__THS_HW, time, base_year),
+         emp_ind = rebase(EMP_DC__THS_PER, time, base_year)) %>%
+  ungroup() %>%
   mutate(geo_name = fct_relevel(geo_name, rev(names(countries))))
+
+usethis::use_data(data_main, overwrite = TRUE)
+usethis::use_data(data_main_groups, overwrite = TRUE)
 
 
 data_total <-
@@ -149,7 +162,23 @@ data_main10_groups <- data_main10 %>%
          lp_10 = b1g__clv10_mnac / EMP_DC__THS_HW,
          lp_ind = 100 * lp_10/lp_10[time == base_year]) %>%
   ungroup() %>%
+  complete(nesting(geo, geo_name), nace0, time) %>%
+  group_by(geo, nace0) %>%
+  mutate(lp_ind =  rebase(lp_ind, time, base_year),
+         va_ind =  rebase(b1g__clv10_mnac, time, base_year),
+         h_ind = rebase(EMP_DC__THS_HW, time, base_year),
+         emp_ind = rebase(EMP_DC__THS_PER, time, base_year)) %>%
+  ungroup() %>%
   mutate(geo_name = fct_relevel(geo_name, rev(names(countries))))
+
+data_main10_g_weighted <-
+  data_main10_groups %>%
+  filter(geo %in% weight_geos) %>%
+  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>%
+  group_by(nace0) %>%
+  weight_all(geo, time, except = c("geo", "time", "nace0", "geo_name"), weight_df = weights_ecfin37) %>%
+  ungroup()
 
 usethis::use_data(data_main10, overwrite = TRUE)
 usethis::use_data(data_main10_groups, overwrite = TRUE)
+usethis::use_data(data_main10_g_weighted, overwrite = TRUE)

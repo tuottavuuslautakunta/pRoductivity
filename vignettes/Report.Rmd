@@ -23,6 +23,7 @@ library(tidyverse)
 library(glue)
 library(ggptt)
 library(patchwork)
+library(ficomp)
 
 devtools::load_all()
 
@@ -30,20 +31,25 @@ set_gg(theme_ptt(), ptt_pal)
 
 # Data
 
-data("data_main", "data_main_groups", "ssca_lp_ind10", "ssca_lp_ind", "scca_exp")
+data("data_main_groups", "data_main10_groups", "ssca10_est_results", "ssca_lp_ind", "ssca_exp_est_results")
+data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
+
 
 
 high_country <- "Suomi"
 high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Alankomaat")
 
+plot_start_year <- 2000
 
 ```
+
+# Työn tuottavuus
 
 ## Yksityinen sektori
 
 ```{r private}
 
-trip_plot(ssca_obj = ssca10_lp_ind$model$private, base_year, high_country, high_countries)
+trip_plot(ssca_obj = ssca10_est_results$lp_ind$model$private, "lp_ind", base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -53,10 +59,27 @@ trip_plot(ssca_obj = ssca10_lp_ind$model$private, base_year, high_country, high_
 # ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
 
 
-ssca_table(ssca10_lp_ind$model$private)
+ssca_table(ssca10_est_results$lp_ind$model$private)
 
 
 ```
+
+```{r private_weight, fig.height=4}
+
+
+weight_plot(data_main10_g_weighted, "private")
+
+data_main10_groups %>% 
+  group_by(geo, nace0) %>% 
+  filter(time >= 2015) %>% 
+  transmute(lp_change = 100 * (lp_ind / lag(lp_ind) -1)) %>% 
+  summarise(values = mean(lp_change, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  spread(nace0, values) %>% 
+  arrange(-private) %>% 
+  knitr::kable(digits = 1)
+
+    ```
 
 
 ## Yksityinen sektori ilman elektroniikkateollisuutta
@@ -64,7 +87,7 @@ ssca_table(ssca10_lp_ind$model$private)
 
 ```{r private_ex26}
 
-trip_plot(ssca_lp_ind$model$private_ex26, base_year, high_country, high_countries)
+trip_plot(ssca_lp_ind$model$private_ex26, "lp_ind", base_year, high_country, high_countries)
 
 ssca_table(ssca_lp_ind$model$private_ex26)
 
@@ -75,7 +98,7 @@ ssca_table(ssca_lp_ind$model$private_ex26)
 
 ```{r manu}
 
-trip_plot(ssca10_lp_ind$model$manu, base_year, high_country, high_countries)
+trip_plot(ssca10_est_results$lp_ind$model$manu, "lp_ind", base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -85,10 +108,16 @@ trip_plot(ssca10_lp_ind$model$manu, base_year, high_country, high_countries)
 # ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
 
 
-ssca_table(ssca10_lp_ind$model$manu)
+ssca_table(ssca10_est_results$lp_ind$model$manu)
 
 ```
 
+```{r manu_weight, fig.height=4}
+
+
+weight_plot(data_main10_g_weighted, "manu")
+
+```
 
 
 
@@ -96,7 +125,7 @@ ssca_table(ssca10_lp_ind$model$manu)
 
 ```{r manu_ex26}
 
-trip_plot(ssca_lp_ind$model$manu_ex26, base_year, high_country, high_countries)
+trip_plot(ssca_lp_ind$model$manu_ex26, "lp_ind", base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -116,48 +145,81 @@ ssca_table(ssca_lp_ind$model$manu_ex26)
 
 ```{r service}
 
-trip_plot(ssca10_lp_ind$model$service, base_year, high_country, high_countries)
+trip_plot(ssca10_est_results$lp_ind$model$service, "lp_ind", base_year, high_country, high_countries)
 
 
-ssca_table(ssca10_lp_ind$model$service)
+ssca_table(ssca10_est_results$lp_ind$model$service)
 
 ```
 
+```{r service_weight, fig.height=4}
+
+
+weight_plot(data_main10_g_weighted, "service")
+
+```
+
+# Muut muuttujat 
+
+## BKT
+
+```{r bkt}
+
+
+trip_plot(ssca10_est_results$va_ind$model$private, "va_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca10_est_results$va_ind$model$private)
+
+```
+
+
+## Työtunnit
+
+```{r h}
+
+
+trip_plot(ssca10_est_results$h_ind$model$private, "h_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca10_est_results$h_ind$model$private)
+
+```
 
 
 
 # Vienti
 
-```{r export, eval=FALSE}
+```{r export}
 
-scca_exp$p6_ind$z_list$theCall$longdata %>% 
-  mutate(lp_ind = p6_ind) %>% 
-  prod_ind_plot_high()
 
-ssca_plot("Vienti", ssca_obj = scca_exp$p6_ind)
+trip_plot(ssca_obj = ssca_exp_est_results$p6_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p6_ind)
 
 ```
 
 # Tavaroiden vienti
 
-```{r export_g, eval=FALSE}
+```{r export_good}
 
-scca_exp$p61_ind$z_list$theCall$longdata %>% 
-  mutate(lp_ind = p61_ind) %>% 
-  prod_ind_plot_high()
 
-ssca_plot("Tavaroiden vienti", ssca_obj = scca_exp$p61_ind)
+trip_plot(ssca_obj = ssca_exp_est_results$p61_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p61_ind)
 
 ```
 
 # Palveluiden vienti
 
-```{r export_s, eval=FALSE}
+```{r export_serv}
 
-scca_exp$p62_ind$z_list$theCall$longdata %>% 
-  mutate(lp_ind = p62_ind) %>% 
-  prod_ind_plot_high()
 
-ssca_plot("Palveluiden vienti", ssca_obj = scca_exp$p62_ind)
+trip_plot(ssca_obj = ssca_exp_est_results$p62_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p62_ind)
 
 ```

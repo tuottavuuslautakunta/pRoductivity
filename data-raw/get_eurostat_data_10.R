@@ -37,7 +37,9 @@ dat_eurostat_nace10 <-
   dat_nama_10_a10 %>%
   left_join(dat_nama_10_a10_e, by = c("nace_r2", "geo", "time")) %>%
   mutate_at(c("geo", "nace_r2"), as_factor) %>%
-  filter(nace_r2 %in% main_nace10_sna, geo %in% countries, time >= start_year) %>%
+  filter(nace_r2 %in% main_nace10_sna,
+         geo %in% countries,
+         time >= start_year) %>%
   droplevels() %>%
   complete(geo, time, nace_r2)
 

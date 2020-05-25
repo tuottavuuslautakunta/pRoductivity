@@ -17,7 +17,8 @@ Imports: readr,
          patchwork,
          usethis,
          ggptt,
-         gt
+         gt,
+         ficomp
 Suggests: knitr,
     rmarkdown,
     devtools

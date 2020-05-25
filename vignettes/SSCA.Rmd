@@ -22,17 +22,15 @@ devtools::load_all()
 
 data(data_main_groups, data_main10_groups, base_year)
 
-ssca_dat10 <- data_main10_groups %>% 
-  complete(nesting(geo, geo_name), nace0, time) %>%
-  group_by(geo, nace0) %>% 
-  mutate(lp_ind =  100 * lp_ind/lp_ind[time == base_year]) %>% 
-  ungroup()
+ssca_dat10 <- data_main10_groups 
 
-ssca_dat <- data_main_groups %>% 
-  complete(nesting(geo, geo_name), nace0, time) %>%
-  group_by(geo, nace0) %>% 
-  mutate(lp_ind =  100 * lp_ind/lp_ind[time == base_year]) %>% 
-  ungroup()
+ssca_dat <- data_main_groups 
+
+scca_exp_data <- data_total %>% 
+  group_by(geo) %>% 
+  mutate(p6_ind = rebase(P6__CLV15_MNAC, time, base_year),
+         p61_ind = rebase(P61__CLV15_MNAC, time, base_year),
+         p62_ind = rebase(P62__CLV15_MNAC, time, base_year)) 
 
 est_periods <- 1996:(base_year - 1)
 eval_periods <- base_year:2018
@@ -54,84 +52,52 @@ ssca_lp_ind <-
          model = set_names(model, nace0)) %>% 
   select(-data)
 
-ssca10_lp_ind <- 
-  ssca_dat10 %>% 
-  nest(data = -nace0) %>% 
-  mutate(model = map(data, ~ssca_est(.x, unit_var = "geo",
+# ssca10_lp_ind <- 
+#   ssca_dat10 %>% 
+#   nest(data = -nace0) %>% 
+#   mutate(model = map(data, ~ssca_est(.x, unit_var = "geo",
+#                  target_unit = "FI",
+#                  value_var = "lp_ind",
+#                  time_var = "time", 
+#                  est_periods = est_periods, 
+#                  eval_periods = eval_periods10)),
+#          model = set_names(model, nace0)) %>% 
+#   select(-data)
+
+ssca_est_loop <- function(value_var, data){
+  data %>% 
+  nest(data_nace = -nace0) %>% 
+  mutate(model = map(data_nace, ~ssca_est(.x, unit_var = "geo",
                  target_unit = "FI",
-                 value_var = "lp_ind",
+                 value_var = value_var,
                  time_var = "time", 
                  est_periods = est_periods, 
                  eval_periods = eval_periods10)),
          model = set_names(model, nace0)) %>% 
-  select(-data)
+  select(-data_nace)
+}
 
-usethis::use_data(ssca_lp_ind, ssca10_lp_ind, overwrite = TRUE)
+ssca10_est_results <- 
+  map(set_names(c("lp_ind", "va_ind", "h_ind")), ssca_est_loop, data = ssca_dat10)
 
-# ssca_lp_ind <- ssca_dat %>% 
-#   nest(data = -nace0) %>% 
-#   mutate(ssca_obj_08 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind",
-#                  time_var = "time", est_periods = 1996:2007, eval_periods = 2008:2017)),
-#          ssca_obj_10 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind",
-#                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)),
-#          ssca_obj_11 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind",
-#                  time_var = "time", est_periods = 1996:2011, eval_periods = 2012:2017)))
-  
-# ssca_lp_ind10 <- ssca_dat %>% 
-#   nest(data = -nace0) %>% 
-#   mutate(ssca_obj_08 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind10",
-#                  time_var = "time", est_periods = 1996:2007, eval_periods = 2008:2017)),
-#          ssca_obj_10 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind10",
-#                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017)),
-#          ssca_obj_11 = map(data, ~ssca_est(.x, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind10",
-#                  time_var = "time", est_periods = 1996:2011, eval_periods = 2012:2017)))
 
-# est_periods <- 
-#   list(t_08 = list(est_periods = 1996:2007, eval_periods = 2008:2017),
-#        t_10 = list(est_periods = 1996:2010, eval_periods = 2011:2017),
-#        t_11 = list(est_periods = 1996:2011, eval_periods = 2012:2017))
 
-# ssca_lp_ind10_2 <- ssca_dat %>% 
-#   nest(data = -nace0) %>% 
-#   mutate(ssca_obj = 
-#            map(est_periods, ~map(data, ssca_est, unit_var = "geo",
-#                  target_unit = "FI",
-#                  value_var = "lp_ind10",
-#                  time_var = "time", est_periods = .x$est_periods, eval_periods = .x$eval_periods)))
 
-scca_exp_data <- data_total %>% 
-  group_by(geo) %>% 
-  mutate(p6_ind = rebase(P6__CLV15_MNAC, time, 2010),
-         p61_ind = rebase(P61__CLV15_MNAC, time, 2010),
-         p62_ind = rebase(P62__CLV15_MNAC, time, 2010)) 
+usethis::use_data(ssca_lp_ind, ssca10_est_results, overwrite = TRUE)
 
-scca_exp <- map(set_names(c("p6_ind", "p61_ind", "p62_ind")),
+
+
+
+ssca_exp_est_results <- map(set_names(c("p6_ind", "p61_ind", "p62_ind")),
                 ~ssca_est(scca_exp_data, unit_var = "geo",
                  target_unit = "FI",
                  value_var = .x,
                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017))
 
 
-usethis::use_data(scca_exp, overwrite = TRUE)
+usethis::use_data(ssca_exp_est_results, overwrite = TRUE)
 
 
-ssca_dat10 %>% 
-  filter(nace0 == "private") %>% 
-  ggplot(aes(time, geo, fill = is.na(lp_ind))) +
-  geom_tile()
-  
 
 ```
 

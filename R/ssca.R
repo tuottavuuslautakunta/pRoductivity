@@ -209,12 +209,13 @@ loo.fun <- function(z.list) {
 
 ssca_est <- function(data, unit_var, target_unit, value_var, time_var, est_periods, eval_periods){
 
+
   z.list <- data %>%
     data.frame() %>%
     z.prep(unit_var = unit_var,
            target_unit = target_unit,
            value_var = value_var,
-           time_var = "time",
+           time_var = time_var,
            intervention = eval_periods[1],
            first_date = est_periods[1],
            last_date = eval_periods[length(eval_periods)],

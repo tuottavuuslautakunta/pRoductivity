@@ -49,7 +49,7 @@ plot_start_year <- 2000
 
 Työn tuottavuuden kasvu keskimäärin 1995-2019
 
-```{r bar_change fig.height=10}
+```{r bar_change, fig.height=10}
 
 order_fun <- function(.x, .y) mean(.x[.y == "private"])
 
@@ -98,10 +98,10 @@ ssca_table(ssca10_est_results$lp_ind$model$private)
 ```{r private_weight, fig.height=4}
 
 
-weight_plot(data_main10_g_weighted, "private")
+rel_plot2(data_main10_g_weighted, "private")
 
 
-    ```
+```
 
 
 ## Yksityinen sektori ilman elektroniikkateollisuutta
@@ -137,7 +137,7 @@ ssca_table(ssca10_est_results$lp_ind$model$manu)
 ```{r manu_weight, fig.height=4}
 
 
-weight_plot(data_main10_g_weighted, "manu")
+rel_plot2(data_main10_g_weighted, "manu")
 
 ```
 
@@ -177,7 +177,7 @@ ssca_table(ssca10_est_results$lp_ind$model$service)
 ```{r service_weight, fig.height=4}
 
 
-weight_plot(data_main10_g_weighted, "service")
+rel_plot2(data_main10_g_weighted, "service")
 
 ```
 

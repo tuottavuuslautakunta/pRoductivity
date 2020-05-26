@@ -79,10 +79,10 @@ trip_plot <- function(ssca_obj, plot_var, base_year, high_country, high_countrie
 #' @export
 #' @import dplyr
 #'
-weight_plot <- function(.data, nace){
-
-  w_plot_vars <- c("Työn tuottavuus" = "lp_ind_rel_ecfin37", "Arvonlisäys" = "va_ind_rel_ecfin37",
-                   "Työtunnit" = "h_ind_rel_ecfin37")
+rel_plot <- function(.data, nace,
+                        w_plot_vars = c("Työn tuottavuus" = "lp_ind_rel_ecfin37",
+                                         "Arvonlisäys" = "va_ind_rel_ecfin37",
+                                         "Työtunnit" = "h_ind_rel_ecfin37")){
 
   .data %>%
     filter(nace0 == nace, geo == "FI",
@@ -93,4 +93,27 @@ weight_plot <- function(.data, nace){
     facet_wrap(~ vars) +
     guides(colour = "none") +
     labs(title = "Suomi suhteessa Eurooppalaisiin maihin kauppapainoin")
+}
+
+rel_plot2 <- function(.data, nace,
+                     w_plot_vars = c("Työn tuottavuus" = "lp_ind",
+                                     "Arvonlisäys" = "va_ind",
+                                     "Työtunnit" = "h_ind")){
+  rel_vars <- c("euroalue" = "ea",
+                "kauppakumppanit" = "ecfin37")
+
+  .data %>%
+    filter(nace0 == nace, geo == "FI",
+           time >= plot_start_year) %>%
+    pivot_longer(contains("_rel_"), names_to = c("vars", "rel"), names_sep = "_rel_",
+                 values_to = "values") %>%
+    mutate(vars = fct_recode(vars, !!!w_plot_vars),
+           rel = fct_recode(rel, !!!rel_vars)) %>%
+    ggplot(aes(time, values, colour = rel)) +
+    geom_line(alpha = 0.7) +
+    facet_wrap(~ vars) +
+    scale_colour_manual(values = tula_pal(2)) +
+    the_title_blank(c("x", "l")) +
+    labs(y = glue("Indeksi, {base_year} = 100")) +
+    labs(title = "Suomi suhteessa euroalueeseen ja\nEurooppalaisiin maihin kauppapainoin")
 }

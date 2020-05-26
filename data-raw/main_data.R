@@ -173,10 +173,13 @@ data_main10_groups <- data_main10 %>%
 
 data_main10_g_weighted <-
   data_main10_groups %>%
-  filter(geo %in% weight_geos) %>%
   select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>%
-  group_by(nace0) %>%
-  weight_all(geo, time, except = c("geo", "time", "nace0", "geo_name"), weight_df = weights_ecfin37) %>%
+  group_by(nace0, time) %>%
+  mutate_at(vars(lp_ind, va_ind, h_ind), .funs = list(rel_ea = ~(100 * .x / .x[geo == "EA12"]))) %>%
+  filter(geo %in% weight_geos) %>%
+  group_by(nace0, time) %>%
+  mutate_at(vars(lp_ind, va_ind, h_ind),
+            .funs = list(rel_ecfin37 = ~weight_index(.x, geo, time, weight_df = weights_ecfin37))) %>%
   ungroup()
 
 usethis::use_data(data_main10, overwrite = TRUE)

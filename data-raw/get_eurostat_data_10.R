@@ -46,7 +46,7 @@ dat_eurostat_nace10 <-
 
 dat_eurostat_nace10_imput <-
   dat_eurostat_nace10 %>%
-  # Imput EE hours for 1995-1999
+  # Imput hours from persons. For EE 1995-1999 and BE 2019
   mutate(emp_hw_per = EMP_DC__THS_HW / EMP_DC__THS_PER,
          sal_hw_per = SAL_DC__THS_HW / SAL_DC__THS_PER) %>%
   group_by(geo, nace_r2) %>%

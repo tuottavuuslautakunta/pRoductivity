@@ -45,31 +45,27 @@ dat_eurostat_nace <-
 
 dat_eurostat_nace_imput <-
   dat_eurostat_nace %>%
-  # Impute confidental 2015 for J in SE
-  mutate_at(c("EMP_DC__THS_HW", "SAL_DC__THS_HW", "EMP_DC__THS_PER", "SAL_DC__THS_PER"),
-            ~if_else(geo == "SE" & nace_r2 == "J" & time == 2015 & is.na(.),
-                     mean(c(.[geo == "SE" & nace_r2 == "J" & time == 2014], .[geo == "SE" & nace_r2 == "J" & time == 2016])),
-                     .))
+  # Imput hours from persons. For EE 1995-1999 and BE 2019
+  mutate(emp_hw_per = EMP_DC__THS_HW / EMP_DC__THS_PER,
+         sal_hw_per = SAL_DC__THS_HW / SAL_DC__THS_PER) %>%
+  group_by(geo, nace_r2) %>%
+  fill(emp_hw_per, sal_hw_per, .direction = "updown") %>%
+  ungroup() %>%
+  mutate(EMP_DC__THS_HW = coalesce(EMP_DC__THS_HW, emp_hw_per * EMP_DC__THS_PER),
+         SAL_DC__THS_HW = coalesce(SAL_DC__THS_HW, sal_hw_per * SAL_DC__THS_PER)) %>%
+  select(-emp_hw_per, -sal_hw_per)
 
+
+  # Impute confidental 2015 for J in SE, not neede anymore
+  # mutate_at(c("EMP_DC__THS_HW", "SAL_DC__THS_HW", "EMP_DC__THS_PER", "SAL_DC__THS_PER"),
+  #           ~if_else(geo == "SE" & nace_r2 == "J" & time == 2015 & is.na(.),
+  #                    mean(c(.[geo == "SE" & nace_r2 == "J" & time == 2014], .[geo == "SE" & nace_r2 == "J" & time == 2016])),
+  #                    .))
 
 
 # visdat::vis_dat(dat_eurostat_nace_imput)
 #
-# nrow(dat_eurostat_nace)
-#
-# filter(dat_eurostat_nace_imput) %>%
-#   filter(time != "2018") %>%
-#   # filter(nace_r2 != "C26") %>%
-#   filter(!(geo == "EA12" & time < 2000)) %>%
-#   filter(!(geo == "UK" & time == 2017))  %>%
-#   # filter(is.na(EMP_DC__THS_HW)) %>%
-#   # distinct(time, nace_r2, geo)
-#   visdat::vis_dat()
-# #
-# #
-# dat_eurostat_nace_imput %>%
-  # filter(is.na(EMP_DC__THS_HW)) %>%
-  # distinct(time, nace_r2, geo)
+
 
 # Detailed
 
@@ -93,14 +89,7 @@ dat_eurostat_nace_23_imput <-
                                                          "C31-C33")]), .)) %>%
   ungroup()
 
-dat_eurostat_nace_23_imput <-
-  dat_eurostat_nace_23 %>%
-  mutate(nace_r2 = fct_recode(nace_r2, C20_C21 = "C20", C20_C21 = "C21")) %>%
-  group_by(geo, time, nace_r2) %>%
-  summarise_all(sum) %>%
-  group_by(geo, time) %>%
-  mutate_if(is.numeric, ~if_else((nace_r2 == "C20_C21" & is.na(.)), 100, 0)) %>%
-  ungroup()
+
 
 # visdat::vis_dat(dat_eurostat_nace_23)
 

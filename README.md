@@ -35,15 +35,15 @@ From:
 
 ##### Misssing dat_eurostat_nace10_imput;
 
-Estonia
-* Hours for 1995-1999. Imputed based on persons and 2000.
+
+* Estonia Hours for 1995-1999. Imputed based on persons and 2000.
+* Belgian Hours for 2019. Imputed based on persons and 2018.
 
 ##### Missing dat_eurostat_nace_imput:
 
 t-1 for many
 
-Sweden:
-* J 2015 employment data. An error as series is different form nama_10_a10_e. Imputed by 2014 and 2016 mean.
+Hours based on previous or following hours per persons.
 
 UK:
 * Industry data from t-2

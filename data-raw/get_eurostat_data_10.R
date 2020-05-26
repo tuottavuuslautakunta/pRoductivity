@@ -50,7 +50,7 @@ dat_eurostat_nace10_imput <-
   mutate(emp_hw_per = EMP_DC__THS_HW / EMP_DC__THS_PER,
          sal_hw_per = SAL_DC__THS_HW / SAL_DC__THS_PER) %>%
   group_by(geo, nace_r2) %>%
-  fill(emp_hw_per, sal_hw_per, .direction = "up") %>%
+  fill(emp_hw_per, sal_hw_per, .direction = "updown") %>%
   ungroup() %>%
   mutate(EMP_DC__THS_HW = coalesce(EMP_DC__THS_HW, emp_hw_per * EMP_DC__THS_PER),
          SAL_DC__THS_HW = coalesce(SAL_DC__THS_HW, sal_hw_per * SAL_DC__THS_PER)) %>%
@@ -58,7 +58,7 @@ dat_eurostat_nace10_imput <-
 
 
 
-# visdat::vis_dat(dat_eurostat_nace10_imput)
+# visdat::vis_dat(filter(dat_eurostat_nace10, geo == "BE"))
 #
 
 

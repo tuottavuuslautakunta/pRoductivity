@@ -24,6 +24,8 @@ library(glue)
 library(ggptt)
 library(patchwork)
 library(ficomp)
+library(gt)
+library(tidyselect)
 
 devtools::load_all()
 
@@ -45,6 +47,34 @@ plot_start_year <- 2000
 
 # Työn tuottavuus
 
+Työn tuottavuuden kasvu keskimäärin 1995-2019
+
+```{r bar_change fig.height=10}
+
+order_fun <- function(.x, .y) mean(.x[.y == "private"])
+
+data_main10_groups %>% 
+  group_by(geo, nace0) %>% 
+  filter(time >= 2015) %>% 
+  transmute(lp_change = 100 * (lp_ind / lag(lp_ind) -1)) %>% 
+  summarise(values = mean(lp_change, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(
+    nace0 = fct_relevel(nace0, "private"),
+    geo = fct_reorder2(geo, values, nace0, .fun = order_fun)) %>% 
+  ggplot(aes(geo, values, label = round(values, 1))) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ nace0) +
+  geom_text(colour = "black", hjust = "top", nudge_y = 0.5) +
+  coord_flip()
+  # spread(nace0, values) %>% 
+  # arrange(-private) %>% 
+  # gt() %>% 
+  # fmt_number(columns = vars(private, manu, service), decimals = 1)
+
+```
+
+
 ## Yksityinen sektori
 
 ```{r private}
@@ -62,6 +92,7 @@ trip_plot(ssca_obj = ssca10_est_results$lp_ind$model$private, "lp_ind", base_yea
 ssca_table(ssca10_est_results$lp_ind$model$private)
 
 
+
 ```
 
 ```{r private_weight, fig.height=4}
@@ -69,15 +100,6 @@ ssca_table(ssca10_est_results$lp_ind$model$private)
 
 weight_plot(data_main10_g_weighted, "private")
 
-data_main10_groups %>% 
-  group_by(geo, nace0) %>% 
-  filter(time >= 2015) %>% 
-  transmute(lp_change = 100 * (lp_ind / lag(lp_ind) -1)) %>% 
-  summarise(values = mean(lp_change, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  spread(nace0, values) %>% 
-  arrange(-private) %>% 
-  knitr::kable(digits = 1)
 
     ```
 

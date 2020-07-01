@@ -84,7 +84,7 @@ ssca10_est_results <-
 
 
 
-usethis::use_data(ssca_lp_ind, ssca10_est_results, overwrite = TRUE)
+
 
 
 
@@ -96,7 +96,7 @@ ssca_exp_est_results <- map(set_names(c("p6_ind", "p61_ind", "p62_ind")),
                  time_var = "time", est_periods = 1996:2010, eval_periods = 2011:2017))
 
 
-usethis::use_data(ssca_exp_est_results, overwrite = TRUE)
+
 
 
 

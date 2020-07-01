@@ -33,7 +33,7 @@ set_gg(theme_ptt(), ptt_pal)
 
 # Data
 
-data("data_main_groups", "data_main10_groups", "ssca10_est_results", "ssca_lp_ind", "ssca_exp_est_results")
+data("data_main_groups", "data_main10_groups", "ssca10_est_results", "ssca10_est_results", "ssca_exp_est_results")
 data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
 
 
@@ -47,7 +47,7 @@ plot_start_year <- 2000
 
 # Työn tuottavuus
 
-Työn tuottavuuden kasvu keskimäärin 1995-2019
+Työn tuottavuuden kasvu keskimäärin vuodesta 2015 vuoteen 2019
 
 ```{r bar_change, fig.height=10}
 
@@ -109,9 +109,9 @@ rel_plot2(data_main10_g_weighted, "private")
 
 ```{r private_ex26}
 
-trip_plot(ssca_lp_ind$model$private_ex26, "lp_ind", base_year, high_country, high_countries)
+trip_plot(ssca_est_results$lp_ind$model$private_ex26, "lp_ind", base_year, high_country, high_countries)
 
-ssca_table(ssca_lp_ind$model$private_ex26)
+ssca_table(ssca_est_results$lp_ind$model$private_ex26)
 
 ```
 
@@ -147,7 +147,7 @@ rel_plot2(data_main10_g_weighted, "manu")
 
 ```{r manu_ex26}
 
-trip_plot(ssca_lp_ind$model$manu_ex26, "lp_ind", base_year, high_country, high_countries)
+trip_plot(ssca_est_results$lp_ind$model$manu_ex26, "lp_ind", base_year, high_country, high_countries)
 
 # ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
 # ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
@@ -157,7 +157,7 @@ trip_plot(ssca_lp_ind$model$manu_ex26, "lp_ind", base_year, high_country, high_c
 # ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
 
 
-ssca_table(ssca_lp_ind$model$manu_ex26)
+ssca_table(ssca_est_results$lp_ind$model$manu_ex26)
 
 ```
 

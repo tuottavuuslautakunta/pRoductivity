@@ -18,7 +18,8 @@ Imports: readr,
          usethis,
          ggptt,
          gt,
-         ficomp
+         ficomp,
+         purrr
 Suggests: knitr,
     rmarkdown,
     devtools

@@ -8,7 +8,7 @@ devtools::load_all()
 start_year <- 1995
 base_year <- 2007
 
-
+## Countries and classifications
 
 countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU", "LT", "LV",
                 "FR", "IT", "NL", "NO", "PT", "SE", "UK", "CY", "IE", "PL", "SI", "SK",
@@ -54,10 +54,13 @@ nace_stan <- c(
 
 usethis::use_data(start_year, base_year, countries, main_nace_sna, main_nace10_sna, nace_stan, overwrite = TRUE)
 
+
+
 ## Data used
 # update:
 # source("data-raw/get_eurostat_data.R")
-# source("data-raw/get_oecd.sna.R")
+# source("data-raw/get_eurostat_data.R")
+# source("data-raw/get_oecd_sna.R")
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 
@@ -120,7 +123,7 @@ data_total <-
 
 
 usethis::use_data(data_main, data_total, overwrite = TRUE)
-usethis::use_data(data_main_groups, overwrite = TRUE)
+
 
 
 # Main form a10
@@ -152,7 +155,8 @@ data_main10_groups <- data_main10 %>%
   group_by(geo, geo_name, time, vars) %>%
   summarise(private = sum(values[!(nace_r2 %in% c("TOTAL"))]),
             manu = sum(values[nace_r2 == "C"]),
-            service = sum(values[nace_r2 %in% c(c("G-I", "J", "M_N"))])) %>%
+            service = sum(values[nace_r2 %in% c(c("G-I", "J", "M_N"))]),
+            .groups = "drop_last") %>%
   ungroup() %>%
   gather(nace0, values, private, manu, service) %>%
   spread(vars, values) %>%
@@ -179,7 +183,7 @@ data_main10_g_weighted <-
   filter(geo %in% weight_geos) %>%
   group_by(nace0, time) %>%
   mutate_at(vars(lp_ind, va_ind, h_ind),
-            .funs = list(rel_ecfin37 = ~weight_index(.x, geo, time, weight_df = weights_ecfin37))) %>%
+            .funs = list(rel_ecfin37 = ~ficomp::weight_index(.x, geo, time, weight_df = ficomp::weights_ecfin37))) %>%
   ungroup()
 
 usethis::use_data(data_main10, overwrite = TRUE)

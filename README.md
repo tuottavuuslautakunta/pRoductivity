@@ -9,10 +9,13 @@ The goal of pRoductivity is to ...
 ## Installation
 
 
+Also package ficomp is needed.
 
 ## Data
 
-Datasets are combined in data-raw/main_data.R
+Datasets are combined with data-raw/main_data.R
+Eurostat data is updated with data-raw/get_eurostat_data_10.R and data-raw/get_eurostat_data.R
+OECD data is updated with data-raw/get_oecd_sna.R
 
 Datasets:
 Detailed:
@@ -87,4 +90,4 @@ Imputed values:
 
 ## Simple Syntethic Control Analysis
 
-
+Series from Simple Syntethic Control Analysis are estimated in data-raw/ssca_data.R

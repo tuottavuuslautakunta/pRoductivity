@@ -99,7 +99,7 @@ rel_plot2 <- function(.data, nace,
                      w_plot_vars = c("Työn tuottavuus" = "lp_ind",
                                      "Arvonlisäys" = "va_ind",
                                      "Työtunnit" = "h_ind")){
-  rel_vars <- c("euroalue" = "ea",
+  rel_vars <- c("euroalue-12" = "ea",
                 "kauppakumppanit" = "ecfin37")
 
   .data %>%

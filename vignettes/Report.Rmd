@@ -115,6 +115,14 @@ ssca_table(ssca_est_results$lp_ind$model$private_ex26)
 
 ```
 
+```{r private_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "private_ex26")
+
+
+```
+
 ## Teollisuus
 
 
@@ -158,6 +166,14 @@ trip_plot(ssca_est_results$lp_ind$model$manu_ex26, "lp_ind", base_year, high_cou
 
 
 ssca_table(ssca_est_results$lp_ind$model$manu_ex26)
+
+```
+
+```{r manu_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "manu_ex26")
+
 
 ```
 

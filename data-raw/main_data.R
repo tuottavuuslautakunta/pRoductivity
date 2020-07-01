@@ -17,7 +17,8 @@ countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU"
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi",
                                                            custom_match = c(EA12 = "Euroalue-12")))
 
-weight_geos <- setdiff(countries, c("US", "JP", "EA12"))
+weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
+
 
 main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
                    VI = "I", VJ = "J", VM = "M", VN = "N")
@@ -110,8 +111,23 @@ usethis::use_data(data_main, overwrite = TRUE)
 usethis::use_data(data_main_groups, overwrite = TRUE)
 
 
+data_main_g_weighted <-
+  data_main_groups %>%
+  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>%
+  group_by(nace0, time) %>%
+  mutate_at(vars(lp_ind, va_ind, h_ind), .funs = list(rel_ea = ~(100 * .x / .x[geo == "EA12"]))) %>%
+  filter(geo %in% weight_geos) %>%
+  group_by(nace0, time) %>%
+  mutate_at(vars(lp_ind, va_ind, h_ind),
+            .funs = list(rel_ecfin37 = ~ficomp::weight_index(.x, geo, time, weight_df = ficomp::weights_ecfin37))) %>%
+  ungroup()
+
+usethis::use_data(data_main_g_weighted, overwrite = TRUE)
+
+
+
 data_total <-
-  data_eurostat_total %>%
+  data_main_g_weighted %>%
   select(-contains("MEUR")) %>%
   bind_rows(select(data_oecd_total, all_of(names(.)))) %>%
   filter(geo %in% countries) %>%

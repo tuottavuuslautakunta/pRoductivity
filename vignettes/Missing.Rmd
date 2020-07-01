@@ -1,0 +1,77 @@
+---
+title: "Missing"
+author: "Janne Huovari"
+date: "1 7 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+devtools::load_all()
+
+```
+
+# Missing data
+
+```{r, fig.height=20}
+
+data_main %>% 
+  select(geo, time, nace_r2, values = B1G__CLV15_MNAC) %>% 
+  group_by(geo, nace_r2) %>% 
+  mutate(is_value = !is.na(values)) %>% 
+  ungroup() %>% 
+  ggplot(aes(geo, time, alpha = is_value)) +
+    facet_wrap(~nace_r2) +
+    geom_line(size = 2) +
+    coord_flip() +
+    scale_alpha_manual(values = c(0,1), guide = "none") +
+    # scale_colour_manual(values = rev(geo_col(2)), guide = "none") +
+    the_title_blank("y")
+
+```
+
+```{r, fig.height=15}
+
+data_main_groups %>% 
+  # filter(nace_r2 == "C26") %>% 
+  select(geo, time, nace0, values = lp_ind) %>% 
+  group_by(geo, nace0) %>% 
+  mutate(is_value = !is.na(values)) %>% 
+  ungroup() %>% 
+  ggplot(aes(geo, time, alpha = is_value)) +
+    facet_wrap(~nace0) +
+    geom_line(size = 2) +
+    coord_flip() +
+    scale_alpha_manual(values = c(0,1), guide = "none") +
+    # scale_colour_manual(values = rev(geo_col(2)), guide = "none") +
+    the_title_blank("y")
+
+```
+```{r, fig.height=15}
+
+dat_nama_10_gdp %>% 
+  # filter(nace_r2 == "C26") %>% 
+  select(geo, time, values = B1GQ__CLV15_MEUR) %>% 
+  group_by(geo) %>% 
+  mutate(is_value = !is.na(values)) %>% 
+  ungroup() %>% 
+  ggplot(aes(geo, time, alpha = is_value)) +
+    geom_line(size = 2) +
+    coord_flip() +
+    scale_alpha_manual(values = c(0,1), guide = "none") +
+    # scale_colour_manual(values = rev(geo_col(2)), guide = "none") +
+    the_title_blank("y")
+
+```
+
+```{r, fig.height=15}
+
+data_main_groups %>% 
+  filter(nace0 == "manu_ex26", time == 2018, !is.na(lp_ind)) %>%
+  distinct(geo) %>% pull(geo)
+
+
+```

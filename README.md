@@ -62,7 +62,7 @@ Missin data:
  Japan:
 - EMP_DC__THS_HW missing: based on SAL_DC ?
 - D1__CP_NAC M before 2004
-- N is missing (in STAN M-N)
+- N and M is missing (in STAN M-N)
 - B1G__CLV_NAC and B1G__CLV_NAC for  26
 
 CH:
@@ -87,6 +87,9 @@ Imputed values:
  * EMP_DC__THS_HW is approximated with EMP_DC__THS_PER x SAL_DC__THS_HW / SAL_DC__THS_PER for USA and JAPAN.
  * M and N have been dropped for Japan due to missing values
 
+# Weighting data
+
+exluded ...
 
 ## Simple Syntethic Control Analysis
 

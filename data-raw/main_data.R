@@ -59,7 +59,7 @@ usethis::use_data(start_year, base_year, countries, main_nace_sna, main_nace10_s
 
 ## Data used
 # update:
-# source("data-raw/get_eurostat_data.R")
+# source("data-raw/get_eurostat_data_10.R")
 # source("data-raw/get_eurostat_data.R")
 # source("data-raw/get_oecd_sna.R")
 

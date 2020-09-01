@@ -89,7 +89,8 @@ Imputed values:
 
 # Weighting data
 
-exluded ...
+Countries used in weighting (from weight_geos): "AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", 
+"HU", "LT", "FR", "IT", "NL", "NO", "PT", "SE", "CY", "PL", "SI", "SK"
 
 ## Simple Syntethic Control Analysis
 

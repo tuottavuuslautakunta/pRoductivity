@@ -127,7 +127,7 @@ usethis::use_data(data_main_g_weighted, overwrite = TRUE)
 
 
 data_total <-
-  data_main_g_weighted %>%
+  data_eurostat_total %>%
   select(-contains("MEUR")) %>%
   bind_rows(select(data_oecd_total, all_of(names(.)))) %>%
   filter(geo %in% countries) %>%

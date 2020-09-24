@@ -8,9 +8,13 @@ library(tidyr)
 
 devtools::load_all()
 
+
+
 ## estimation data
 
 data(data_main_groups, data_main10_groups, data_total, base_year)
+
+
 
 # longer data, Irland is excluded
 ssca_dat10 <- data_main10_groups %>%

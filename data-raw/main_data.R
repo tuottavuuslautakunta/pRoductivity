@@ -17,7 +17,8 @@ countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU"
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi",
                                                            custom_match = c(EA12 = "Euroalue-12")))
 
-weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
+# weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
+weight_geos <- setdiff(countries, c("US", "JP", "EA12"))
 
 
 main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
@@ -113,13 +114,14 @@ usethis::use_data(data_main_groups, overwrite = TRUE)
 
 data_main_g_weighted <-
   data_main_groups %>%
-  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>%
+  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>% # filter(nace0 == "private") %>% select(geo, time, lp_ind)  %>% spread(geo, lp_ind) %>% View()
   group_by(nace0, time) %>%
   mutate_at(vars(lp_ind, va_ind, h_ind), .funs = list(rel_ea = ~(100 * .x / .x[geo == "EA12"]))) %>%
   filter(geo %in% weight_geos) %>%
   group_by(nace0, time) %>%
-  mutate_at(vars(lp_ind, va_ind, h_ind),
-            .funs = list(rel_ecfin37 = ~ficomp::weight_index(.x, geo, time, weight_df = ficomp::weights_ecfin37))) %>%
+  mutate(across(c(lp_ind, va_ind, h_ind),
+                ~ficomp::weight_index2(.x, geo, time, geos = weight_geos, weight_df = ficomp::weights_ecfin37),
+                .names = paste0("{col}_rel_weight"))) %>%
   ungroup()
 
 usethis::use_data(data_main_g_weighted, overwrite = TRUE)
@@ -193,13 +195,13 @@ data_main10_groups <- data_main10 %>%
 
 data_main10_g_weighted <-
   data_main10_groups %>%
-  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>%
+  select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>% #  filter(nace0 == "manu") %>% select(geo, time, lp_ind)  %>% spread(geo, lp_ind) %>% View()
   group_by(nace0, time) %>%
   mutate_at(vars(lp_ind, va_ind, h_ind), .funs = list(rel_ea = ~(100 * .x / .x[geo == "EA12"]))) %>%
-  filter(geo %in% weight_geos) %>%
   group_by(nace0, time) %>%
-  mutate_at(vars(lp_ind, va_ind, h_ind),
-            .funs = list(rel_ecfin37 = ~ficomp::weight_index(.x, geo, time, weight_df = ficomp::weights_ecfin37))) %>%
+  mutate(across(c(lp_ind, va_ind, h_ind),
+                ~ficomp::weight_index2(.x, geo, time, geos = weight_geos, weight_df = ficomp::weights_ecfin37),
+                .names = paste0("{col}_rel_weight"))) %>%
   ungroup()
 
 usethis::use_data(data_main10, overwrite = TRUE)

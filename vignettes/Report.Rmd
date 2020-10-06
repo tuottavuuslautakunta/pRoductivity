@@ -29,7 +29,7 @@ library(tidyselect)
 
 devtools::load_all()
 
-set_gg(theme_ptt(), ptt_pal)
+set_board_theme(base_size = 8)
 
 # Data
 
@@ -40,7 +40,7 @@ data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
 
 
 high_country <- "Suomi"
-high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Alankomaat")
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat")
 
 plot_start_year <- 2000
 
@@ -78,23 +78,26 @@ data_main10_groups %>%
 
 ## Yksityinen sektori
 
-```{r private}
+```{r private, fig.height=10}
 
-trip_plot(ssca_obj = ssca10_est_results$lp_ind$model$private, "lp_ind", base_year, high_country, high_countries)
+trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
+ggsave(here::here("figures/private.pdf"), width = 13.5, height = 13.5, units = "cm")
+ggsave(here::here("figures/private.png"), width = 13.5, height = 13.5, units = "cm")
+
+
+```
+
+```{r private_synt, , fig.height=4}
+
+synt_plot(ssca_obj = ssca10_est_results, "private", "lp_ind", base_year, high_country, high_countries)
 
 
 ssca_table(ssca10_est_results$lp_ind$model$private)
 
-
-
 ```
+
 
 ```{r private_weight, fig.height=4}
 
@@ -107,14 +110,25 @@ rel_plot2(data_main10_g_weighted, "private")
 
 ## Yksityinen sektori ilman elektroniikkateollisuutta
 
+```{r private_ex26, fig.height=10}
 
-```{r private_ex26}
+trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-trip_plot(ssca_est_results$lp_ind$model$private_ex26, "lp_ind", base_year, high_country, high_countries)
+
+ggsave(here::here("figures/private_ex26.pdf"), width = 13.5, height = 13.5, units = "cm")
+ggsave(here::here("figures/private_ex26.png"), width = 13.5, height = 13.5, units = "cm")
+
+```
+
+```{r private_ex26_synt, , fig.height=4}
+
+synt_plot(ssca_obj = ssca_est_results, "private_ex26", "lp_ind", base_year, high_country, high_countries)
+
 
 ssca_table(ssca_est_results$lp_ind$model$private_ex26)
 
 ```
+
 
 ```{r private_ex26_weight, fig.height=4}
 
@@ -124,29 +138,33 @@ rel_plot2(data_main_g_weighted, "private_ex26")
 
 ```
 
+
+
 ## Teollisuus
 
+```{r manu, fig.height=10}
 
-```{r manu}
+trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-trip_plot(ssca10_est_results$lp_ind$model$manu, "lp_ind", base_year, high_country, high_countries)
 
-# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
+```
+
+```{r manu_synt, , fig.height=4}
+
+synt_plot(ssca_obj = ssca10_est_results, "manu", "lp_ind", base_year, high_country, high_countries)
 
 
 ssca_table(ssca10_est_results$lp_ind$model$manu)
 
 ```
 
+
 ```{r manu_weight, fig.height=4}
 
 
 rel_plot2(data_main10_g_weighted, "manu")
+
 
 ```
 
@@ -154,21 +172,23 @@ rel_plot2(data_main10_g_weighted, "manu")
 
 ## Teollisuus ilman elektroniikkateollisuutta
 
-```{r manu_ex26}
+```{r manu_ex26, fig.height=10}
 
-trip_plot(ssca_est_results$lp_ind$model$manu_ex26, "lp_ind", base_year, high_country, high_countries)
+trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+
+
+```
+
+```{r manu_ex26_synt, , fig.height=4}
+
+synt_plot(ssca_obj = ssca_est_results, "manu_ex26", "lp_ind", base_year, high_country, high_countries)
 
 
 ssca_table(ssca_est_results$lp_ind$model$manu_ex26)
 
 ```
+
 
 ```{r manu_ex26_weight, fig.height=4}
 
@@ -178,87 +198,39 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 
 ```
 
+
+
 ## Palvelut
 
+```{r service, fig.height=10}
 
+trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-```{r service}
+# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
+# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
 
-trip_plot(ssca10_est_results$lp_ind$model$service, "lp_ind", base_year, high_country, high_countries)
+```
+
+```{r service_synt, , fig.height=4}
+
+synt_plot(ssca_obj = ssca10_est_results, "service", "lp_ind", base_year, high_country, high_countries)
 
 
 ssca_table(ssca10_est_results$lp_ind$model$service)
 
 ```
 
+
 ```{r service_weight, fig.height=4}
 
 
 rel_plot2(data_main10_g_weighted, "service")
 
-```
-
-# Muut muuttujat 
-
-## BKT
-
-```{r bkt}
-
-
-trip_plot(ssca10_est_results$va_ind$model$private, "va_ind", base_year, high_country, high_countries)
-
-
-ssca_table(ssca10_est_results$va_ind$model$private)
 
 ```
 
 
-## Työtunnit
-
-```{r h}
-
-
-trip_plot(ssca10_est_results$h_ind$model$private, "h_ind", base_year, high_country, high_countries)
-
-
-ssca_table(ssca10_est_results$h_ind$model$private)
-
-```
-
-
-
-# Vienti
-
-```{r export}
-
-
-trip_plot(ssca_obj = ssca_exp_est_results$p6_ind, "p6_ind", base_year, high_country, high_countries)
-
-
-ssca_table(ssca_exp_est_results$p6_ind)
-
-```
-
-# Tavaroiden vienti
-
-```{r export_good}
-
-
-trip_plot(ssca_obj = ssca_exp_est_results$p61_ind, "p6_ind", base_year, high_country, high_countries)
-
-
-ssca_table(ssca_exp_est_results$p61_ind)
-
-```
-
-# Palveluiden vienti
-
-```{r export_serv}
-
-
-trip_plot(ssca_obj = ssca_exp_est_results$p62_ind, "p6_ind", base_year, high_country, high_countries)
-
-
-ssca_table(ssca_exp_est_results$p62_ind)
-
-```

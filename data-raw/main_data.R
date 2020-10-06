@@ -18,7 +18,7 @@ countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat
                                                            custom_match = c(EA12 = "Euroalue-12")))
 
 # weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
-weight_geos <- setdiff(countries, c("US", "JP", "EA12"))
+weight_geos <- setdiff(countries, c("US", "JP", "EA12", "LV", "IE"))
 
 
 main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",

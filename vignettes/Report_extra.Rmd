@@ -1,0 +1,116 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(patchwork)
+library(ficomp)
+library(gt)
+library(tidyselect)
+
+devtools::load_all()
+
+set_board_theme()
+
+# Data
+
+data("data_main_groups", "data_main10_groups", "ssca10_est_results", "ssca10_est_results", "ssca_exp_est_results")
+data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
+
+
+
+
+high_country <- "Suomi"
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat")
+
+plot_start_year <- 2000
+
+```
+
+
+
+
+
+# Muut muuttujat 
+
+## BKT
+
+```{r bkt}
+
+
+trip_plot(ssca10_est_results$va_ind$model$private, "va_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca10_est_results$va_ind$model$private)
+
+```
+
+
+## Työtunnit
+
+```{r h}
+
+
+trip_plot(ssca10_est_results$h_ind$model$private, "h_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca10_est_results$h_ind$model$private)
+
+```
+
+
+
+# Vienti
+
+```{r export}
+
+
+trip_plot(ssca_obj = ssca_exp_est_results$p6_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p6_ind)
+
+```
+
+# Tavaroiden vienti
+
+```{r export_good}
+
+
+trip_plot(ssca_obj = ssca_exp_est_results$p61_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p61_ind)
+
+```
+
+# Palveluiden vienti
+
+```{r export_serv}
+
+
+trip_plot(ssca_obj = ssca_exp_est_results$p62_ind, "p6_ind", base_year, high_country, high_countries)
+
+
+ssca_table(ssca_exp_est_results$p62_ind)
+
+```

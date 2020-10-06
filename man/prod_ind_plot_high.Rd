@@ -4,10 +4,14 @@
 \alias{prod_ind_plot_high}
 \title{Productivity index plot with highlighting}
 \usage{
-prod_ind_plot_high(data)
+prod_ind_plot_high(data, plot_var, base_year, high_country, high_countries)
 }
 \arguments{
-\item{data}{a data to plot}
+\item{data}{A data to plot.}
+
+\item{high_country}{A country highlighted by line size.}
+
+\item{high_countries}{Countries highlighted by line colour.}
 }
 \description{
 Productivity index plot with highlighting

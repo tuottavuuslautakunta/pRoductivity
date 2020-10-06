@@ -83,9 +83,7 @@ data_main10_groups %>%
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-ggsave(here::here("figures/private.pdf"), width = 13.5, height = 13.5, units = "cm")
-ggsave(here::here("figures/private.png"), width = 13.5, height = 13.5, units = "cm")
-
+save_figs("private")
 
 ```
 
@@ -115,8 +113,8 @@ rel_plot2(data_main10_g_weighted, "private")
 trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-ggsave(here::here("figures/private_ex26.pdf"), width = 13.5, height = 13.5, units = "cm")
-ggsave(here::here("figures/private_ex26.png"), width = 13.5, height = 13.5, units = "cm")
+save_figs("private_ex26")
+
 
 ```
 
@@ -146,7 +144,7 @@ rel_plot2(data_main_g_weighted, "private_ex26")
 
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-
+save_figs("manu")
 
 ```
 
@@ -177,7 +175,7 @@ rel_plot2(data_main10_g_weighted, "manu")
 trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-
+save_figs("manu_ex26")
 ```
 
 ```{r manu_ex26_synt, , fig.height=4}
@@ -206,12 +204,7 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-# ggsave(here::here("figures/manu.pdf"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.svg"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.png"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.eps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.ps"), width = 10, height = 8)
-# ggsave(here::here("figures/manu.wmf"), width = 10, height = 8)
+save_figs("service")
 
 ```
 

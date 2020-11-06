@@ -1,0 +1,60 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(patchwork)
+library(ficomp)
+library(gt)
+library(tidyselect)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+
+high_country <- "Suomi"
+
+
+# plot_start_year <- 2000
+
+```
+
+```{r}
+
+dat_oecd_levels %>% 
+  prod_ind_plot_high(plot_var = "gdp_per_h", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2015) +
+  the_legend_bot() +
+  geom_h0() +
+  labs(y = "Vuoden 2015 hinnoin, $, ostovoimakorjattu",
+       caption = "Lähde: OECD")
+
+save_figs("Kuvio_1_1", height = 8)
+
+```
+
+

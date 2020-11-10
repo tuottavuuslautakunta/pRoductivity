@@ -22,9 +22,6 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(glue)
 library(ggptt)
-library(patchwork)
-library(ficomp)
-library(gt)
 library(tidyselect)
 
 devtools::load_all()
@@ -143,6 +140,80 @@ save_figs("Kuvio_1_5", height = fig_height +2)
 ```
 ```{r}
 
+dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
+  bind_rows() %>% 
+  mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
+  # mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
+  ggplot(aes(reorder(geo, keskiarvo), keskiarvo)) +
+  facet_wrap(~period, scales = "free") +
+  geom_col(fill = tula_pal(1)) +
+  coord_flip() +
+  the_title_blank(c("x", "y"))
+
+
+save_figs("Kuvio_1_5", height = fig_height +2)
+
+```
+```{r}
+
+dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
+  bind_rows() %>% 
+  mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
+  mutate(geo = fct_reorder2(Maa,period, -keskiarvo)) %>% 
+  ggplot(aes(geo, keskiarvo, fill = period)) +
+  # facet_wrap(~period) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  the_title_blank(c("x", "y", "l"))
+
+
+save_figs("Kuvio_1_5_II", height = fig_height +2)
+
+```
+
+```{r}
+
+dat_kuviot_johd[["1.5A"]] %>% #str() # names()
+  mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
+  ggplot(aes(geo, keskiarvo, fill = period)) +
+  geom_col(fill = tula_pal(1)) +
+  coord_flip() +
+  the_title_blank(c("x", "y"))
+
+
+save_figs("Kuvio_1_5_A", height = fig_height +2)
+
+```
+```{r}
+
+dat_kuviot_johd[["1.5B"]] %>% #str() # names()
+  mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
+  ggplot(aes(geo, keskiarvo, fill = period)) +
+  geom_col(fill = tula_pal(1)) +
+  coord_flip() +
+  the_title_blank(c("x", "y"))
+
+
+save_figs("Kuvio_1_5_B", height = fig_height +2)
+
+```
+```{r}
+
+dat_kuviot_johd[["1.5C"]] %>% #str() # names()
+  mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
+  ggplot(aes(geo, keskiarvo, fill = period)) +
+  geom_col(fill = tula_pal(1)) +
+  coord_flip() +
+  the_title_blank(c("x", "y"))
+
+
+save_figs("Kuvio_1_5_C", height = fig_height +2)
+
+```
+
+
+```{r}
+
 dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   bind_rows() %>% 
   mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
@@ -155,6 +226,22 @@ dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
 
 
 save_figs("Kuvio_1_6", height = fig_height +2)
+
+```
+```{r}
+
+dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
+  bind_rows() %>% 
+  mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
+  mutate(geo = fct_reorder2(Maa,period, -keskiarvo)) %>% 
+  ggplot(aes(geo, keskiarvo, fill = period)) +
+  # facet_wrap(~period) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  the_title_blank(c("x", "y", "l")) 
+
+
+save_figs("Kuvio_1_6_II", height = fig_height +2)
 
 ```
 

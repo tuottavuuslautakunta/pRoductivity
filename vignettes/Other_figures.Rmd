@@ -140,20 +140,27 @@ save_figs("Kuvio_1_5", height = fig_height +2)
 ```
 ```{r}
 
+roles <- function(x) sub("[^_]*_","",x )
+
 dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   bind_rows() %>% 
   mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
+  mutate(V4=paste(period, Maa ,sep="_")) %>% 
   # mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
-  ggplot(aes(reorder(geo, keskiarvo), keskiarvo)) +
+  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = Maa == "Suomi")) +
   facet_wrap(~period, scales = "free") +
-  geom_col(fill = tula_pal(1)) +
+  geom_col() +
+  scale_x_discrete(labels=roles) +
   coord_flip() +
-  the_title_blank(c("x", "y"))
+  the_title_blank(c("x", "y")) +
+  guides(fill = "none") +
+  theme(axis.text.x = element_text(size = 8))
 
 
-save_figs("Kuvio_1_5", height = fig_height +2)
+save_figs("Kuvio_1_5_III", height = fig_height +2)
 
 ```
+
 ```{r}
 
 dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
@@ -226,6 +233,28 @@ dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
 
 
 save_figs("Kuvio_1_6", height = fig_height +2)
+
+```
+```{r}
+
+roles <- function(x) sub("[^_]*_","",x )
+
+dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
+  bind_rows() %>% 
+  mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
+  mutate(V4=paste(period, Maa ,sep="_")) %>% 
+  # mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
+  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = Maa == "Suomi")) +
+  facet_wrap(~period, scales = "free") +
+  geom_col() +
+  scale_x_discrete(labels=roles) +
+  coord_flip() +
+  the_title_blank(c("x", "y")) +
+  guides(fill = "none") +
+  theme(axis.text.x = element_text(size = 8))
+
+
+save_figs("Kuvio_1_6_III", height = fig_height +2)
 
 ```
 ```{r}

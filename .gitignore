@@ -3,3 +3,4 @@
 .RData
 inst/doc
 /figures
+/vignettes/fig_report

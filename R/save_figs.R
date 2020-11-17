@@ -14,7 +14,28 @@ save_figs <- function(filename,
                      width = 13.5,
                      height = 13.5){
   plot <- plot +
-    ggptt::the_title_blank(c("x", "t", "l"))
-  ggplot2::ggsave(here::here("figures", paste0(filename, ".pdf")), width = width, height = height, units = "cm")
-  ggplot2::ggsave(here::here("figures", paste0(filename, ".png")), width = width, height = height, units = "cm")
+    ggptt::the_title_blank(c("x", "t", "l")) +
+    theme(plot.caption = element_blank())
+  ggplot2::ggsave(here::here("figures", paste0(filename, ".pdf")),
+                  plot = plot,
+                  width = width, height = height, units = "cm")
+  ggplot2::ggsave(here::here("figures", paste0(filename, ".png")),
+                  plot = plot,  width = width, height = height, units = "cm")
+}
+
+
+#' Save data from triplot to csv-files
+save_trip_plot_data <- function(filename,
+                                plot = last_plot()){
+
+  plot <- ggplot2::ggplot_build(plot)
+
+  dat1 <- plot$plot[[1]]$data
+  dat2 <- plot$plot[[2]][[1]]$data
+  dat3 <- plot$plot[[2]][[2]]$data
+
+  write.csv2(dat1, here::here("figures", paste0(filename, "_data1.csv")), row.names = FALSE)
+  write.csv2(dat2, here::here("figures", paste0(filename, "_data2.csv")), row.names = FALSE)
+  write.csv2(dat3, here::here("figures", paste0(filename, "_data3.csv")), row.names = FALSE)
+
 }

@@ -365,7 +365,7 @@ dat_kuviot_johd[["1.12"]] %>% # names()
   mutate(high_names = geo_name,
          high_names = fct_relevel(high_names, c("Suomi", "Maailman tuonti"), after = 0),
          high_size = fct_other(high_names, keep = c("Suomi", "Maailman tuonti"), other_level = "muut high"),
-         geo_name = fct_relevel(geo_name, c(high_countries, high_country), after = Inf)) %>%
+         geo_name = fct_relevel(geo_name, c("Suomi", "Maailman tuonti"), after = Inf)) %>%
     ggplot(aes(time, plot_var, group = geo_name, colour = high_names, size = high_size)) +
     # geom_line(alpha = 0.7) +
     geom_line() +

@@ -85,6 +85,8 @@ trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "private
 
 save_figs("private")
 
+save_trip_plot_data("private")
+
 ```
 
 ```{r private_synt, , fig.height=4}
@@ -115,6 +117,7 @@ trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "private_ex2
 
 save_figs("private_ex26")
 
+save_trip_plot_data("private_ex26")
 
 ```
 
@@ -146,6 +149,8 @@ trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "manu", 
 
 save_figs("manu")
 
+save_trip_plot_data("manu")
+
 ```
 
 ```{r manu_synt, , fig.height=4}
@@ -176,6 +181,9 @@ trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "manu_ex26",
 
 
 save_figs("manu_ex26")
+
+save_trip_plot_data("manu_ex26")
+
 ```
 
 ```{r manu_ex26_synt, , fig.height=4}
@@ -205,6 +213,8 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 save_figs("service")
+
+save_trip_plot_data("service")
 
 ```
 

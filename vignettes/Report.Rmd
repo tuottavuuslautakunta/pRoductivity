@@ -83,7 +83,7 @@ data_main10_groups %>%
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("private")
+save_figs("Kuvio_2_1_private")
 
 save_trip_plot_data("private")
 
@@ -115,7 +115,7 @@ rel_plot2(data_main10_g_weighted, "private")
 trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("private_ex26")
+save_figs("Kuvio_2_2_private_ex26")
 
 save_trip_plot_data("private_ex26")
 
@@ -147,7 +147,7 @@ rel_plot2(data_main_g_weighted, "private_ex26")
 
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-save_figs("manu")
+save_figs("Kuvio_2_3_manu")
 
 save_trip_plot_data("manu")
 
@@ -180,7 +180,7 @@ rel_plot2(data_main10_g_weighted, "manu")
 trip_plot(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("manu_ex26")
+save_figs("Kuvio_2_4_manu_ex26")
 
 save_trip_plot_data("manu_ex26")
 
@@ -212,7 +212,7 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-save_figs("service")
+save_figs("Kuvio_2_4_service")
 
 save_trip_plot_data("service")
 

@@ -39,7 +39,7 @@ pdb_subjects <-   c(
   )
 
 dat_oecd_levels0 <- get_dataset(dataset = "PDB_LV",
-                               filter = list(geo_leves, pdb_subjects, pdb_measures))
+                               filter = list(geo_levels, pdb_subjects, pdb_measures))
 
 
 

@@ -71,7 +71,7 @@ trip_plot <- function(ssca_obj, weight_data, nace, plot_var, base_year, high_cou
 
   p2 <- ssca_plot_diff_100(ssca_pdata, base_year)
   p3 <- rel_one_plot(weight_data, nace = nace,
-                     title = "c. Suomi suhteessa euroalueeseen ja\nEurooppalaisiin maihin kauppapainoin")
+                     title = "c. Suomi suhteessa euroalueeseen ja\neurooppalaisiin maihin kauppapainoin")
 
 
   p1 / ((p2 | p3) ) + plot_layout(heights = c(3, 2))

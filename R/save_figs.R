@@ -13,14 +13,26 @@ save_figs <- function(filename,
                      plot = last_plot(),
                      width = 13.5,
                      height = 13.5){
-  plot <- plot +
+  plot1 <- plot +
     ggptt::the_title_blank(c("x", "t", "l")) +
     theme(plot.caption = element_blank())
+
+  plot_slide <- plot1 +
+    theme(text = element_text(size=15))
+
+  plot_slide_half <- plot +
+    ggptt::the_title_blank(c("x", "l")) +
+    theme(text = element_text(size=11))
+
   ggplot2::ggsave(here::here("figures", paste0(filename, ".pdf")),
                   plot = plot,
                   width = width, height = height, units = "cm")
   ggplot2::ggsave(here::here("figures", paste0(filename, ".png")),
                   plot = plot,  width = width, height = height, units = "cm")
+  ggplot2::ggsave(here::here("figures", paste0(filename, "_esitys.png")),
+                  plot = plot_slide, width = 26, height = 12, units = "cm")
+  ggplot2::ggsave(here::here("figures", paste0(filename, "_esitys_puolet.png")),
+                  plot = plot_slide_half, width = 16, height = 12, units = "cm")
 }
 
 

@@ -119,7 +119,29 @@ save_figs("Kuvio_2_2_private_ex26")
 
 save_trip_plot_data("private_ex26")
 
+
+p_main_2_2 <- trip_main_plot_high(ssca_obj = ssca_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+
 ```
+
+```{r private_ex26_extra, fig.height=4}
+
+p_main_2_2 +
+  scale_colour_manual(values = c("#304E88", "#5AB5EC", "#479A36", "#212121", "#A34E96")) +
+  theme_light() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.border = element_blank()) +
+  scale_x_continuous(n.breaks = 20, labels = no_century) +
+  the_legend_bot()
+
+save_figs("Kuvio_2_2_main_private_ex26", width = 16, height = 9)
+
+```
+
 
 ```{r private_ex26_synt, , fig.height=4}
 

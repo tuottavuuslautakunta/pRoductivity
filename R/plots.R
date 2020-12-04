@@ -77,6 +77,67 @@ trip_plot <- function(ssca_obj, weight_data, nace, plot_var, base_year, high_cou
   p1 / ((p2 | p3) ) + plot_layout(heights = c(3, 2))
 }
 
+#' Plot main plot of triptych
+#'
+#' One large level plot and two ssca plots
+#'
+#' @param ssca_obj a ssca_obj.
+#' @param weight_data Data with weighted variables.
+#' @param nace nace classification to use.
+#' @param plot_var A variable to plot.
+#' @param high_country A country highlighted by line size.
+#' @param high_countries Countries highlighted by line colour.
+#'
+#' @export
+#' @import dplyr ggplot2 patchwork
+
+trip_main_plot <- function(ssca_obj, weight_data, nace, plot_var, base_year, high_country, high_countries){
+
+  p1 <-
+    ssca_obj[[plot_var]][["model"]][[nace]]$z_list$theCall$longdata %>%
+    filter(time >= plot_start_year) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, high_countries) +
+    ggtitle("a. Suomi ja vertailumaat") +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+
+  ssca_pdata <- ssca_plot_data(ssca_obj[[plot_var]][["model"]][[nace]]) %>%
+    filter(year >= plot_start_year)
+
+
+  p1
+}
+
+#' Plot main plot of triptych with only high countries
+#'
+#' One large level plot and two ssca plots
+#'
+#' @param ssca_obj a ssca_obj.
+#' @param weight_data Data with weighted variables.
+#' @param nace nace classification to use.
+#' @param plot_var A variable to plot.
+#' @param high_country A country highlighted by line size.
+#' @param high_countries Countries highlighted by line colour.
+#'
+#' @export
+#' @import dplyr ggplot2 patchwork
+
+trip_main_plot_high <- function(ssca_obj, weight_data, nace, plot_var, base_year, high_country, high_countries){
+
+  p1 <-
+    ssca_obj[[plot_var]][["model"]][[nace]]$z_list$theCall$longdata %>%
+    filter(time >= plot_start_year,
+           geo_name %in% c(high_country, high_countries)) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, high_countries) +
+    ggtitle("a. Suomi ja vertailumaat") +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+
+  ssca_pdata <- ssca_plot_data(ssca_obj[[plot_var]][["model"]][[nace]]) %>%
+    filter(year >= plot_start_year)
+
+
+  p1
+}
+
 #' Plot syntetic control figures
 #'
 #' two ssca plots

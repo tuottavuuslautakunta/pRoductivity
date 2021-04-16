@@ -124,7 +124,7 @@ save_figs("Kuvio_1_4", height = fig_height)
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   bind_rows() %>% 
@@ -137,7 +137,7 @@ dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   the_title_blank(c("x", "y"))
 
 
-save_figs("Kuvio_1_5", height = fig_height +2)
+save_figs("Kuvio_1_5_I", height = fig_height +2)
 
 ```
 ```{r}
@@ -147,9 +147,10 @@ roles <- function(x) sub("[^_]*_","",x )
 dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   bind_rows() %>% 
   mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
-  mutate(V4=paste(period, Maa ,sep="_")) %>% 
+  mutate(V4=paste(period, Maa ,sep="_"),
+         sel = Maa == "Suomi") %>% 
   # mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
-  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = Maa == "Suomi")) +
+  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = sel)) +
   facet_wrap(~period, scales = "free") +
   geom_col() +
   scale_x_discrete(labels=roles) +
@@ -159,11 +160,19 @@ dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   theme(axis.text.x = element_text(size = 8))
 
 
-save_figs("Kuvio_1_5_III", height = fig_height +2)
+save_figs("Kuvio_1_5", height = fig_height +2, en = FALSE)
+
+en_plot <- last_plot() %>% 
+  ggptt::translate_plot(fig_translation)  
+en_plot$data$V4 <- stringi::stri_replace_all_fixed(en_plot$data$V4, 
+                                                   names(fig_translation), 
+                                                   fig_translation, 
+                                                   vectorize_all=FALSE)  
+save_figs("Kuvio_1_5_en", plot = en_plot, height = fig_height +2, en = FALSE)
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[c("1.5A", "1.5B", "1.5C")] %>% #str() # names()
   bind_rows() %>% 
@@ -180,7 +189,7 @@ save_figs("Kuvio_1_5_II", height = fig_height +2)
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[["1.5A"]] %>% #str() # names()
   mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
@@ -193,7 +202,7 @@ dat_kuviot_johd[["1.5A"]] %>% #str() # names()
 save_figs("Kuvio_1_5_A", height = fig_height +2)
 
 ```
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[["1.5B"]] %>% #str() # names()
   mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
@@ -206,7 +215,7 @@ dat_kuviot_johd[["1.5B"]] %>% #str() # names()
 save_figs("Kuvio_1_5_B", height = fig_height +2)
 
 ```
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[["1.5C"]] %>% #str() # names()
   mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
@@ -221,7 +230,7 @@ save_figs("Kuvio_1_5_C", height = fig_height +2)
 ```
 
 
-```{r}
+```{r , eval=FALSE}
 
 dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   bind_rows() %>% 
@@ -234,7 +243,7 @@ dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   the_title_blank(c("x", "y"))
 
 
-save_figs("Kuvio_1_6", height = fig_height +2)
+save_figs("Kuvio_1_6_I", height = fig_height +2)
 
 ```
 ```{r}
@@ -244,9 +253,10 @@ roles <- function(x) sub("[^_]*_","",x )
 dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   bind_rows() %>% 
   mutate(period = stringr::str_extract(otsikko, "20.*")) %>% 
-  mutate(V4=paste(period, Maa ,sep="_")) %>% 
+  mutate(V4=paste(period, Maa ,sep="_"),
+         sel = Maa == "Suomi") %>% 
   # mutate(geo = fct_reorder(Maa, keskiarvo)) %>% 
-  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = Maa == "Suomi")) +
+  ggplot(aes(reorder(V4, keskiarvo), keskiarvo, fill = sel)) +
   facet_wrap(~period, scales = "free") +
   geom_col() +
   scale_x_discrete(labels=roles) +
@@ -256,10 +266,17 @@ dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   theme(axis.text.x = element_text(size = 8))
 
 
-save_figs("Kuvio_1_6_III", height = fig_height +2)
 
+save_figs("Kuvio_1_6", height = fig_height +2, en = FALSE)
+
+en_plot <- ggptt::translate_plot(last_plot(), fig_translation)  
+en_plot$data$V4 <- stringi::stri_replace_all_fixed(en_plot$data$V4, 
+                                                   names(fig_translation), 
+                                                   fig_translation, 
+                                                   vectorize_all=FALSE)  
+save_figs("Kuvio_1_6_en", plot = en_plot, height = fig_height +2, en = FALSE)
 ```
-```{r}
+```{r, eval=FALSE}
 
 dat_kuviot_johd[c("1.6A", "1.6B", "1.6C")] %>% #str() # names()
   bind_rows() %>% 
@@ -320,7 +337,7 @@ dat_kuviot_johd[["1.9"]] %>% #names()
   scale_colour_manual(values = rev(tula_pal(2))) +
   the_legend_bot() +
   the_title_blank(c("x", "l")) +
-  labs(y = "indeksi, 1992 = 100")
+  labs(y = "Indeksi, 1992 = 100")
 
 save_figs("Kuvio_1_9", height = fig_height)
 
@@ -378,8 +395,8 @@ dat_kuviot_johd[["1.12"]] %>% # names()
     labs(y = glue("Indeksi, {base_year} = 100")) +
   the_legend_bot() +
   geom_hline(yintercept = 100) +
-  labs(y = "%",
-       title = unique(dat_kuviot_johd[["1.12"]]$otsikko)) +
+  labs(y = "Indeksi, 2007 = 100",
+       title = "Maailman tavara- ja palvelutuonti ja eräiden maiden vienti") +
   ylim(c(25,175)) 
 
 save_figs("Kuvio_1_12", height = fig_height)
@@ -478,7 +495,7 @@ save_figs("Kuvio_1_16", height = fig_height)
 dat_kuviot_johd[["1.17"]] %>% # names()
   mutate(across(contains("reaaliset"), ~(.x * -10))) %>% 
   rename(time = Vuosi) %>% 
-  gather(vars, values, -time) %>% 
+  gather(vars, values, -time) %>%
   ggplot(aes(time, values, colour = vars)) +
   geom_line() +
   scale_y_continuous(sec.axis = sec_axis(~ . * -1/10)) +
@@ -501,7 +518,7 @@ save_figs("Kuvio_1_17", height = fig_height)
 dat_kuviot_3[c("3.4A", "3.4B")] %>% #str() # names()
   bind_rows() %>% 
   rename(time = Vuosi,
-         '"Kirnuaminen (oik)"' = '"Kirnuaminen"') %>% 
+         '”Kirnuaminen” (oik)' = '"Kirnuaminen"') %>% 
   mutate(across(contains("Kirnuaminen"), ~(.x - 0.25))) %>% 
   gather(vars, values, -time, -Toimiala) %>% 
   ggplot(aes(time, values, colour = vars)) +
@@ -540,7 +557,7 @@ save_figs("Kuvio_3_5", height = fig_height)
 ```{r}
 
 
-dat_kuviot_3[["3.6"]] %>%
+dat_kuviot_3[["3.6"]] %>% 
   rename(time = Vuosi) %>% 
   gather(vars, values, -time) %>% 
   mutate(time = as.numeric(time)) %>% 

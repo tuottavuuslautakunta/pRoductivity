@@ -39,7 +39,7 @@ set_board_theme <- function(base_size = 11){
 
  theme_set(theme_ptt(base_size, "sans"))
   ggplot2::theme_update(
-    legend.text = ggplot2::element_text(size = ggplot2::rel(1)),
+    legend.text = ggplot2::element_text(size = ggplot2::rel(0.9)),
     axis.title = ggplot2::element_text(colour = "grey20", size = ggplot2::rel(0.8)),
     plot.subtitle = ggplot2::element_text(colour = "grey40"),
     plot.caption = ggplot2::element_text(size = ggplot2::rel(0.7), face = "plain", colour = "grey40"),

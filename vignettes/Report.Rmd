@@ -83,7 +83,7 @@ data_main10_groups %>%
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("Kuvio_2_1_private")
+save_figs(filename = "Kuvio_2_1_private")
 
 save_trip_plot_data("private")
 
@@ -234,7 +234,7 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 
 trip_plot(ssca_obj = ssca10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-save_figs("Kuvio_2_4_service")
+save_figs("Kuvio_2_5_service")
 
 save_trip_plot_data("service")
 

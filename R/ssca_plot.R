@@ -59,7 +59,7 @@ ssca_plot_data <- function(ssca_obj){
 #' @param legend_arg
 #'
 #' @export
-#' @import dplyr ggplot2 forcats
+#' @import dplyr ggplot2 forcats ggptt
 
 
 ssca_plot <- function(title,

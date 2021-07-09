@@ -92,6 +92,7 @@ data_main_groups <- data_main %>%
             service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
   ungroup() %>%
   gather(nace0, values, private, private_ex26, manu, manu_ex26, service) %>%
+  mutate(nace0 = as_factor(nace0)) %>%
   spread(vars, values) %>%
   group_by(geo, geo_name, nace0) %>%
   # volyymia ei voi laskea yhteen, täytyy laske cp ja pp sarjoista
@@ -177,6 +178,7 @@ data_main10_groups <- data_main10 %>%
             .groups = "drop_last") %>%
   ungroup() %>%
   gather(nace0, values, private, manu, service) %>%
+  mutate(nace0 = as_factor(nace0)) %>%
   spread(vars, values) %>%
   group_by(geo, geo_name, nace0) %>%
   # volyymia ei voi laskea yhteen, täytyy laske cp ja pp sarjoista

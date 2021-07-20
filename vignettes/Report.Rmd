@@ -48,7 +48,7 @@ plot_start_year <- 2000
 
 # Työn tuottavuus
 
-Työn tuottavuuden kasvu keskimäärin vuodesta 2015 vuoteen 2019
+Työn tuottavuuden kasvu keskimäärin vuodesta 2015 vuoteen 2030
 
 ```{r bar_change, fig.height=10}
 

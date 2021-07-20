@@ -34,7 +34,7 @@ scca_exp_data <- data_total %>%
 # Estimation periods
 est_periods <- 1996:(base_year - 1)
 eval_periods <- base_year:2018
-eval_periods10 <- base_year:2019
+eval_periods10 <- base_year:2020
 
 
 ## Estimation

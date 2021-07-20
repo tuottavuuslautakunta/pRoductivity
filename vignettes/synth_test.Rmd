@@ -1,0 +1,215 @@
+---
+title: "SSCA"
+author: "Janne Huovari"
+date: "8 11 2019"
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, fig.height = 10)
+
+
+library(here)
+library(tidyverse)
+library(Synth)
+library(tidysynth)
+library(patchwork)
+
+devtools::load_all()
+
+
+
+data(data_main10_groups, base_year)
+
+dat_eur <- 
+  dat_eurostat_nace_imput %>% 
+  filter(nace_r2 == "TOTAL",
+         time == 2015) %>% 
+  mutate(eur = B1G__CLV15_MEUR/B1G__CLV15_MNAC) %>% 
+  select(geo, eur)
+
+dat_test <- data_main10_groups %>% 
+  filter(!(geo %in% c("IE", "JP", "US", "UK"))) %>%
+  # filter(geo %in% c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES", "EL")) %>%
+  filter(
+    # time < 2020,
+         nace0 == "private") %>% 
+  droplevels() %>% 
+  left_join(dat_eur, by = "geo") %>% 
+  mutate(lp_eur = lp_10 * eur)
+
+
+
+fun_plot <- function(dat){
+  p1 <- plot_trends(dat)
+  p2 <- plot_differences(dat)
+  p3 <- plot_weights(dat)
+  (p1 + p2) / p3
+}
+
+```
+
+
+## Vaihtoehtoiset estimoinnit
+
+Näitä käytetty alla estimointeihin
+
+```{r}
+
+sc_mean <- function(dat){
+  dat %>% 
+   synthetic_control(
+    outcome = lp_ind,
+    unit = geo,
+    time = time,
+    i_unit = "FI",
+    i_time = 2008,
+    generate_placebos = T
+  ) %>% 
+  generate_predictor(
+    time_window = NULL,
+    mean_lp_ind = mean(lp_ind)
+  ) %>%
+  # generate_predictor(time_window = 2005,
+  #                    lp_ind_2005 = lp_ind) %>%
+  # generate_predictor(time_window = 1995,
+  #                    lp_ind_1995 = lp_ind) %>%
+  generate_weights(
+    optimization_window = NULL
+  ) %>% 
+  generate_control()
+}
+
+
+sc_95_05 <- function(dat){
+  dat %>% 
+   synthetic_control(
+    outcome = lp_ind,
+    unit = geo,
+    time = time,
+    i_unit = "FI",
+    i_time = 2008,
+    generate_placebos = T
+  ) %>% 
+  # generate_predictor(
+  #   time_window = NULL,
+  #   mean_lp_ind = mean(lp_ind)
+  # ) %>%
+  generate_predictor(time_window = 2005,
+                     lp_ind_2005 = lp_ind) %>%
+  generate_predictor(time_window = 1995,
+                     lp_ind_1995 = lp_ind) %>%
+  generate_weights(
+    optimization_window = NULL
+  ) %>% 
+  generate_control()
+}
+
+
+sc_15 <- function(dat){
+  dat %>% 
+   synthetic_control(
+    outcome = lp_ind,
+    unit = geo,
+    time = time,
+    i_unit = "FI",
+    i_time = 2015,
+    generate_placebos = T
+  ) %>% 
+  # generate_predictor(
+  #   time_window = NULL,
+  #   mean_lp_ind = mean(lp_ind)
+  # ) %>%
+  generate_predictor(time_window = 2005,
+                     lp_ind_2005 = lp_ind) %>%
+  generate_predictor(time_window = 1995,
+                     lp_ind_1995 = lp_ind) %>%
+  generate_predictor(time_window = 2015,
+                     lp_ind_2015 = lp_ind) %>%
+  generate_weights(
+    optimization_window = NULL
+  ) %>% 
+  generate_control()
+}
+
+```
+
+
+## Laaja maajoukko ja vain keskiarvo selittäjänä
+
+Edellisen raportin estimoinnin, jossa selittäjänä kaikki pre-treatment havainnot saa lähes toistettua pelkällä pre-treatment havaintojen keskiarvolla.
+
+Tällöin Kuosmanen ym kritiikin ei pitäisi koskea, koska se liittyy käsittääkseni yksikkö- ja muuttujapainojen samanaikaiseen estimointiin. Yhden selittäjän tapaukessa paino on joka tapauksessa 1.
+
+```{r}
+
+
+dat_test %>% 
+  sc_mean() %>% 
+  fun_plot()
+
+```
+
+# Sama kahdella selittäjällä, vuoden 1995 ja 2005 tuottavuuden indeksillä.
+
+Laajan maajoukon ongelma on kuitenkin siinä, että maapainot eivät ole kovin intuitiivisia. 
+Abadie (2021) mukaan kaikkien kontrolliryhmän yksiköiden pitäisi olla jo valmiiksi kohtuullisen hyviä verrokkeja. Laaja hyvin erilaisten yksikköjen joukko tuottaa varmasti hyvän pre-treatmen fitin, mutta ei ole tuota järkevää synteettistä kontrollia.
+
+Laajassa maajoukossa painottuvat Itä-Euroopan maat.
+
+```{r}
+
+
+dat_test %>% 
+  sc_95_05() %>% 
+  fun_plot()
+
+```
+
+## Suppea maajoukko ja keskiarvo
+
+Rajaamalla maajoukon etukäteen järkevämpiin verrokkimaihin tuottaa selvästi erilaisen synteettisen kontrollin, varsinkin 2015 jälkeiselle ajalle.
+
+Tällöin synteettinen muodostuu pääasiassa Ruotsista.
+
+
+```{r}
+
+
+dat_test %>% 
+  filter(geo %in% c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES")) %>%
+  sc_mean() %>% 
+  fun_plot()
+
+```
+
+## Treatment vuosi 2015
+
+Ei ehkä ole järkevää pitää loputtomasti treatment vuotena 2008. Siirtäminen on kuitenkin synteettisen kontrollin kannalta
+ongelmallista, koska tällöin Suomelle ei oikein löydy verrokkeja periodille 1995-2015.
+
+Alla yksi esimerkki, mutta kokeilin myös aika monella muulla vuosi/malli spesifikaatiolla.
+
+
+```{r}
+
+
+dat_test %>% 
+  filter(geo %in% c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES")) %>%
+  sc_15() %>% 
+  fun_plot()
+
+```
+
+## Laaja maajoukko ja 2015
+
+Laajalla maajoukolla fittaava kontrolli kyllä syntyy. Mutta en olisi ihan hirveän vakuuttunut Kreikan ja Tsekin lineaarikompinaatiosta.
+
+```{r}
+
+
+dat_test %>% 
+  sc_15() %>% 
+  fun_plot()
+
+```

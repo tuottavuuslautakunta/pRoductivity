@@ -19,7 +19,8 @@ Imports: readr,
          ggptt,
          gt,
          ficomp,
-         purrr
+         purrr,
+         tidysynth
 Suggests: knitr,
     rmarkdown,
     devtools

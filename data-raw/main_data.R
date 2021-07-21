@@ -17,6 +17,8 @@ countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU"
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi",
                                                            custom_match = c(EA12 = "Euroalue-12")))
 
+countries_synth <- c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES", "EL")
+
 # weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
 weight_geos <- setdiff(countries, c("US", "JP", "EA12", "LV", "IE"))
 
@@ -54,7 +56,7 @@ nace_stan <- c(
   M_N = "D69T82"
 )
 
-usethis::use_data(start_year, base_year, countries, main_nace_sna, main_nace10_sna, nace_stan, overwrite = TRUE)
+usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace10_sna, nace_stan, overwrite = TRUE)
 
 
 

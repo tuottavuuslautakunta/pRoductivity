@@ -33,7 +33,7 @@ set_board_theme(base_size = 8)
 
 # Data
 
-data("data_main_groups", "data_main10_groups", "ssca10_est_results", "ssca10_est_results", "ssca_exp_est_results")
+data("data_main_groups", "data_main10_groups", "synth_est_results", "synth10_est_results")
 data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
 
 

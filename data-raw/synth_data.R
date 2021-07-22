@@ -35,9 +35,7 @@ synth_exp_data <- data_total %>%
          p62_ind = rebase(P62__CLV15_MNAC, time, base_year))
 
 # Estimation periods
-est_periods <- 1996:(base_year - 1)
-eval_periods <- base_year:2018
-eval_periods10 <- base_year:2020
+
 
 
 ## Estimation
@@ -62,15 +60,3 @@ synth_est_results <-
 usethis::use_data(synth10_est_results, synth_est_results, overwrite = TRUE)
 
 
-
-
-synth_exp_est_results <- map(set_names(c("p6_ind", "p61_ind", "p62_ind")),
-                            ~synth_est(synth_exp_data, unit_var = "geo",
-                                      target_unit = "FI",
-                                      value_var = .x,
-                                      time_var = "time",
-                                      est_periods = est_periods,
-                                      eval_periods = eval_periods))
-
-
-usethis::use_data(synth_exp_est_results, overwrite = TRUE)

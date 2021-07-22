@@ -17,7 +17,7 @@ countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU"
 countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat", "cldr.name.fi",
                                                            custom_match = c(EA12 = "Euroalue-12")))
 
-countries_synth <- c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES", "EL")
+countries_synth <- c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES")
 
 # weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
 weight_geos <- setdiff(countries, c("US", "JP", "EA12", "LV", "IE"))

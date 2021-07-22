@@ -77,6 +77,50 @@ trip_plot <- function(ssca_obj, weight_data, nace, plot_var, base_year, high_cou
   p1 / ((p2 | p3) ) + plot_layout(heights = c(3, 2))
 }
 
+#' Plot diptych
+#'
+#' One large level plot and one difference plots
+#'
+#' @param synth_obj a synth_obj.
+#' @param weight_data Data with weighted variables.
+#' @param nace nace classification to use.
+#' @param plot_var A variable to plot.
+#' @param high_country A country highlighted by line size.
+#' @param high_countries Countries highlighted by line colour.
+#'
+#' @export
+#' @import dplyr ggplot2 patchwork
+dip_plot <- function(synth_obj, weight_data, nace, plot_var, base_year, high_country, high_countries){
+
+  p1 <-
+    weight_data %>%
+    filter(time >= plot_start_year,
+           nace0 == nace,
+           geo %in% c(countries_synth, "US", "EA12")) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, high_countries) +
+    ggtitle("a. Suomi ja vertailumaat") +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+
+  synth_pdat <- synth_plot_data(synth_obj, plot_var = plot_var, nace = nace) %>%
+    filter(year >= plot_start_year) |>
+    spread(vars, values) |>
+    mutate("{plot_var}_rel_synth" := 100 * real_y / synth_y) |>
+    mutate(geo ="FI",
+           nace0 = nace)
+
+
+
+  p2 <-
+    weight_data |>
+    left_join(synth_pdat, by = c("geo", "nace0", time = "year")) |>
+    rel_one_plot(nace = nace,
+                     title = "c. Suomi suhteessa verrokkeihin")
+
+
+  p1 / p2 + plot_layout(heights = c(3, 3))
+}
+
+
 #' Plot main plot of triptych
 #'
 #' One large level plot and two ssca plots
@@ -177,7 +221,8 @@ rel_one_plot <- function(.data, nace,
                          title = "Suomi suhteessa euroalueeseen ja\nEurooppalaisiin maihin kauppapainoin"){
 
   rel_vars <- c("euroalue-12" = "ea",
-                "kauppakumppanit" = "weight")
+                "kauppakumppanit" = "weight",
+                "synteettinen Suomi" = "synth")
 
   .data %>%
     filter(nace0 == nace, geo == "FI",

@@ -1,0 +1,218 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(patchwork)
+library(ficomp)
+library(gt)
+library(tidyselect)
+
+devtools::load_all()
+
+set_board_theme(base_size = 8)
+
+# Data
+
+data("data_main_groups", "data_main10_groups", "synth_est_results", "synth10_est_results")
+data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
+
+
+
+
+high_country <- "Suomi"
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat")
+
+plot_start_year <- 2000
+
+```
+
+# Työn tuottavuus
+
+Työn tuottavuuden kasvu keskimäärin vuodesta 2015 vuoteen 2020
+
+```{r bar_change, fig.height=10}
+
+order_fun <- function(.x, .y) mean(.x[.y == "private"])
+
+data_main10_groups %>% 
+  group_by(geo, nace0) %>% 
+  filter(time >= 2015) %>% 
+  transmute(lp_change = 100 * (lp_ind / lag(lp_ind) -1)) %>% 
+  summarise(values = mean(lp_change, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(
+    nace0 = fct_relevel(nace0, "private"),
+    geo = fct_reorder2(geo, values, nace0, .fun = order_fun)) %>% 
+  ggplot(aes(geo, values, label = round(values, 1))) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ nace0) +
+  geom_text(colour = "black", hjust = "top", nudge_y = 0.5) +
+  coord_flip()
+  # spread(nace0, values) %>% 
+  # arrange(-private) %>% 
+  # gt() %>% 
+  # fmt_number(columns = vars(private, manu, service), decimals = 1)
+
+```
+
+```{r}
+
+data_main10_groups |> 
+  filter(geo == "FI") |> 
+  select(geo, nace0, time, lp_ind) |> 
+  ggplot(aes(time, lp_ind, colour = nace0)) +
+    geom_line()
+  
+
+```
+
+
+
+## Yksityinen sektori
+
+```{r private, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, weight_data = data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+save_figs(filename = "Kuvio_2_1_private", en = FALSE)
+
+# save_trip_plot_data("private")
+
+```
+
+
+
+
+```{r private_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "private")
+
+
+```
+
+
+## Yksityinen sektori ilman elektroniikkateollisuutta
+
+```{r private_ex26, fig.height=10}
+
+dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+save_figs("Kuvio_2_2_private_ex26", en = FALSE)
+
+# save_trip_plot_data("private_ex26")
+
+
+
+```
+
+
+
+
+
+```{r private_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "private_ex26")
+
+
+```
+
+
+
+## Teollisuus
+
+```{r manu, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+save_figs("Kuvio_2_3_manu", en = FALSE)
+
+# save_trip_plot_data("manu")
+
+```
+
+
+
+
+```{r manu_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "manu")
+
+
+```
+
+
+
+## Teollisuus ilman elektroniikkateollisuutta
+
+```{r manu_ex26, fig.height=10}
+
+dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+save_figs("Kuvio_2_4_manu_ex26", en = FALSE)
+
+# save_trip_plot_data("manu_ex26")
+
+```
+
+
+
+
+```{r manu_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "manu_ex26")
+
+
+```
+
+
+
+## Palvelut
+
+```{r service, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+save_figs("Kuvio_2_5_service", en = FALSE)
+
+
+
+```
+
+
+
+```{r service_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "service")
+
+
+```
+
+

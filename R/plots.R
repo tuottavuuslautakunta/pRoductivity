@@ -114,7 +114,7 @@ dip_plot <- function(synth_obj, weight_data, nace, plot_var, base_year, high_cou
     weight_data |>
     left_join(synth_pdat, by = c("geo", "nace0", time = "year")) |>
     rel_one_plot(nace = nace,
-                     title = "c. Suomi suhteessa verrokkeihin")
+                     title = "b. Suomi suhteessa verrokkeihin")
 
 
   p1 / p2 + plot_layout(heights = c(3, 3))

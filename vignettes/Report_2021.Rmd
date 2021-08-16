@@ -29,7 +29,8 @@ library(tidyselect)
 
 devtools::load_all()
 
-set_board_theme(base_size = 8)
+# set_board_theme(base_size = 8)
+set_board_theme(base_size = 12)
 
 # Data
 

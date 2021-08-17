@@ -120,7 +120,7 @@ data_main_g_weighted <-
   select(geo, geo_name, time, nace0, lp_ind, va_ind, h_ind) %>% # filter(nace0 == "private") %>% select(geo, time, lp_ind)  %>% spread(geo, lp_ind) %>% View()
   group_by(nace0, time) %>%
   mutate_at(vars(lp_ind, va_ind, h_ind), .funs = list(rel_ea = ~(100 * .x / .x[geo == "EA12"]))) %>%
-  filter(geo %in% weight_geos) %>%
+  # filter(geo %in% weight_geos) %>%
   group_by(nace0, time) %>%
   mutate(across(c(lp_ind, va_ind, h_ind),
                 ~ficomp::weight_index2(.x, geo, time, geos = weight_geos, weight_df = ficomp::weights_ecfin37),

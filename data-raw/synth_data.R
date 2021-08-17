@@ -27,12 +27,12 @@ synth_dat <- data_main_groups |>
   filter(geo %in% countries_synth)
 
 # Data for export analysis
-synth_exp_data <- data_total %>%
-  filter(geo %in% countries_synth)
-  group_by(geo) %>%
-  mutate(p6_ind = rebase(P6__CLV15_MNAC, time, base_year),
-         p61_ind = rebase(P61__CLV15_MNAC, time, base_year),
-         p62_ind = rebase(P62__CLV15_MNAC, time, base_year))
+# synth_exp_data <- data_total %>%
+#   filter(geo %in% countries_synth) |>
+#   group_by(geo) %>%
+#   mutate(p6_ind = rebase(P6__CLV15_MNAC, time, base_year),
+#          p61_ind = rebase(P61__CLV15_MNAC, time, base_year),
+#          p62_ind = rebase(P62__CLV15_MNAC, time, base_year))
 
 # Estimation periods
 

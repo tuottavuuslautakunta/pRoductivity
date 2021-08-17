@@ -41,7 +41,7 @@ data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
 
 
 high_country <- "Suomi"
-high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat")
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
 
 plot_start_year <- 2000
 

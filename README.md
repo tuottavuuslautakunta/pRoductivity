@@ -92,6 +92,6 @@ Imputed values:
 Countries used in weighting (from weight_geos): "AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", 
 "HU", "LT", "FR", "IT", "NL", "NO", "PT", "SE", "CY", "PL", "SI", "SK"
 
-## Simple Syntethic Control Analysis
+## Syntethic Control Analysis
 
-Series from Simple Syntethic Control Analysis are estimated in data-raw/ssca_data.R
+Series from Syntethic Control Analysis are estimated in data-raw/synth_data.R

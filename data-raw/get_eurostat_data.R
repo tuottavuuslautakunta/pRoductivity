@@ -125,4 +125,4 @@ dat_eurostat_digi <-
   droplevels() %>%
   complete(geo, time, nace_r2)
 
-
+usethis::use_data(dat_eurostat_digi, overwrite = TRUE)

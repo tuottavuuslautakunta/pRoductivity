@@ -61,6 +61,13 @@ d_class <- read.csv2("data-raw/d_class.csv")
 
 usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace10_sna, nace_stan, d_class, overwrite = TRUE)
 
+geo_digi_oecd = c("SE", "NO", "FR", "BE", "PT")
+geo_digi_1 = c("FR", "BE","AT", "IT", "NL")
+geo_digi_2 = c("SE", "NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES", "PT")
+geo_digi_3 = c("SE", "NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES", "PT", "DK")
+
+
+usethis::use_data(geo_digi_oecd, geo_digi_1, geo_digi_2, geo_digi_3, overwrite = TRUE)
 
 
 ## Data used
@@ -235,20 +242,20 @@ data_digi <-
   group_by(d_class, geo, time) |>
   summarise(lp_ind = ficomp::weighted_gmean(lp_ind, w = emp_weight_fi, na.rm = TRUE)) |>
   ungroup() |>
-  filter(geo %in% c("FI", "SE", "NO", "FR", "PT", "BG")) |>
+  mutate(w_oecd = geo %in% geo_digi_oecd,
+         w_1 = geo %in% geo_digi_1,
+         w_2 = geo %in% geo_digi_2,
+         w_3 = geo %in% geo_digi_3) |>
   group_by(d_class, time) |>
   summarise(FI = lp_ind[geo == "FI"],
-            Bench = mean(lp_ind[geo != "FI"])) |>
+            Bench_OECD = weighted.mean(lp_ind, w_oecd),
+            Bench_1 = weighted.mean(lp_ind, w_1),
+            Bench_2 = weighted.mean(lp_ind, w_2),
+            Bench_3 = weighted.mean(lp_ind, w_3)) |>
   ungroup() |>
   gather(geo, lp_ind, -d_class, -time)
 
-data_digi |>
-  filter(time == 2018) |>
-  ggplot(aes(geo, emp_weight_fi, fill = nace_r2)) +
-  geom_col()
+usethis::use_data(data_digi, overwrite = TRUE)
 
-data_digi |>
-  # filter(geo == "SE") |>
-  ggplot(aes(time, lp_ind, colour = geo)) +
-  facet_wrap(~ d_class) +
-  geom_line()
+
+

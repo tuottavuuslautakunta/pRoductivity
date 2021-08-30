@@ -215,5 +215,57 @@ rel_plot2(data_main10_g_weighted, "service")
 
 
 ```
+## OECD digitalisuus jaolla
 
+```{r}
+
+data_digi |> 
+  ggplot(aes(time, lp_ind, colour = geo)) +
+  facet_wrap(~ d_class) +
+  geom_line()
+
+```
+
+Siistitty ja imputoitu kuvio
+
+```{r}
+
+digi_geo_labs <- 
+  c(Bench_1 = "verrokkimaat 1",
+    Bench_2 = "verrokkimaat 2",
+    Bench_OECD = "verrokkimaat OECD",
+    FI = "Suomi")
+
+d_class_labs <- 
+  c(d_manu = "Teollisuus - digitaalinen",
+    nd_manu = "Teollisuus - ei digitaalinen",
+    d_serv = "Palvelut - digitaalinen",
+    nd_serv = "Palvelut - ei digitaalinen")
+
+data_digi |> 
+  filter(geo != "Bench_3") |>
+  group_by(geo, d_class) |> 
+  # Vuodelle 2014 on yksi puuttuvat avainto non-digi teollisuudessa. Se imputoitu. xout imputoi 1-20 havainnot eli ei lopun NA arvoja.
+  mutate(lp_ind = imputeTS::na_interpolation(lp_ind, method = "linear", xout = 1:20)) |> 
+  mutate(geo = recode(geo, !!!digi_geo_labs),
+         d_class = recode_factor(d_class, !!!d_class_labs)) |> 
+  # mutate(lp_ind = rebase(lp_ind, time, 1995)) |> 
+  ungroup() |> 
+  ggplot(aes(time, lp_ind, colour = geo)) +
+  facet_wrap(~ d_class) +
+  geom_line() +
+  scale_x_continuous(labels = no_century) +
+  labs(y = "indeksi, 2007 = 100") +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2))
+
+
+cat("Verrokkimaat 1: ", paste0(countrycode::countrycode(geo_digi_1, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
+    "Verrokkimaat 2: ", paste0(countrycode::countrycode(geo_digi_2, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
+    "Verrokkimaat OECD: ", paste0(countrycode::countrycode(geo_digi_oecd, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n")
+
+save_figs("digi", en = FALSE)
+
+```
 

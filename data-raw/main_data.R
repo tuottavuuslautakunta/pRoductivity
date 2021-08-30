@@ -56,7 +56,10 @@ nace_stan <- c(
   M_N = "D69T82"
 )
 
-usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace10_sna, nace_stan, overwrite = TRUE)
+# OECD non-digital (nd_manu, nd_serv) / digital (d_manu, d_serv) classification
+d_class <- read.csv2("data-raw/d_class.csv")
+
+usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace10_sna, nace_stan, d_class, overwrite = TRUE)
 
 
 
@@ -211,3 +214,41 @@ data_main10_g_weighted <-
 usethis::use_data(data_main10, overwrite = TRUE)
 usethis::use_data(data_main10_groups, overwrite = TRUE)
 usethis::use_data(data_main10_g_weighted, overwrite = TRUE)
+
+
+## OECD-style digital classification data
+
+data_digi <-
+  dat_eurostat_digi |>
+  left_join(d_class, by = "nace_r2") |>
+  # filter(time<2020) |>
+  group_by(geo, nace_r2) %>%
+  mutate(lp_ind =  rebase(B1G__CLV15_MNAC / EMP_DC__THS_PER, time, base_year),
+         va_ind =  rebase(B1G__CLV15_MNAC, time, base_year),
+         h_ind = rebase(EMP_DC__THS_HW, time, base_year),
+         emp_ind = rebase(EMP_DC__THS_PER, time, base_year)) %>%
+  ungroup() %>%
+  group_by(geo, time) |>
+  mutate(emp_weight = EMP_DC__THS_PER / sum(EMP_DC__THS_PER, na.rm = TRUE)) |>
+  group_by(nace_r2) |>
+  mutate(emp_weight_fi = emp_weight[geo == "FI" & time == 2007]) |>
+  group_by(d_class, geo, time) |>
+  summarise(lp_ind = ficomp::weighted_gmean(lp_ind, w = emp_weight_fi, na.rm = TRUE)) |>
+  ungroup() |>
+  filter(geo %in% c("FI", "SE", "NO", "FR", "PT", "BG")) |>
+  group_by(d_class, time) |>
+  summarise(FI = lp_ind[geo == "FI"],
+            Bench = mean(lp_ind[geo != "FI"])) |>
+  ungroup() |>
+  gather(geo, lp_ind, -d_class, -time)
+
+data_digi |>
+  filter(time == 2018) |>
+  ggplot(aes(geo, emp_weight_fi, fill = nace_r2)) +
+  geom_col()
+
+data_digi |>
+  # filter(geo == "SE") |>
+  ggplot(aes(time, lp_ind, colour = geo)) +
+  facet_wrap(~ d_class) +
+  geom_line()

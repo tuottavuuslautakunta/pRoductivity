@@ -115,5 +115,14 @@ usethis::use_data(dat_eurostat_nace, dat_eurostat_nace_imput, overwrite = TRUE)
 usethis::use_data(dat_eurostat_nace_23, data_eurostat_total, overwrite = TRUE)
 
 
+## OECD-style digital classification eurostat data
+
+dat_eurostat_digi <-
+  dat_nama_10_a64 %>%
+  left_join(dat_nama_10_a64_e, by = c("nace_r2", "geo", "time")) %>%
+  mutate_at(c("geo", "nace_r2"), as_factor) %>%
+  filter(nace_r2 %in% d_class$nace_r2, geo %in% countries, time >= start_year) %>%
+  droplevels() %>%
+  complete(geo, time, nace_r2)
 
 

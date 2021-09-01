@@ -249,13 +249,13 @@ data_digi |>
   mutate(lp_ind = imputeTS::na_interpolation(lp_ind, method = "linear", xout = 1:20)) |> 
   mutate(geo = recode(geo, !!!digi_geo_labs),
          d_class = recode_factor(d_class, !!!d_class_labs)) |> 
-  # mutate(lp_ind = rebase(lp_ind, time, 1995)) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2004)) |>
   ungroup() |> 
   ggplot(aes(time, lp_ind, colour = geo)) +
   facet_wrap(~ d_class) +
   geom_line() +
   scale_x_continuous(labels = no_century) +
-  labs(y = "indeksi, 2007 = 100") +
+  labs(y = "indeksi, 2004 = 100") +
   the_title_blank("xl") +
   the_legend_bot() +
   guides(colour = guide_legend(nrow = 2))
@@ -265,7 +265,148 @@ cat("Verrokkimaat 1: ", paste0(countrycode::countrycode(geo_digi_1, "eurostat", 
     "Verrokkimaat 2: ", paste0(countrycode::countrycode(geo_digi_2, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
     "Verrokkimaat OECD: ", paste0(countrycode::countrycode(geo_digi_oecd, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n")
 
-save_figs("digi", en = FALSE)
+save_figs("digi_04", en = FALSE)
 
+```
+
+## Tuottavuuden eturintama
+
+```{r}
+
+data_ted |> 
+  filter(indicator == "Output per Hour Worked") |> 
+  distinct(measure)
+
+data_ted |> 
+  filter(indicator == "Output per Hour Worked",
+         geo %in% c("FI", "SE", "US")) |> 
+  # Sisältää myös ennusteen viimeiselle vuodelle
+  filter(time >= 1960, time < max(time)) |> 
+  mutate(geo_nimi = fct_relevel(geo_nimi, c("Suomi", "Ruotsi"))) |> 
+  ggplot(aes(time, value, colour = geo_nimi)) +
+  geom_line() +
+  scale_y_log10(limits = c(25,80), breaks = seq(20, 80, by = 10)) +
+  labs(y = "vuoden 2010 dollareissa ostovoimakorjattuna") +
+  the_title_blank("xl") +
+  the_legend_bot()
+
+save_figs("LP_PPP_taso", en = FALSE)
+
+```
+
+```{r}
+
+
+
+data_ted |> 
+  filter(indicator == "Output per Hour Worked",
+         geo %in% c("FI", "SE", "US")) |> 
+  filter(time >= 1960, time < max(time)) |> 
+  mutate(geo_nimi = fct_relevel(geo_nimi, c("Suomi", "Ruotsi"))) |> 
+  group_by(time) |> 
+  mutate(value = 100 * value / value[geo == "US"]) |> 
+  ungroup() |> 
+  ggplot(aes(time, value, colour = geo_nimi)) +
+  geom_line() +
+  # scale_y_log10(limits = c(25,80), breaks = seq(20, 80, by = 10)) +
+  labs(y = "Indeksi, Yhdysvallat = 100") +
+  the_title_blank("xl") +
+  the_legend_bot()
+
+save_figs("LP_PPP_taso_suhteessa", en = FALSE)
+
+```
+
+```{r}
+
+
+
+data_ted |> 
+  filter(indicator == "Output per Hour Worked",
+         geo %in% c("FI", "SE", "US", "FR", "DE")) |> 
+  filter(time >= 1960, time < max(time)) |> 
+  mutate(geo_nimi = fct_relevel(geo_nimi, c("Suomi", "Ruotsi"))) |> 
+  group_by(time) |> 
+  mutate(value = 100 * value / value[geo == "FR"]) |> 
+  ungroup() |> 
+  ggplot(aes(time, value, colour = geo_nimi)) +
+  geom_line() +
+  # scale_y_log10(limits = c(25,80), breaks = seq(20, 80, by = 10)) +
+  labs(y = "Indeksi, Yhdysvallat = 100") +
+  the_title_blank("xl") +
+  the_legend_bot()
+
+save_figs("LP_PPP_taso_suhteessa_FR", en = FALSE)
+
+```
+
+```{r}
+
+geo_level <- c("FI", "SE", "US", "DE", "DK", "FR", "IT", "ES")
+
+data_main10_groups |> 
+  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
+  group_by(geo, nace0) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
+  mutate(lp_level05 = levels05 * lp_ind) |> 
+  ungroup() |> 
+  filter(geo %in% geo_level,
+         nace0 == "private") |> 
+  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
+  geom_line() +
+  scale_y_log10()
+
+save_figs("level_private", en = FALSE)
+
+```
+
+```{r}
+
+data_main10_groups |> 
+  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
+  group_by(geo, nace0) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
+  mutate(lp_level05 = levels05 * lp_ind) |> 
+  ungroup() |> 
+  filter(geo %in% geo_level,
+         nace0 == "manu") |> 
+  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
+  geom_line() +
+  scale_y_log10()
+
+save_figs("level_manu", en = FALSE)
+
+```
+```{r}
+
+data_main10_groups |> 
+  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
+  group_by(geo, nace0) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
+  mutate(lp_level05 = levels05 * lp_ind) |> 
+  ungroup() |> 
+  filter(geo %in% geo_level,
+         nace0 == "service") |> 
+  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
+  geom_line() +
+  scale_y_log10()
+
+save_figs("level_service", en = FALSE)
+
+```
+```{r}
+data_main10_groups |> 
+  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
+  group_by(geo, nace0) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
+  mutate(lp_level05 = levels05 * lp_ind) |> 
+  group_by(time, nace0) |> 
+  mutate(lp_level05_rel_us = 100 * lp_level05 /lp_level05[geo == "US"]) |> 
+  ungroup() |> 
+  filter(geo %in% geo_level,
+         nace0 == "private") |> 
+  ggplot(aes(time, lp_level05_rel_us, colour = geo_nimi)) +
+  geom_line() +
+  scale_y_log10()
 ```
 

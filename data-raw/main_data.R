@@ -78,6 +78,11 @@ usethis::use_data(geo_digi_oecd, geo_digi_1, geo_digi_2, geo_digi_3, overwrite =
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 
+# read extension data for history
+lp_private_history <-
+  readxl::read_xlsx(here::here("data-raw/LP history.xlsx"), skip = 4) |>
+  gather(geo, values, -time) |>
+  mutate(time = as.numeric(time))
 
 # Main from a64
 

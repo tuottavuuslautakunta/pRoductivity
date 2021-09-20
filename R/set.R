@@ -3,8 +3,11 @@
 #' @param n a number of colours
 #'
 #' @export
+#' @examples
+#' scales::show_col(tula_pal(13))
 
-tula_pal <- function(n) c("#0072B2", "#fc7d0b", "#109618", "grey25", "#c85200", "#5fa2ce", "#1170aa", "#6495ED", "#EE7600", "#8B3E2F", "#8968CD", "#f03b20", "grey75")[1:n]
+tula_pal <- function(n) c("#0072B2", "#fc7d0b", "#109618", "grey45", "#c85200", "#5fa2ce", "#f4c623", "#b8c9dc", "#6c905e", "#8B3E2F", "#8968CD", "#cd3122", "grey75")[1:n]
+# tula_pal <- function(n) c("#0072B2", "#fc7d0b", "#109618", "grey45", "#c85200", "#5fa2ce", "#1170aa", "#6495ED", "#EE7600", "#8B3E2F", "#8968CD", "#f03b20", "grey75")[1:n]
 # tula_pal <- ggthemes::tableau_color_pal(palette = "Color Blind")
 
 

@@ -78,11 +78,7 @@ usethis::use_data(geo_digi_oecd, geo_digi_1, geo_digi_2, geo_digi_3, overwrite =
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 
-# read extension data for history
-lp_private_history <-
-  readxl::read_xlsx(here::here("data-raw/LP history.xlsx"), skip = 4) |>
-  gather(geo, values, -time) |>
-  mutate(time = as.numeric(time))
+
 
 # Main from a64
 
@@ -263,4 +259,42 @@ data_digi <-
 usethis::use_data(data_digi, overwrite = TRUE)
 
 
+## Extended level data
 
+# read extension data for history
+lp_private_history <-
+  readxl::read_xlsx(here::here("data-raw/LP history.xlsx"), skip = 4) |>
+  mutate(nace0 = "private") |>
+  gather(geo, values, -time, -nace0)
+
+# join to data and level
+
+
+data_main10_groups_level <-
+  data_main10_groups |>
+  filter(!is.na(lp_ind)) |>
+  mutate(time_org = time) |>
+  # join history and 2005 levels
+  full_join(lp_private_history, by = c("geo", "nace0", "time"))|>
+  left_join(rename(data_ggdc_level05, levels05 = values), by = c("geo", "nace0")) |>
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  arrange(time, geo) |>
+  # extrapolate lp_ind based on lp_hist
+  group_by(geo, nace0) |>
+  mutate(lp_ind = rebase(lp_ind, time, first(na.omit(time_org))),
+         lp_hist = rebase(values, time, first(na.omit(time_org))),
+         lp_ind = coalesce(lp_ind, lp_hist)) |>
+  # USA täytyy fiksata myöhemmin, nyt historiasarjassa uudempi privatelle, joten otetaan siitä kokonaan
+  mutate(lp_ind = if_else(geo == "US" & nace0 == "private", lp_hist, lp_ind)) |>
+  # vuoden 20005 indeksiin ja markkinahinnoin
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,
+         lp_fp05_eur = lp_fp05 / exh_eur[time == 2005]) |>
+  ungroup() |>
+  # level lp
+  mutate(lp_level05 = levels05 * lp_ind) |>
+  mutate(geo_name = fct_recode(geo, !!!countries)) |>
+  select(geo, geo_name, time, lp_ind, lp_level05, lp_fp05, lp_fp05_eur, levels05, nace0) |>
+  droplevels()
+
+usethis::use_data(data_main10_groups_level, overwrite = TRUE)

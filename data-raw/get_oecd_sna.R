@@ -109,7 +109,9 @@ dat_oecd_sna7a <- dat_oecd_sna7a_0 %>%
     values = obsValue) %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
-  spread(vars, values)
+  spread(vars, values) |>
+  mutate(SAL_DC__THS_HW = 1000 * SAL_DC__THS_HW,
+         EMP_DC__THS_HW = 1000 * EMP_DC__THS_HW)
 
 dat_oecd_sna_nace <-
   dat_oecd_sna6a %>%

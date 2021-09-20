@@ -1,0 +1,482 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot_johd <- here::here("data-raw/Johdanto-kuvioiden_data_2021.xlsx")
+
+dat_kuviot_johd <- 
+  set_names(readxl::excel_sheets(file_kuviot_johd)) %>% 
+  map(~readxl::read_xlsx(file_kuviot_johd, sheet = .x))  
+
+file_kuviot_4 <- here::here("data-raw/Kuviot_4_2021.xlsx")
+
+dat_kuviot_4 <-
+  set_names(readxl::excel_sheets(file_kuviot_4)) %>%
+  map(~readxl::read_xlsx(file_kuviot_4, sheet = .x)) |> 
+  #remove empty columns
+  map(~select(.x, !starts_with("...")))
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+```{r}
+
+dat_oecd_levels %>%
+  prod_ind_plot_high(plot_var = "gdp_per_h", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2015) +
+  the_legend_bot() +
+  # geom_h0() +
+  scale_y_log10(breaks = seq(0, 300, 10)) +
+  labs(y = "Vuoden 2015 hinnoin, 1000 $, ostovoimakorjattu,\nlogaritminen asteikko",
+       caption = "Lähde: OECD") 
+
+
+save_figs("Kuvio_1_1", height = fig_height)
+
+
+```
+
+```{r}
+
+
+
+dat_oecd_levels %>% 
+  group_by(time) %>% 
+  mutate(rel_ch = 100 * gdp_per_h / gdp_per_h[geo == "US"]) %>% 
+  ungroup() %>% 
+  prod_ind_plot_high(plot_var = "rel_ch", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2015) +
+  the_legend_bot() +
+  # geom_h0() +
+  labs(y = "Indeksi, Yhdysvallat = 100",
+       caption = "Lähde: OECD") 
+
+
+save_figs("Kuvio_1_2", height = fig_height)
+
+
+```
+
+
+```{r}
+
+dat_kuviot_johd[["1.3"]] %>% 
+  gather(geo, values, -vuosi, -otsikko, -otsikko_en) %>% 
+  filter(!(geo %in% c("Tsekki", "Belgia", "Itävalta"))) |> 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 1997) +
+  the_legend_bot() +
+  labs(title = unique(dat_kuviot_johd[["1.3"]]$otsikko))
+
+save_figs("Kuvio_1_3", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot_johd[["1.4"]] %>% 
+  gather(geo, values, -vuosi, -otsikko, -otsikko_en) %>% 
+  filter(!(geo %in% c("Tsekki", "Belgia", "Itävalta"))) |> 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2007) +
+  the_legend_bot() +
+  labs(title = unique(dat_kuviot_johd[["1.4"]]$otsikko))
+
+save_figs("Kuvio_1_4", height = fig_height)
+
+```
+
+
+
+```{r}
+
+dat_kuviot_johd[["1.5"]] %>% # names()
+  select(-contains("index")) %>%
+  gather(geo, values, -vuosi, -otsikko, -viittaus) %>% 
+  mutate(geo_name = geo,
+         time = vuosi,
+         lp_ind = values) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 1995) +
+  geom_hline(yintercept = 100) +
+  the_legend_bot() 
+
+save_figs("Kuvio_1_5", height = fig_height)
+
+```
+```{r}
+
+dat_kuviot_johd[["1.6"]] %>%  #names()
+  select(-contains("ind")) %>%
+  gather(geo, values, -vuosi, -Otsikko_fi, -viittaus) %>% 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2008) +
+  geom_hline(yintercept = 100) +
+  scale_size_manual(values = c(1.5), guide = "none") +
+  ylim(c(0,120)) +
+  the_legend_bot() 
+
+save_figs("Kuvio_1_6", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot_johd[["1.7"]] %>% #names()
+  gather(geo, values, -vuosi, -otsikko_fi, -otsikko_en) %>% 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+  ggplot(aes(time, values, colour = geo_name)) + 
+  geom_line() +
+  scale_colour_manual(values = rev(tula_pal(2))) +
+  the_legend_bot() +
+  the_title_blank(c("x", "l")) +
+  labs(y = "Indeksi, 1992 = 100")
+
+save_figs("Kuvio_1_7", height = fig_height)
+
+```
+
+
+
+
+```{r}
+
+dat_kuviot_johd[["1.8"]] %>% # names()
+  gather(geo, values, -vuosi, -otsikko) %>% 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+    rename(plot_var = values) %>%
+  mutate(high_names = geo_name,
+         high_names = fct_relevel(high_names, c("Suomi", "Maailman tuonti"), after = 0),
+         high_size = fct_other(high_names, keep = c("Suomi", "Maailman tuonti"), other_level = "muut high"),
+         geo_name = fct_relevel(geo_name, c("Suomi", "Maailman tuonti"), after = Inf)) %>%
+    ggplot(aes(time, plot_var, group = geo_name, colour = high_names, size = high_size)) +
+    # geom_line(alpha = 0.7) +
+    geom_line() +
+    scale_size_manual(values = c(2.5, 2, 1), guide = "none") +
+    # scale_colour_manual(values = tula_pal) +
+    guides(colour = guide_legend()) +
+    the_title_blank(c("x", "l")) +
+    labs(y = glue("Indeksi, {base_year} = 100")) +
+  the_legend_bot() +
+  geom_hline(yintercept = 100) +
+  labs(y = "Indeksi, 2007 = 100",
+       title = "Maailman tavara- ja palvelutuonti ja eräiden maiden vienti") +
+  ylim(c(25,175)) 
+
+save_figs("Kuvio_1_8", height = fig_height)
+
+```
+
+
+```{r}
+
+dat_kuviot_johd[["3.3"]] %>%  
+  mutate(geo_name = country) %>% 
+  rename(plot_var = values) %>%
+  mutate(group = str_replace_all(group, c("manuf." = "teollisuus", 
+                                          "serv." = "palvelu",
+                                          "non-digital" = "Ei-digitaalinen",
+                                          digital = "Digitaalinen")),
+         group = as_factor(group)) |> 
+  mutate(geo_name = recode(geo_name, FIN = "Suomi", Bench. = "Verrokkimaat")) |> 
+  ggplot(aes(time, plot_var, colour = geo_name)) +
+    geom_line() +
+    facet_wrap(~group, nrow = 2) +
+    the_title_blank(c("x", "l")) +
+  the_legend_bot() +
+  geom_hline(yintercept = 0) +
+  labs(y = "Indeksi, 2004 = 0") 
+
+save_figs("Kuvio_3_3", height = fig_height)
+
+```
+
+
+# Luku 4
+
+```{r}
+
+dat_kuviot_4[["4_3"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  ggplot(aes(Vuosi, value/100, colour = vars)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = " %")) +
+  geom_h0() +
+  the_legend_bot() +
+  the_title_blank()
+  
+save_figs("Kuvio_4_3", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot_4[["4_4"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+  the_legend_bot() +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = " %"), limits = c(NA, 0.01)) +
+  the_title_blank() +
+  guides(colour = "none")
+  
+save_figs("Kuvio_4_4", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot_4[["4_5"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+  the_legend_bot() +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = " %"), breaks = seq(0, 0.16, by = 0.02)) +
+  the_title_blank() +
+  guides(colour = guide_legend())
+  
+save_figs("Kuvio_4_5", height = fig_height)
+
+```
+
+```{r}
+
+p1 <- dat_kuviot_4[["4_6a"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+p2 <- dat_kuviot_4[["4_6a"]] |> 
+  set_names(c("Vuosi", "y", "x")) |> 
+  ggplot(aes(x, y)) +
+  geom_point(colour = tula_pal(1)) +
+  stat_smooth(method = "lm", se = FALSE, colour = "grey20", size = 2) +
+  the_legend_bot() + 
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  # coord_fixed() +
+  # the_title_blank() +
+  labs(x = "Ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos") 
+
+
+p1 + p2
+  
+save_figs2("Kuvio_4_6", height = fig_height)
+
+```
+
+
+```{r}
+
+p1 <- dat_kuviot_4[["4_7a"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+p2 <- dat_kuviot_4[["4_7a"]] |> 
+  # gather(vars, value, -Vuosi) |> 
+  set_names(c("Vuosi", "y", "x")) |> 
+  ggplot(aes(x, y)) +
+  geom_point(colour = tula_pal(1)) +
+  stat_smooth(method = "lm", se = FALSE, colour = "grey20", size = 2) +
+    scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  # coord_fixed() +
+  # the_title_blank() +
+  labs(x = "Sisäisten ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos")
+
+
+p1 + p2
+  
+save_figs2("Kuvio_4_7a", height = fig_height)
+
+```
+
+```{r}
+
+p1 <- dat_kuviot_4[["4_7c"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+  the_legend_bot() +
+   scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+p2 <- dat_kuviot_4[["4_7c"]] |> 
+  # gather(vars, value, -Vuosi) |> 
+  set_names(c("Vuosi", "y", "x")) |> 
+  ggplot(aes(x, y)) +
+  geom_point(colour = tula_pal(1)) +
+  stat_smooth(method = "lm", se = FALSE, colour = "grey20", size = 2) +
+    scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = " %")) +
+  # coord_fixed() +
+  # the_title_blank() +
+  labs(x = "Välisten ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos")
+
+
+p1 + p2
+  
+save_figs2("Kuvio_4_7c", height = fig_height)
+
+```
+
+```{r}
+
+ax_coeff <- 5
+
+dat_kuviot_4[["4_8a"]] |> 
+  mutate(across(starts_with("Arvon"), ~.x/ ax_coeff)) |> 
+  rename_with(~ paste0(.x, ", (oik.)"), starts_with("Arvon")) |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars, linetype = vars, size = vars)) +
+  geom_line() +
+  geom_h0() +
+   scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %"), 
+                      sec.axis = sec_axis(~.*ax_coeff, labels = scales::label_percent(accuracy = 1, suffix = " %"))) +
+  scale_linetype_manual(values = c(1,1,2)) +
+  scale_size_manual(values = c(1.5,1.5,1)) +
+  scale_colour_manual(values = tula_pal(3)[c(1,2,2)]) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+
+  
+save_figs2("Kuvio_4_8a", height = fig_height)
+
+```
+
+
+```{r}
+
+ax_coeff <- 10
+
+dat_kuviot_4[["4_8b"]] |> 
+  mutate(across(starts_with("Arvon"), ~.x/ ax_coeff)) |> 
+  rename_with(~ paste0(.x, ", (oik.)"), starts_with("Arvon")) |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars, linetype = vars, size = vars)) +
+  geom_line() +
+  geom_h0() +
+   scale_y_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = " %"), 
+                      sec.axis = sec_axis(~.*ax_coeff, labels = scales::label_percent(accuracy = 1, suffix = " %"))) +
+  scale_linetype_manual(values = c(1,1,2)) +
+  scale_size_manual(values = c(1.5,1.5,1)) +
+  scale_colour_manual(values = tula_pal(3)[c(1,2,2)]) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+
+  
+save_figs2("Kuvio_4_8b", height = fig_height)
+
+```
+
+
+```{r}
+
+p1 <- dat_kuviot_4[["4_9a"]] |> 
+  gather(vars, value, -Vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(Vuosi, value, colour = vars)) +
+  geom_line() +
+  geom_h0() +
+   scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2)) +
+  the_title_blank() 
+  
+
+p2 <- dat_kuviot_4[["4_9a"]] |> 
+  # gather(vars, value, -Vuosi) |> 
+  set_names(c("Vuosi", "y", "x")) |> 
+  ggplot(aes(x, y)) +
+  geom_point(colour = tula_pal(1)) +
+  stat_smooth(method = "lm", se = FALSE, colour = "grey20", size = 2) +
+    scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
+  # coord_fixed() +
+  # the_title_blank() +
+  labs(x = "Suhdannepuhdistettujen ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos")
+
+
+p1 + p2
+  
+save_figs2("Kuvio_4_9a", height = fig_height)
+
+```

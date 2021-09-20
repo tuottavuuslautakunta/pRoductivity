@@ -96,7 +96,7 @@ data_main10_groups |>
 dip_plot(synth_obj = synth10_est_results, weight_data = data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs(filename = "Kuvio_2_1_private", en = FALSE)
+# save_figs(filename = "Kuvio_2_1_private", en = FALSE)
 
 # save_trip_plot_data("private")
 
@@ -121,7 +121,7 @@ rel_plot2(data_main10_g_weighted, "private")
 dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("Kuvio_2_2_private_ex26", en = FALSE)
+# save_figs("Kuvio_2_2_private_ex26", en = FALSE)
 
 # save_trip_plot_data("private_ex26")
 
@@ -149,7 +149,7 @@ rel_plot2(data_main_g_weighted, "private_ex26")
 
 dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-save_figs("Kuvio_2_3_manu", en = FALSE)
+# save_figs("Kuvio_2_3_manu", en = FALSE)
 
 # save_trip_plot_data("manu")
 
@@ -175,7 +175,7 @@ rel_plot2(data_main10_g_weighted, "manu")
 dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-save_figs("Kuvio_2_4_manu_ex26", en = FALSE)
+# save_figs("Kuvio_2_4_manu_ex26", en = FALSE)
 
 # save_trip_plot_data("manu_ex26")
 
@@ -200,7 +200,7 @@ rel_plot2(data_main_g_weighted, "manu_ex26")
 
 dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-save_figs("Kuvio_2_5_service", en = FALSE)
+# save_figs("Kuvio_2_5_service", en = FALSE)
 
 
 
@@ -237,10 +237,11 @@ digi_geo_labs <-
     FI = "Suomi")
 
 d_class_labs <- 
-  c(d_manu = "Teollisuus - digitaalinen",
-    nd_manu = "Teollisuus - ei digitaalinen",
-    d_serv = "Palvelut - digitaalinen",
-    nd_serv = "Palvelut - ei digitaalinen")
+  c(nd_manu = "Teollisuus - ei digitaalinen",
+    d_manu = "Teollisuus - digitaalinen",
+    nd_serv = "Palvelut - ei digitaalinen",
+    d_serv = "Palvelut - digitaalinen"
+    )
 
 data_digi |> 
   filter(geo != "Bench_3") |>
@@ -248,6 +249,7 @@ data_digi |>
   # Vuodelle 2014 on yksi puuttuvat avainto non-digi teollisuudessa. Se imputoitu. xout imputoi 1-20 havainnot eli ei lopun NA arvoja.
   mutate(lp_ind = imputeTS::na_interpolation(lp_ind, method = "linear", xout = 1:20)) |> 
   mutate(geo = recode(geo, !!!digi_geo_labs),
+         d_class = fct_relevel(d_class, names(d_class_labs)),
          d_class = recode_factor(d_class, !!!d_class_labs)) |> 
   mutate(lp_ind = rebase(lp_ind, time, 2004)) |>
   ungroup() |> 
@@ -265,7 +267,7 @@ cat("Verrokkimaat 1: ", paste0(countrycode::countrycode(geo_digi_1, "eurostat", 
     "Verrokkimaat 2: ", paste0(countrycode::countrycode(geo_digi_2, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
     "Verrokkimaat OECD: ", paste0(countrycode::countrycode(geo_digi_oecd, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n")
 
-save_figs("digi_04", en = FALSE)
+save_figs("Kuvio_3_4", en = FALSE)
 
 ```
 
@@ -342,71 +344,141 @@ save_figs("LP_PPP_taso_suhteessa_FR", en = FALSE)
 
 ```{r}
 
-geo_level <- c("FI", "SE", "US", "DE", "DK", "FR", "IT", "ES")
+geo_level <- c("FI", "SE", "US", "DE", "DK", "FR", "IT", "ES") 
 
-data_main10_groups |> 
-  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
-  group_by(geo, nace0) |> 
-  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
-  mutate(lp_level05 = levels05 * lp_ind) |> 
-  ungroup() |> 
-  filter(geo %in% geo_level,
-         nace0 == "private") |> 
-  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
-  geom_line() +
-  scale_y_log10()
 
-save_figs("level_private", en = FALSE)
+data_main10_groups_level |> 
+  filter(time >= 1980) |> 
+  plot_lp_level(geos = geo_level, "private")
+
+save_figs("Kuvio_2_1", en = FALSE)
+
+# data_main10_groups_level |> 
+#   mutate(lp_level05 = lp_fp05_eur) |> 
+#   filter(time >= 1980) |> 
+#   plot_lp_level(geos = geo_level, "private")
 
 ```
 
 ```{r}
 
-data_main10_groups |> 
-  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
-  group_by(geo, nace0) |> 
-  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
-  mutate(lp_level05 = levels05 * lp_ind) |> 
-  ungroup() |> 
-  filter(geo %in% geo_level,
-         nace0 == "manu") |> 
-  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
-  geom_line() +
-  scale_y_log10()
+data_main10_groups_level |> 
+  filter(time >= 1980) |> 
+  plot_lp_level_rel(geos = geo_level, "private")
 
-save_figs("level_manu", en = FALSE)
+save_figs("Kuivio_2_2", en = FALSE)
+
+
+```
+
+
+```{r}
+
+data_main10_groups_level |> 
+  filter(time >= 1995) |> 
+  plot_lp_level(geos = geo_level, "manu")
+
+save_figs("Kuvio_2_4", en = FALSE)
+
+```
+
+
+```{r}
+
+data_main10_groups_level |> 
+  filter(time >= 1995) |> 
+  plot_lp_level(geos = geo_level, "service")
+
+save_figs("Kuvio_2_5", en = FALSE)
+
+```
+## Tuottavuuden taso - palveluiden alatoimialat
+
+```{r}
+
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CLV15_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,
+         lp_fp05_eur = lp_fp05 / exh_eur[time == 2005]) |>
+  mutate(lp_level05 = lp_fp05_eur / go_level05) |>
+  group_by(nace_r2) |> 
+  mutate(lp_level05 = 100 * lp_level05 / lp_level05[geo == "US" & time == 2005]) |> 
+  ungroup() |>
+  mutate(nace_r2 = recode(nace_r2, G = "Kauppa", H = "Kuljetus", I = "Majoitus- ja\nravitsemistoiminta",
+                          J = "Informaatio ja viestintä", M = "Ammatillinen, tieteellinen\nja tekninen toiminta",
+                          N = "Hallinto- ja tukipalvelut")) |>
+  mutate(geo = recode(geo, !!!set_names(names(countries), countries))) |> 
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, lp_level05, colour = geo)) +
+  facet_wrap(~nace_r2) +
+  geom_line() +
+  # geom_h0() +
+  scale_y_log10(breaks = seq(0, 300, 50)) +
+  scale_x_continuous(labels = no_century) +
+  the_legend_bot() +
+  theme(strip.text.x = ggplot2::element_text(size = ggplot2::rel(0.8))) +
+  the_title_blank("xl") +
+  labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
+
+save_figs("Kuvio_2_6", height = fig_height + 4, en = FALSE)
+
+```
+
+```{r}
+
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CLV15_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         p_ind = (B1G__CP_MNAC / B1G__CLV15_MNAC),
+         p_ind_05 = rebase(p_ind, time, 2005)) |>
+  ungroup() |>
+  mutate(p_level05 = p_ind_05 / go_level05) |>
+  mutate(nace_r2 = eurostat::label_eurostat(nace_r2, "nace_r2")) |> 
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, p_level05, colour = geo)) +
+  facet_wrap(~nace_r2, scales = "free") +
+  geom_line() +
+  geom_h0() +
+  the_title_blank() +
+  the_legend_bot()
+
+# save_figs("level_service_price", en = FALSE)
 
 ```
 ```{r}
 
-data_main10_groups |> 
-  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
-  group_by(geo, nace0) |> 
-  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
-  mutate(lp_level05 = levels05 * lp_ind) |> 
-  ungroup() |> 
-  filter(geo %in% geo_level,
-         nace0 == "service") |> 
-  ggplot(aes(time, lp_level05, colour = geo_nimi)) +
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CP_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,
+         lp_fp05_eur = lp_fp05 / exh_eur[time == 2005]) |>
+  ungroup() |>
+  mutate(lp_level05 = lp_fp05_eur / go_level05) |>
+  mutate(nace_r2 = eurostat::label_eurostat(nace_r2, "nace_r2")) |> 
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, lp_level05, colour = geo)) +
+  facet_wrap(~nace_r2, scales = "free") +
   geom_line() +
-  scale_y_log10()
+  geom_h0() +
+  the_title_blank() +
+  the_legend_bot()
 
-save_figs("level_service", en = FALSE)
+# save_figs("level_service_cp", en = FALSE)
 
 ```
-```{r}
-data_main10_groups |> 
-  left_join(rename(data_ggdc_level05, levels05 = values)) |> 
-  group_by(geo, nace0) |> 
-  mutate(lp_ind = rebase(lp_ind, time, 2005)) |> 
-  mutate(lp_level05 = levels05 * lp_ind) |> 
-  group_by(time, nace0) |> 
-  mutate(lp_level05_rel_us = 100 * lp_level05 /lp_level05[geo == "US"]) |> 
-  ungroup() |> 
-  filter(geo %in% geo_level,
-         nace0 == "private") |> 
-  ggplot(aes(time, lp_level05_rel_us, colour = geo_nimi)) +
-  geom_line() +
-  scale_y_log10()
-```
-

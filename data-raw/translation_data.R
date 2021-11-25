@@ -1,5 +1,5 @@
 
-
+library(stringr)
 
 
 trans_source <-
@@ -13,7 +13,7 @@ trans_target <-
   str_split( "/") %>% unlist()%>%
   str_replace("\\\\n" ,"\\\n")
 
-fig_translation <- set_names(trans_target, trans_source)
+fig_translation <- purrr::set_names(trans_target, trans_source)
 
 use_data(fig_translation, overwrite = TRUE)
 

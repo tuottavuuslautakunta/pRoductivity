@@ -37,7 +37,7 @@ save_figs <- function(filename,
                   plot = plot_slide_half, width = 16, height = 12, units = "cm")
 
   if (en){
-  ggplot2::ggsave(here::here("figures", paste0(filename, "_en.pdf")),
+  ggplot2::ggsave(here::here("figures/pdf_en", paste0(filename, "_en.pdf")),
                   plot = ggptt::translate_plot(plot1, fig_translation),
                   width = width, height = height, units = "cm")}
 
@@ -77,7 +77,7 @@ save_figs2 <- function(filename,
                   plot = plot_slide_half, width = 16, height = 12, units = "cm")
 
   if (en){
-    ggplot2::ggsave(here::here("figures", paste0(filename, "_en.pdf")),
+    ggplot2::ggsave(here::here("figures/pdf_en", paste0(filename, "_en.pdf")),
                     plot = ggptt::translate_plot(plot1, fig_translation),
                     width = width, height = height, units = "cm")}
 

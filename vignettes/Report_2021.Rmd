@@ -38,7 +38,7 @@ data("data_main_groups", "data_main10_groups", "synth_est_results", "synth10_est
 data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
 
 
-
+fig_height <- 10
 
 high_country <- "Suomi"
 high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
@@ -231,16 +231,16 @@ Siistitty ja imputoitu kuvio
 ```{r}
 
 digi_geo_labs <- 
-  c(Bench_1 = "verrokkimaat 1",
-    Bench_2 = "verrokkimaat 2",
-    Bench_OECD = "verrokkimaat OECD",
+  c(Bench_1 = "Verrokkimaat 1",
+    Bench_2 = "Verrokkimaat 2",
+    Bench_OECD = "Verrokkimaat OECD",
     FI = "Suomi")
 
 d_class_labs <- 
-  c(nd_manu = "Teollisuus - ei digitaalinen",
-    d_manu = "Teollisuus - digitaalinen",
-    nd_serv = "Palvelut - ei digitaalinen",
-    d_serv = "Palvelut - digitaalinen"
+  c(nd_manu = "Ei-digitaalinen teollisuus",
+    d_manu = "Digitaalinen teollisuus",
+    nd_serv = "Ei-digitaalinen palvelu",
+    d_serv = "Digitaalinen palvelu"
     )
 
 data_digi |> 
@@ -267,7 +267,7 @@ cat("Verrokkimaat 1: ", paste0(countrycode::countrycode(geo_digi_1, "eurostat", 
     "Verrokkimaat 2: ", paste0(countrycode::countrycode(geo_digi_2, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
     "Verrokkimaat OECD: ", paste0(countrycode::countrycode(geo_digi_oecd, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n")
 
-save_figs("Kuvio_3_4", en = FALSE)
+save_figs("Kuvio_3_4")
 
 ```
 
@@ -292,7 +292,7 @@ data_ted |>
   the_title_blank("xl") +
   the_legend_bot()
 
-save_figs("LP_PPP_taso", en = FALSE)
+save_figs("LP_PPP_taso")
 
 ```
 
@@ -315,7 +315,7 @@ data_ted |>
   the_title_blank("xl") +
   the_legend_bot()
 
-save_figs("LP_PPP_taso_suhteessa", en = FALSE)
+save_figs("LP_PPP_taso_suhteessa", en = TRUE)
 
 ```
 
@@ -338,7 +338,7 @@ data_ted |>
   the_title_blank("xl") +
   the_legend_bot()
 
-save_figs("LP_PPP_taso_suhteessa_FR", en = FALSE)
+save_figs("LP_PPP_taso_suhteessa_FR", en = TRUE)
 
 ```
 
@@ -351,7 +351,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level(geos = geo_level, "private")
 
-save_figs("Kuvio_2_1", en = FALSE)
+save_figs("Kuvio_2_1", en = TRUE)
 
 # data_main10_groups_level |> 
 #   mutate(lp_level05 = lp_fp05_eur) |> 
@@ -366,7 +366,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level_rel(geos = geo_level, "private")
 
-save_figs("Kuivio_2_2", en = FALSE)
+save_figs("Kuvio_2_2", en = TRUE)
 
 
 ```
@@ -378,7 +378,7 @@ data_main10_groups_level |>
   filter(time >= 1995) |> 
   plot_lp_level(geos = geo_level, "manu")
 
-save_figs("Kuvio_2_4", en = FALSE)
+save_figs("Kuvio_2_4", en = TRUE)
 
 ```
 
@@ -389,7 +389,7 @@ data_main10_groups_level |>
   filter(time >= 1995) |> 
   plot_lp_level(geos = geo_level, "service")
 
-save_figs("Kuvio_2_5", en = FALSE)
+save_figs("Kuvio_2_5", en = TRUE)
 
 ```
 ## Tuottavuuden taso - palveluiden alatoimialat
@@ -426,7 +426,7 @@ data_main |>
   the_title_blank("xl") +
   labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
 
-save_figs("Kuvio_2_6", height = fig_height + 4, en = FALSE)
+save_figs("Kuvio_2_6", height = fig_height + 4, en = TRUE)
 
 ```
 
@@ -453,7 +453,7 @@ data_main |>
   the_title_blank() +
   the_legend_bot()
 
-# save_figs("level_service_price", en = FALSE)
+# save_figs("level_service_price", en = TRUE)
 
 ```
 ```{r}
@@ -479,6 +479,6 @@ data_main |>
   the_title_blank() +
   the_legend_bot()
 
-# save_figs("level_service_cp", en = FALSE)
+# save_figs("level_service_cp", en = TRUE)
 
 ```

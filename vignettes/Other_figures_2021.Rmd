@@ -73,7 +73,8 @@ dat_oecd_levels %>%
   # geom_h0() +
   scale_y_log10(breaks = seq(0, 300, 10)) +
   labs(y = "Vuoden 2015 hinnoin, 1000 $, ostovoimakorjattu,\nlogaritminen asteikko",
-       caption = "Lähde: OECD") 
+       caption = "Lähde: OECD") +
+  theme(legend.text = element_text(size = 9))
 
 
 save_figs("Kuvio_1_1", height = fig_height)
@@ -170,11 +171,11 @@ save_figs("Kuvio_1_6", height = fig_height)
 
 dat_kuviot_johd[["1.7"]] %>% #names()
   gather(geo, values, -vuosi, -otsikko_fi, -otsikko_en) %>% 
-  mutate(geo_name = geo,
+  mutate(geo_name = as_factor(geo),
          time = vuosi) %>% 
   ggplot(aes(time, values, colour = geo_name)) + 
   geom_line() +
-  scale_colour_manual(values = rev(tula_pal(2))) +
+  scale_colour_manual(values = tula_pal(2)) +
   the_legend_bot() +
   the_title_blank(c("x", "l")) +
   labs(y = "Indeksi, 1992 = 100")

@@ -321,6 +321,7 @@ p1 + p2
   
 save_figs2("Kuvio_4_6", height = fig_height)
 
+save_figs2_en("Kuvio_4_6", plot = ggptt::translate_plot(p1, fig_translation) + ggptt::translate_plot(p2, fig_translation), height = fig_height)
 ```
 
 
@@ -352,8 +353,9 @@ p2 <- dat_kuviot_4[["4_7a"]] |>
 
 
 p1 + p2
-  
-save_figs2("Kuvio_4_7a", height = fig_height)
+
+save_figs2("Kuvio_4_7a", height = fig_height)  
+save_figs2_en("Kuvio_4_7a", plot = ggptt::translate_plot(p1, fig_translation) + ggptt::translate_plot(p2, fig_translation), height = fig_height)
 
 ```
 
@@ -387,6 +389,7 @@ p2 <- dat_kuviot_4[["4_7c"]] |>
 p1 + p2
   
 save_figs2("Kuvio_4_7c", height = fig_height)
+save_figs2_en("Kuvio_4_7c", plot = ggptt::translate_plot(p1, fig_translation) + ggptt::translate_plot(p2, fig_translation), height = fig_height)
 
 ```
 
@@ -396,7 +399,7 @@ ax_coeff <- 5
 
 dat_kuviot_4[["4_8a"]] |> 
   mutate(across(starts_with("Arvon"), ~.x/ ax_coeff)) |> 
-  rename_with(~ paste0(.x, ", (oik.)"), starts_with("Arvon")) |> 
+  rename_with(~ paste0(.x, ", (oik.)"), starts_with("Arvon")) |> #names() -> kk
   gather(vars, value, -Vuosi) |> 
   mutate(vars = as_factor(vars)) |> 
   ggplot(aes(Vuosi, value, colour = vars, linetype = vars, size = vars)) +
@@ -409,7 +412,8 @@ dat_kuviot_4[["4_8a"]] |>
   scale_colour_manual(values = tula_pal(3)[c(1,2,2)]) +
   the_legend_bot() +
   guides(colour = guide_legend(nrow = 2)) +
-  the_title_blank() 
+  the_title_blank() +
+  theme(legend.text = element_text(size = 7))
   
 
 
@@ -438,7 +442,8 @@ dat_kuviot_4[["4_8b"]] |>
   scale_colour_manual(values = tula_pal(3)[c(1,2,2)]) +
   the_legend_bot() +
   guides(colour = guide_legend(nrow = 2)) +
-  the_title_blank() 
+  the_title_blank() +
+  theme(legend.text = element_text(size = 7))
   
 
 
@@ -460,7 +465,8 @@ p1 <- dat_kuviot_4[["4_9a"]] |>
    scale_y_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
   the_legend_bot() +
   guides(colour = guide_legend(nrow = 2)) +
-  the_title_blank() 
+  the_title_blank() +
+  theme(legend.text = element_text(size = 8))
   
 
 p2 <- dat_kuviot_4[["4_9a"]] |> 
@@ -473,11 +479,12 @@ p2 <- dat_kuviot_4[["4_9a"]] |>
   scale_x_continuous(labels = scales::label_percent(accuracy = 1, suffix = " %")) +
   # coord_fixed() +
   # the_title_blank() +
-  labs(x = "Suhdannepuhdistettujen ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos")
+  labs(x = "Suhdannepuhdistettujen ylivoittojen muutos", y = "Allokaatiotehokkuuden muutos") 
 
 
-p1 + p2
+p1 + p2 
   
 save_figs2("Kuvio_4_9a", height = fig_height)
+save_figs2_en("Kuvio_4_9a", plot = ggptt::translate_plot(p1, fig_translation) + ggptt::translate_plot(p2, fig_translation), height = fig_height)
 
 ```

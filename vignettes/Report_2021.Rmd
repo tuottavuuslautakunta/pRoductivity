@@ -413,7 +413,8 @@ data_main |>
   mutate(nace_r2 = recode(nace_r2, G = "Kauppa", H = "Kuljetus", I = "Majoitus- ja\nravitsemistoiminta",
                           J = "Informaatio ja viestintä", M = "Ammatillinen, tieteellinen\nja tekninen toiminta",
                           N = "Hallinto- ja tukipalvelut")) |>
-  mutate(geo = recode(geo, !!!set_names(names(countries), countries))) |> 
+  mutate(geo = as_factor(recode(geo, !!!set_names(names(countries), countries)))) |>
+  mutate(geo = fct_relevel(geo, "Ruotsi", "Saksa", "Suomi", "Tanska", "USA")) |>
   mutate(nace_r2 = as_factor(nace_r2)) |> 
   ggplot(aes(time, lp_level05, colour = geo)) +
   facet_wrap(~nace_r2) +

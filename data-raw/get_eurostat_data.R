@@ -6,6 +6,8 @@ library(tidyr)
 library(forcats)
 library(eurostat)
 
+options(timeout = 300)
+
 dat_nama_10_gdp_0 <- eurostat::get_eurostat("nama_10_gdp", time_format = "num", cache = FALSE)
 dat_nama_10_a64_0 <- eurostat::get_eurostat("nama_10_a64", time_format = "num", cache = FALSE)
 dat_nama_10_a64_e_0 <- eurostat::get_eurostat("nama_10_a64_e", time_format = "num", cache = FALSE)
@@ -126,3 +128,4 @@ dat_eurostat_digi <-
   complete(geo, time, nace_r2)
 
 usethis::use_data(dat_eurostat_digi, overwrite = TRUE)
+

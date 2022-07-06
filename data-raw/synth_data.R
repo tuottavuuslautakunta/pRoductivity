@@ -6,6 +6,7 @@ library(here)
 library(dplyr)
 library(tidyr)
 library(tidysynth)
+library(purrr)
 
 devtools::load_all()
 

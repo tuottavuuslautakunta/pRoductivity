@@ -1,6 +1,8 @@
 
 # map
 
+library(tidyverse)
+
 ggdc_file <- here::here("data-raw", "benchmark_2005.xlsx")
 
 data_ggdc_level05 <- readxl::read_xlsx(ggdc_file, sheet = "LP_GDP_MajorSector", skip = 1) |>

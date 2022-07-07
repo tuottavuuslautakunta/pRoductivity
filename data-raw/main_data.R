@@ -72,9 +72,9 @@ usethis::use_data(geo_digi_oecd, geo_digi_1, geo_digi_2, geo_digi_3, overwrite =
 
 ## Data used
 # update:
-source("data-raw/get_eurostat_data_10.R")
-source("data-raw/get_eurostat_data.R")
-source("data-raw/get_oecd_sna.R")
+# source("data-raw/get_eurostat_data_10.R")
+# source("data-raw/get_eurostat_data.R")
+# source("data-raw/get_oecd_sna.R")
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 
@@ -169,7 +169,8 @@ dat_oecd_sna_nace10_imput <-
   summarise_all(sum) %>%
   group_by(geo, nace_r2) %>%
   mutate(B1G__CLV15_MNAC = statfitools::fp(cp = B1G__CP_MNAC, pp = B1G__PYP_MNAC, time = time, year = 2015)) %>%
-  ungroup()
+  ungroup() |>
+  droplevels()
 
 
 data_main10 <-

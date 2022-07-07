@@ -19,11 +19,11 @@ OECD data is updated with data-raw/get_oecd_sna.R
 
 Datasets:
 Detailed:
- * data_main, data from with main industry classification plus C26.
+ * data_main, data from with main industry classification plus C26 ("C", "C26", "F", "G", "H", "I", "J", "M", "N", "TOTAL").
  * data_main_groups, data with main groupings private, private_ex26, manu, manu_ex26, service
 Shorter publication lag:
- * data_main10, data with aggregate industry classification.
- * data_main10_groups, data with main groupings private, private_ex26, manu, manu_ex26, service
+ * data_main10, data with aggregate industry classification ("C", "F", "G-I", "J", "M_N", "TOTAL").
+ * data_main10_groups, data with main groupings private, manu, service
  
 
 

@@ -1,0 +1,64 @@
+---
+title: "Palkat ja niiden ennusteet"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Palkat ja niiden ennusteet}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pRoductivity)
+
+
+library(tidyverse)
+library(ggptt)
+
+set_ptt()
+
+geo_wage <- c("BE", "DK", "DE", "ES", "FR", "IT", "NL", "AT", "FI", "SE", "UK", "NO", "US")
+```
+
+## Ameco data
+
+### Työntekijäkorvaus toimialoittain
+
+taso
+
+```{r setup}
+# Ameco data:  National Accounts by Branch Of Activity
+ameco12_0 <- ficomp::read_ameco(table_num = 12)
+
+ameco12_I <- 
+  ameco12_0 |> 
+  separate(code, into = c("geo", NA, "desc", "unit_code", "rel", "vars"), sep = "\\.", remove = FALSE) |> 
+  mutate(geo = as_factor(countrycode::countrycode(geo, "iso3c", "eurostat",
+                                                  nomatch = NULL,
+                                                  custom_match = c(ROM = "RO"))))
+
+
+ameco12_I |> 
+  filter(title %in% c(
+    "Nominal compensation per employee: manufacturing industry ",
+    "Nominal compensation per employee: services ",
+    "Nominal compensation per employee: building and construction ",
+    "Nominal compensation per employee: agriculture, forestry and fishery products "),
+         geo %in% geo_wage,
+         unit == "(1000 EUR) ") |> 
+  filter(time >= 2010) |> 
+  mutate(title = str_remove(title, "Nominal compensation per employee: ")) |> 
+  ggplot(aes(time, values, colour = country, size = geo == "FI")) +
+  geom_line() +
+  facet_wrap(~ title, scales = "free") +
+  scale_size_manual(values = c(1,3)) +
+  labs(
+    title = "Nominal compensation per employee"
+  )
+```

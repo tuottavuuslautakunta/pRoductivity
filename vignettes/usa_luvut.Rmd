@@ -1,0 +1,157 @@
+---
+title: "Yhdysvaltojen tuottavuusluvut"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Yhdysvaltojen tuottavuusluvut}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pRoductivity)
+library(tidyverse)
+library(blsR)
+library(bea.R)
+
+# Api key:t saa rekisteröitymällä ja tässä oletuksena, että tallennettu optionseihin.
+beakey <- getOption("bea.key")
+blskey <- getOption("bls.key")
+
+
+```
+
+Yhdysvaltojen tuottavuusluvut perustuvat pääosin Bureau of Economic Analysis 
+tietoihin, joko national income and product accounts (NIPA) 
+https://apps.bea.gov/iTable/index_nipa.cfm tauluihin tai GDP-by-industry
+https://apps.bea.gov/iTable/index_industry_gdpIndy.cfm tauluihin.
+
+Lisäksi Bureau of Labor Statisticsilla on tuottavuustietoja, joka perustuvat
+pääosin BEA:n tietohin, mutta siltävät myös muita tietoja.
+Handbook: https://www.bls.gov/opub/hom/msp/home.htm
+
+Tuottavuuslautakunnan käyttämät OECD:n tiedot perustuvat BEA:n tietohin.
+
+## BLS: tiedot
+
+BLS:n tuottavuustiedot: https://www.bls.gov/productivity/data.htm
+
+BLS:n tiedot Major Sector Productivity and Costs
+päivittyvät nopesti.
+
+Major Sector sisältää:
+
+* Nonfarm business
+* Business Sector
+* Nonfinancial corporate sector
+* Manufacturing sector
+* Durable manufacturing sector
+* Nondurable manufacturing sector
+
+Niissä output ei kuitenkaan ole kaikkissa sama vaan manufucturing output on 
+tuotos, ei arvonlisä, kuten business sektorin. Sama koskee myös tarkemman 
+toimialajaoin tietoja.
+
+Niiden Nonfinancial Corporations, vastaa melko hyvin Tuottavuuslautakunnan
+Yksitykstä sektoria, ei kuitenkaan täysin.
+
+
+
+```{r}
+
+# Nonfinancial Corporations
+
+us_business_q <- get_series_tables(
+  list(
+    lp_ind ="PRS88003093",
+    va_ind = 'PRS88003043',
+    h_ind = "PRS88003033"),
+  api_key = getOption("bls.key"),
+  start_year = 2002,
+  end_year = 2021
+)
+
+
+business_bls <-
+  us_business_q |>
+  merge_tables() |>
+  select(-period) |>
+  group_by(year) |>
+  summarise(across(c(lp_ind, va_ind, h_ind), mean)) |>
+  mutate(across(c(lp_ind, va_ind, h_ind), ~rebase(.x, year, 2007))) |>
+  ungroup() |>
+  mutate(id = "bls") |>
+  rename(time = year)
+
+
+data_main10_groups |>
+  filter(geo == "US",
+         nace0 == "private") |>
+  select(time, lp_ind, va_ind, h_ind) |>
+  mutate(id = "oecd") |>
+  bind_rows(business_bls) |>
+  gather(vars, value, lp_ind, va_ind, h_ind) |>
+  ggplot(aes(time, value, colour = id)) +
+  geom_line() +
+    facet_wrap(~vars)
+
+
+```
+
+
+
+Teollisuuden vastaavat tiedot, jotka eivät siis vastaa OECD:n tietoja, koska
+BLS:n tiedot laskettu tuotoksesta.
+
+```{r}
+
+
+
+# Nonfinancial Corporations
+
+us_manufacturing_q <- get_series_tables(
+  list(
+    lp_ind ="PRS30006093",
+    va_ind = 'PRS30006043',
+    h_ind = "PRS30006033"),
+  api_key = getOption("bls.key"),
+  start_year = 2002,
+  end_year = 2021
+)
+
+
+manufacturing_bls <-
+  us_manufacturing_q |>
+  merge_tables() |>
+  select(-period) |>
+  group_by(year) |>
+  summarise(across(c(lp_ind, va_ind, h_ind), mean)) |>
+  mutate(across(c(lp_ind, va_ind, h_ind), ~rebase(.x, year, 2007))) |>
+  ungroup() |>
+  mutate(id = "bls") |>
+  rename(time = year)
+
+
+data_main10_groups |>
+  filter(geo == "US",
+         nace0 == "manu") |>
+  select(time, lp_ind, va_ind, h_ind) |>
+  mutate(id = "oecd") |>
+  bind_rows(manufacturing_bls) |>
+  gather(vars, value, lp_ind, va_ind, h_ind) |>
+  ggplot(aes(time, value, colour = id)) +
+  geom_line() +
+    facet_wrap(~vars)
+
+
+```
+
+## BEA:n tiedot
+
+NIPA tiedoista Table 6.2D. Compensation of Employees by Industry

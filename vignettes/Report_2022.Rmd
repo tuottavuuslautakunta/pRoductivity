@@ -364,7 +364,7 @@ save_figs("Kuvio_2_1", en = TRUE)
 
 data_main10_groups_level |> 
   filter(time >= 1980) |> 
-  plot_lp_level_rel(geos = geo_level, "private")
+  plot_lp_level_rel(geos = geo_level, nace = "private")
 
 save_figs("Kuvio_2_2", en = TRUE)
 

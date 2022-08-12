@@ -44,6 +44,7 @@ plot_lp_level_rel <- function(data, geos, nace){
     filter(geo %in% geos,
            nace0 == nace) |>
     droplevels() |>
+    complete(time, nesting(geo, geo_name), nace0) |>
     group_by(time, nace0) |>
     mutate(lp_level05 = 100 * lp_level05 / lp_level05[geo == "US"]) |>
     ungroup() |>

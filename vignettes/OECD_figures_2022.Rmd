@@ -1,0 +1,247 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 8,
+  fig.height = 6,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot_oecd <- here::here("data-raw/data_OECD_2022.xlsx")
+
+dat_kuviot_oecd <- 
+  set_names(readxl::excel_sheets(file_kuviot_oecd)) %>% 
+  map(~readxl::read_xlsx(file_kuviot_oecd, sheet = .x, skip = 1))  
+
+
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+sektorit <- c("Digitaalinen teollisuus", "Ei-digitaalinen teollisuus", "Digitaaliset palvelut", "Ei-digitaaliset palvelut")
+
+```
+
+### Kuvio_a
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio a"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_a", height = fig_height)
+
+```
+
+### Kuvio_b
+
+```{r}
+
+p1 <- 
+  dat_kuviot_oecd[["Kuvio b"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  filter(str_detect(Sektorit, "teollisuus")) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "indeksi")
+
+p2 <- 
+  dat_kuviot_oecd[["Kuvio b"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  filter(str_detect(Sektorit, "palvelut")) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "indeksi")
+
+(p1 / p2) + plot_layout(guides = 'collect') &
+  theme(legend.position='bottom')
+
+save_figs("Kuvio_b", height = fig_height)
+
+```
+
+### Kuvio_c
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio c"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "90-10 suhde")
+
+save_figs("Kuvio_c", height = fig_height)
+
+```
+
+### Kuvio_d
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio d"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "taso")
+
+save_figs("Kuvio_d", height = fig_height)
+
+```
+
+### Kuvio_e
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio e"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |> 
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_e", height = fig_height)
+
+```
+
+### Kuvio_f
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio f"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, c("Teollisuus", "Palvelut")),
+         Vuosi = as_factor(Vuosi)) |>
+  ggplot(aes(Vuosi, value, fill = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_col(position = "dodge") +
+  geom_h0() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_f", height = fig_height)
+
+```
+
+### Kuvio_g
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio g"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, c("Teollisuus", "Palvelut")),
+         Vuosi = as_factor(Vuosi)) |>
+  ggplot(aes(Vuosi, value, fill = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_col(position = "dodge") +
+  geom_h0() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_g", height = fig_height)
+
+```
+
+### Kuvio_h
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio h"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, c("Teollisuus", "Palvelut")),
+         Vuosi = as_factor(Vuosi)) |>
+  ggplot(aes(Vuosi, value, fill = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_col(position = "dodge") +
+  geom_h0() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_h", height = fig_height)
+
+```
+
+### Kuvio_i
+
+```{r}
+
+dat_kuviot_oecd[["Kuvio i"]] |> 
+  gather(geo, value, Suomi, Verrokkimaat) |> 
+  mutate(Sektorit = factor(Sektorit, sektorit)) |>
+  ggplot(aes(Vuosi, value, colour = geo)) +
+  facet_wrap(~Sektorit) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_i", height = fig_height)
+
+```

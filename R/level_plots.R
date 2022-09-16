@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-plot_lp_level <- function(data, geos, nace){
+plot_lp_level <- function(data, geos, nace, y = lp_level05){
 
   size_values <-
    c(2.5,1.5,1.5,1.5,1.5,1.5,0.5,0.5)[1:length(geos)]
@@ -20,7 +20,7 @@ plot_lp_level <- function(data, geos, nace){
     droplevels() |>
     mutate(geo = fct_relevel(geo, geo_level)) |>
     mutate(geo_name = fct_recode(geo, !!!countries)) |>
-    ggplot(aes(time, lp_level05, colour = geo_name, size = geo_name)) +
+    ggplot(aes(time, {{y}}, colour = geo_name, size = geo_name)) +
     geom_line() +
     scale_size_manual(name = "legend", values = size_values)+
     scale_y_log10(breaks = seq(0, 200, 10)) +

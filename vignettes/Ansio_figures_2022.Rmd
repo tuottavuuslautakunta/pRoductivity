@@ -1,0 +1,119 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 8,
+  fig.height = 6,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Kuviot_ansio_2022.xlsx")
+
+dat_kuviot <- 
+  set_names(readxl::excel_sheets(file_kuviot)) %>% 
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x, skip = 0))  
+
+
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+### Kuvio_3
+
+```{r}
+
+dat_kuviot[["Kuvio x.3"]] |> 
+  gather(series, value, -vuosi) |> 
+  mutate(vuosi = as.numeric(vuosi),
+         value = 100 * value) |>
+  ggplot(aes(vuosi, value, colour = series)) +
+  geom_line() +
+  geom_h0() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_2_3", height = fig_height)
+
+```
+
+### Kuvio_4
+
+```{r}
+
+dat_kuviot[["Kuvio x.4"]] |> 
+  gather(series, value, -vuosi) |> 
+  mutate(vuosi = as.numeric(vuosi),
+         value = 100 * value) |>
+  ggplot(aes(vuosi, value, colour = series)) +
+  geom_line() +
+  geom_h0() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_2_4", height = fig_height)
+
+```
+
+
+```{r}
+
+dat_kuviot[["Kuvio x.5"]] |> 
+  select(-Muut) |> 
+  gather(series, value, -vuosi) |> 
+  mutate(series = fct_relevel(series, "Yksityinen sektori")) |> 
+  mutate(vuosi = as.numeric(vuosi),
+         value = 100 * value) |>
+  ggplot(aes(vuosi, value, colour = series, size = series)) +
+  geom_line() +
+  geom_h0() +
+  scale_size_manual(values = c(c(3, 2,1.2))) +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "prosenttia")
+
+save_figs("Kuvio_2_5", height = fig_height)
+
+```

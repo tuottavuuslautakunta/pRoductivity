@@ -1,0 +1,85 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 8,
+  fig.height = 6,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Kuvio_innovaatiopolitiika_2022.xlsx")
+
+dat_kuviot <- 
+  set_names(readxl::excel_sheets(file_kuviot)) %>% 
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x, skip = 0))  
+
+
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+### Kuvio_4
+
+```{r}
+
+dat_kuviot[["Kuvio_4"]] |> 
+  gather(series, value, -Vuosi) |> 
+  mutate(vuosi = as.numeric(Vuosi)) |> 
+  ggplot(aes(vuosi, value)) +
+  
+  geom_col(data = ~filter(.x, str_detect(series, "milj")), 
+           mapping = aes(fill = series)) +
+  geom_line(data = ~mutate(filter(.x, str_detect(series, "%")), value = 10 * value),
+            mapping = aes(colour = series)) +
+  geom_h0() +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 10, name = "%")) +
+  scale_color_manual(values = tula_pal(2)[2]) +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "milj. €") +
+  theme(legend.direction = "vertical") 
+
+save_figs("Kuvio_9_2", height = fig_height)
+
+```

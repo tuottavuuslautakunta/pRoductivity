@@ -1,0 +1,223 @@
+---
+title: "Raportin luvun 1 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot_johd <- here::here("data-raw/Johdanto-kuvioiden_data_2022.xlsx")
+
+dat_kuviot_johd <-
+  set_names(readxl::excel_sheets(file_kuviot_johd)) %>%
+  map(~readxl::read_xlsx(file_kuviot_johd, sheet = .x))
+
+
+geo_klems <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", 
+               "Saksa" = "DE", "Tanska" = "DK", 
+               "Italia" = "IT", "Espanja" = "ES", "Alankomaat" = "NL",
+               "Belgia" = "BE", "Iso-Britannia" = "UK") 
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+```{r}
+
+dat_oecd_levels %>%
+  prod_ind_plot_high(plot_var = "gdp_per_h", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2015) +
+  the_legend_bot() +
+  # geom_h0() +
+  scale_y_log10(breaks = seq(0, 300, 10)) +
+  labs(y = "Vuoden 2015 hinnoin, 1000 $, ostovoimakorjattu,\nlogaritminen asteikko",
+       caption = "Lähde: OECD") +
+  theme(legend.text = element_text(size = 9))
+
+
+save_figs("Kuvio_1_1", height = fig_height)
+
+
+```
+
+```{r}
+
+
+
+dat_oecd_levels %>% 
+  group_by(time) %>% 
+  mutate(rel_ch = 100 * gdp_per_h / gdp_per_h[geo == "US"]) %>% 
+  ungroup() %>% 
+  prod_ind_plot_high(plot_var = "rel_ch", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2015) +
+  the_legend_bot() +
+  # geom_h0() +
+  labs(y = "Indeksi, Yhdysvallat = 100",
+       caption = "Lähde: OECD") 
+
+
+save_figs("Kuvio_1_2", height = fig_height)
+
+
+```
+
+
+```{r}
+
+dat_klems_luiss %>% 
+  filter(nace_r2_name == "Non-agricultural market economy (Market economy less industry A)",
+         var == "LP1TFP_I") |> 
+  filter(geo %in% geo_klems) |> 
+  filter(time >= 1997 & time <= 2007) |> 
+  group_by(geo) |> 
+  mutate(value = rebase(value, time, 1997)) |> 
+  ungroup() |> 
+  mutate(geo_name = fct_recode(geo, !!!geo_klems)) %>% 
+  prod_ind_plot_high(plot_var = "value", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 1997) +
+  the_legend_bot() +
+  scale_x_continuous(breaks = seq(1998, 2006, 2))
+
+save_figs("Kuvio_1_3", height = fig_height)
+
+```
+
+```{r}
+
+dat_klems_luiss %>% 
+  filter(nace_r2_name == "Non-agricultural market economy (Market economy less industry A)",
+         var == "LP1TFP_I") |> 
+  filter(geo %in% geo_klems) |> 
+  filter(time >= 2007 ) |> 
+  group_by(geo) |> 
+  mutate(value = rebase(value, time, 2007)) |> 
+  ungroup() |> 
+  mutate(geo_name = fct_recode(geo, !!!geo_klems)) %>% 
+  prod_ind_plot_high(plot_var = "value", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2007) +
+  the_legend_bot() +
+  scale_x_continuous(breaks = seq(2008, 2022, 2))
+
+save_figs("Kuvio_1_4", height = fig_height)
+
+```
+
+
+
+```{r}
+
+dat_kuviot_johd[["Kuvio_1_5"]] %>% 
+  gather(geo, values, -vuosi) %>% 
+  mutate(geo_name = geo,
+         time = vuosi,
+         lp_ind = values) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 1995) +
+  geom_hline(yintercept = 100) +
+  the_legend_bot() 
+
+save_figs("Kuvio_1_5", height = fig_height)
+
+```
+```{r}
+
+dat_kuviot_johd[["Kuvio_1_6"]] %>%  #names()
+  select(-contains("ind")) %>%
+  gather(geo, values, -vuosi) %>% 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+  prod_ind_plot_high(plot_var = "values", high_country = "Suomi", high_countries = setdiff(unique(.$geo_name), high_country), base_year = 2008) +
+  geom_hline(yintercept = 100) +
+  scale_size_manual(values = c(1.5), guide = "none") +
+  ylim(c(0,120)) +
+  the_legend_bot() 
+
+save_figs("Kuvio_1_6", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot_johd[["Kuvio_1_7"]] %>% #names()
+  gather(geo, values, -vuosi) %>% 
+  mutate(geo_name = as_factor(geo),
+         time = vuosi) %>% 
+  ggplot(aes(time, values, colour = geo_name)) + 
+  geom_line() +
+  scale_colour_manual(values = tula_pal(2)) +
+  the_legend_bot() +
+  the_title_blank(c("x", "l")) +
+  labs(y = "Indeksi, 1992 = 100")
+
+save_figs("Kuvio_1_7", height = fig_height)
+
+```
+
+
+
+
+```{r}
+
+dat_kuviot_johd[["Kuvio_1_8"]] %>% # names()
+  gather(geo, values, -vuosi) %>% 
+  mutate(geo_name = geo,
+         time = vuosi) %>% 
+    rename(plot_var = values) %>%
+  mutate(high_names = geo_name,
+         high_names = fct_relevel(high_names, c("Suomi", "Maailman tuonti"), after = 0),
+         high_size = fct_other(high_names, keep = c("Suomi", "Maailman tuonti"), other_level = "muut high"),
+         geo_name = fct_relevel(geo_name, c("Suomi", "Maailman tuonti"), after = Inf)) %>%
+    ggplot(aes(time, plot_var, group = geo_name, colour = high_names, size = high_size)) +
+    # geom_line(alpha = 0.7) +
+    geom_line() +
+    scale_size_manual(values = c(2.5, 2, 1), guide = "none") +
+    # scale_colour_manual(values = tula_pal) +
+    guides(colour = guide_legend()) +
+    the_title_blank(c("x", "l")) +
+    labs(y = glue("Indeksi, {base_year} = 100")) +
+  the_legend_bot() +
+  geom_hline(yintercept = 100) +
+  labs(y = "Indeksi, 2007 = 100",
+       title = "Maailman tavara- ja palvelutuonti ja eräiden maiden vienti") +
+  ylim(c(25,175)) 
+
+save_figs("Kuvio_1_8", height = fig_height)
+
+```
+
+

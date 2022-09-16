@@ -1,0 +1,99 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 8,
+  fig.height = 6,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Kuviot_4_2022.xlsx")
+
+dat_kuviot <- 
+  set_names(readxl::excel_sheets(file_kuviot)) %>% 
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x, skip = 0))  
+
+
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+## Kuviot
+
+```{r}
+
+dat_kuviot[["Kuvio_4_1"]] |> 
+  gather(vuosi, value, -tol) |> 
+  ggplot(aes(tol, value, fill = vuosi)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = colorspace::lighten(rep(tula_pal(1), 3), c(0.5, 0.3, 0))) +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "suhdeluku")  
+
+save_figs("Kuvio_4_1", height = fig_height)
+
+```
+
+```{r}
+
+fun_fig4 <- function(dat){
+  dat |> 
+    gather(vuosi, value, -tol) |> 
+    ggplot(aes(tol, value, fill = vuosi)) +
+    geom_col(position = "dodge") +
+    scale_fill_manual(values = colorspace::lighten(rep(tula_pal(1), 3), c(0.5, 0.3, 0))) +
+    the_title_blank("xl") +
+    the_legend_bot() +
+    labs(y = "suhdeluku")
+}
+
+figs_4 <- 
+  purrr:::map(dat_kuviot, fun_fig4)
+
+purrr::map(figs_4, ~.x)
+
+purrr::imap(figs_4, ~save_figs(.y, plot = .x, , height = fig_height))
+
+```

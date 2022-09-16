@@ -46,12 +46,12 @@ dat_oecd_levels0 <- get_dataset(dataset = "PDB_LV",
 
 dat_oecd_levels <- dat_oecd_levels0 %>%
   transmute(
-    time = as.numeric(obsTime),
+    time = as.numeric(Time),
     geo = as_factor(countrycode(LOCATION, "iso3c", "eurostat", nomatch = NULL)),
     vars = fct_recode(SUBJECT, !!!pdb_subjects),
     unit = fct_recode(MEASURE, !!!pdb_measures),
     currency = as_factor(UNIT),
-    values = obsValue) %>%
+    values = as.numeric(ObsValue)) %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values) %>%
   filter(time >= 1970) %>%

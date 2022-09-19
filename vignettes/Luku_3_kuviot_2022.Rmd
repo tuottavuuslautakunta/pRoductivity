@@ -1,0 +1,204 @@
+---
+title: "Raportin luvun 3 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 8,
+  fig.height = 6,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+
+# dat_kuviot <- 
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot.xlsx")
+#   ) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Luku_3_2022.xlsx")
+
+dat_kuviot <- 
+  set_names(readxl::excel_sheets(file_kuviot)) %>% 
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x, skip = 1))  
+
+names(dat_kuviot) <- str_replace(names(dat_kuviot), c("Kuvio"), c("Kuvio_3"))
+names(dat_kuviot) <- str_replace(names(dat_kuviot), c(" "), c("_"))
+
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+## Kuviot
+
+```{r}
+
+dat_kuviot[["Kuvio_3_1"]] |> 
+  mutate(`Reaaliset yksikkötyökustannukset  (käännetty asteikko vasemmalla)` = -1 * `Reaaliset yksikkötyökustannukset  (käännetty asteikko vasemmalla)` + 200) |> 
+  gather(vars, value, -vuosi) |> 
+  ggplot(aes(vuosi, value, colour = vars)) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Kustannuskilpailukyky paranee ->")) +
+  labs(y = "<- Yritysten tehdty työtunnit lisääntyvät") +
+  guides(color = guide_legend(nrow = 2))
+
+save_figs("Kuvio_3_1", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_3_2"]] |> 
+  mutate(`Reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` = -1 * `Reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` + 200) |> 
+  gather(vars, value, -vuosi) |> 
+  ggplot(aes(vuosi, value, colour = vars)) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Kustannuskilpailukyky paranee ->")) +
+  labs(y = "<- Yritysten tehdty työtunnit lisääntyvät") +
+  guides(color = guide_legend(nrow = 2))
+
+save_figs("Kuvio_3_2", height = fig_height)
+
+```
+
+```{r}
+
+
+
+fig_3_fun <- function(dat){
+  dat |> 
+  mutate(`Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` = -1 * `Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` + 200) |> 
+  gather(vars, value, -vuosi) |> 
+  mutate(vuosi = as.numeric(vuosi)) |> 
+  ggplot(aes(vuosi, value, colour = vars)) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Kustannuskilpailukyky paranee ->")) +
+  labs(y = "<- Yritysten tehdty työtunnit lisääntyvät") +
+  guides(color = guide_legend(nrow = 2))}
+
+figs_3 <- purrr::map(dat_kuviot[c("Kuvio_3_3_a", "Kuvio_3_3_b", "Kuvio_3_3_c")], fig_3_fun)
+
+purrr::map(figs_3, ~.x)
+
+purrr::imap(figs_3, ~save_figs(.y, plot = .x, , height = fig_height))
+
+```
+
+```{r}
+
+
+
+fig_5_fun <- function(dat){
+  dat |> 
+  mutate(`Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` = -1 * `Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` + 200) |> 
+      mutate(`Työn hinta omassa valuutassa (käännetty asteikko vasemmalla)` = -1 * `Työn hinta omassa valuutassa (käännetty asteikko vasemmalla)` + 200) |> 
+  gather(vars, value, -vuosi) |> 
+  mutate(vars = fct_relevel(vars, 
+                            "Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)",
+                            "Työn hinta omassa valuutassa (käännetty asteikko vasemmalla)")) |> 
+  mutate(vuosi = as.numeric(vuosi)) |> 
+  ggplot(aes(vuosi, value, colour = vars, size = vars)) +
+  geom_line() +
+  scale_size_manual(values = c(2.5, 2.5, 1, 1, 1)) +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Kustannuskilpailukyky paranee ->")) +
+  labs(y = "<- Tuottavuus paranee") +
+  guides(color = guide_legend(nrow = 3), size = guide_legend(nrow = 3))}
+
+figs_5 <- purrr::map(dat_kuviot[c("Kuvio_3_5_a", "Kuvio_3_5_b", "Kuvio_3_5_c")], fig_5_fun)
+
+purrr::map(figs_5, ~.x)
+
+purrr::imap(figs_5, ~save_figs(.y, plot = .x, , height = fig_height))
+# 
+# dat <- dat_kuviot[[c("Kuvio_3_5_c")]]
+
+```
+
+```{r}
+
+cols <- tula_pal(3)
+
+dat_kuviot[["Kuvio_3_7"]] |> 
+  gather(vars, value, -vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(vuosi, value, colour = vars, size = vars)) +
+  geom_line() +
+  scale_size_manual(values = c(2.5, 2.5, 1, 1, 1)) +
+  scale_colour_manual(values = cols[c(1,2,1,2,3)]) +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  labs(y = "Indeksi, 2000 = 100") +
+  guides(color = guide_legend(nrow = 3),
+         size = guide_legend(nrow = 3))
+
+save_figs("Kuvio_3_7", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_3_10"]] |> 
+  mutate(`Hajonnan muutos (asteikko oikealla)` = 0.5 * `Hajonnan muutos (asteikko oikealla)`) |> 
+  gather(vars, value, -vuosi) |> 
+  mutate(vars = as_factor(vars)) |> 
+  ggplot(aes(vuosi, value, colour = vars)) +
+  geom_line() +
+  scale_y_continuous(
+                   sec.axis = sec_axis(~. * 2, name = "%")) +
+  the_title_blank("xl") +
+  labs(y = "%") +
+  geom_h0()  +
+  the_legend_bot() +
+  guides(color = guide_legend(nrow = 2))
+
+save_figs("Kuvio_3_10", height = fig_height)
+
+```
+

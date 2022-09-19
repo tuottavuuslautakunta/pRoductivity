@@ -48,3 +48,9 @@ set_board_theme <- function(base_size = 11){
     plot.caption = ggplot2::element_text(size = ggplot2::rel(0.7), face = "plain", colour = "grey40"),
     plot.margin = ggplot2::margin(t = 10, r = 10, b = 4, l = 5, unit = "pt"))
 }
+
+#' y scale with comma desimal
+#' @param ... for
+#'
+#' @export
+scale_y_continuous <- function(...) ggplot2:::scale_y_continuous(..., labels=scales::label_number(decimal.mark = ","))

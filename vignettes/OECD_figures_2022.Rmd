@@ -75,7 +75,7 @@ dat_kuviot_oecd[["Kuvio a"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_a", height = fig_height)
+save_figs("Kuvio_6_1", height = fig_height)
 
 ```
 
@@ -110,7 +110,7 @@ p2 <-
 (p1 / p2) + plot_layout(guides = 'collect') &
   theme(legend.position='bottom')
 
-save_figs("Kuvio_b", height = fig_height)
+save_figs("Kuvio_6_2", height = fig_height)
 
 ```
 
@@ -128,7 +128,7 @@ dat_kuviot_oecd[["Kuvio c"]] |>
   the_legend_bot() +
   labs(y = "90-10 suhde")
 
-save_figs("Kuvio_c", height = fig_height)
+save_figs("Kuvio_6_3", height = fig_height)
 
 ```
 
@@ -146,7 +146,7 @@ dat_kuviot_oecd[["Kuvio d"]] |>
   the_legend_bot() +
   labs(y = "taso")
 
-save_figs("Kuvio_d", height = fig_height)
+save_figs("Kuvio_6_4", height = fig_height)
 
 ```
 
@@ -164,7 +164,7 @@ dat_kuviot_oecd[["Kuvio e"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_e", height = fig_height)
+save_figs("Kuvio_6_5", height = fig_height)
 
 ```
 
@@ -184,7 +184,7 @@ dat_kuviot_oecd[["Kuvio f"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_f", height = fig_height)
+save_figs("Kuvio_6_6", height = fig_height)
 
 ```
 
@@ -204,7 +204,7 @@ dat_kuviot_oecd[["Kuvio g"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_g", height = fig_height)
+save_figs("Kuvio_6_7", height = fig_height)
 
 ```
 
@@ -224,7 +224,7 @@ dat_kuviot_oecd[["Kuvio h"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_h", height = fig_height)
+save_figs("Kuvio_6_8", height = fig_height)
 
 ```
 
@@ -242,6 +242,6 @@ dat_kuviot_oecd[["Kuvio i"]] |>
   the_legend_bot() +
   labs(y = "prosenttia")
 
-save_figs("Kuvio_i", height = fig_height)
+save_figs("Kuvio_6_9", height = fig_height)
 
 ```

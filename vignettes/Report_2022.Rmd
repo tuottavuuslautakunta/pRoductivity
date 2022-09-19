@@ -198,7 +198,7 @@ data_main10_g_weighted %>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_7_1", en = FALSE, height = fig_height)
+save_figs("Kuvio_7_2", en = FALSE, height = fig_height)
 
 
 ```
@@ -266,7 +266,7 @@ data_main10_g_weighted %>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_7_2", en = FALSE, height = fig_height)
+save_figs("Kuvio_7_3", en = FALSE, height = fig_height)
 
 
 ```
@@ -426,7 +426,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level(geos = geo_level, "private")
 
-save_figs("Kuvio_2_1", en = TRUE)
+# save_figs("Kuvio_2_1", en = TRUE)
 
 # data_main10_groups_level |> 
 #   mutate(lp_level05 = lp_fp05_eur) |> 

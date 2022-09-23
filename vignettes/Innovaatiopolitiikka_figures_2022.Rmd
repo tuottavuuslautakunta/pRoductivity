@@ -63,7 +63,7 @@ fig_height <- 10
 
 ```{r}
 
-dat_kuviot[["Kuvio_4"]] |> 
+dat_kuviot[["Kuvio_8_2"]] |> 
   gather(series, value, -Vuosi) |> 
   mutate(vuosi = as.numeric(Vuosi)) |> 
   ggplot(aes(vuosi, value)) +
@@ -80,6 +80,6 @@ dat_kuviot[["Kuvio_4"]] |>
   labs(y = "milj. €") +
   theme(legend.direction = "vertical") 
 
-save_figs("Kuvio_9_2", height = fig_height)
+save_figs("Kuvio_8_2", height = fig_height)
 
 ```

@@ -149,7 +149,8 @@ fig_5_fun <- function(dat){
                      sec.axis = sec_axis(~. * -1 + 200, 
                                          name = "Kustannuskilpailukyky paranee ->")) +
   labs(y = "<- Tuottavuus paranee") +
-  guides(color = guide_legend(nrow = 3), size = guide_legend(nrow = 3))}
+  guides(color = guide_legend(nrow = 5), size = guide_legend(nrow = 5)) +
+    theme(legend.text = element_text(size = 7))}
 
 figs_5 <- purrr::map(dat_kuviot[c("Kuvio_3_5_a", "Kuvio_3_5_b", "Kuvio_3_5_c")], fig_5_fun)
 
@@ -175,8 +176,9 @@ dat_kuviot[["Kuvio_3_7"]] |>
   the_title_blank("xl") +
   the_legend_bot() +
   labs(y = "Indeksi, 2000 = 100") +
-  guides(color = guide_legend(nrow = 3),
-         size = guide_legend(nrow = 3))
+  guides(color = guide_legend(nrow = 5),
+         size = guide_legend(nrow = 5)) +
+    theme(legend.text = element_text(size = 7))
 
 save_figs("Kuvio_3_7", height = fig_height)
 

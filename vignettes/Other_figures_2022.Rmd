@@ -237,6 +237,7 @@ dat_kuviot_johd[["Kuvio_7_1"]] %>%
     guides(colour = guide_legend()) +
     the_title_blank(c("x", "l")) +
     labs(y = glue("Indeksi, 2008 = 100")) +
+  guides(size = guide_legend(override.aes = list(colour = "grey50"))) +
   the_legend_bot() +
   geom_hline(yintercept = 100) +
   labs(y = "Indeksi, 2008 = 100") 

@@ -99,7 +99,7 @@ data_main10_groups |>
 dip_plot(synth_obj = synth10_est_results, weight_data = data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-# save_figs(filename = "Kuvio_2_1_private", en = FALSE)
+# save_figs(filename = "Kuvio_2_1_private", en = TRUE)
 
 # save_trip_plot_data("private")
 
@@ -128,7 +128,7 @@ data_main10_g_weighted %>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(geos2022, high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_5_1", en = FALSE, height = fig_height)
+save_figs("Kuvio_5_1", en = TRUE, height = fig_height)
 
 
 ```
@@ -141,7 +141,7 @@ save_figs("Kuvio_5_1", en = FALSE, height = fig_height)
 dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-# save_figs("Kuvio_2_2_private_ex26", en = FALSE)
+# save_figs("Kuvio_2_2_private_ex26", en = TRUE)
 
 # save_trip_plot_data("private_ex26")
 
@@ -175,7 +175,7 @@ data_main_g_weighted%>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(geos2022, high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_5_2", en = FALSE, height = fig_height)
+save_figs("Kuvio_5_2", en = TRUE, height = fig_height)
 
 
 ```
@@ -198,7 +198,7 @@ data_main10_g_weighted %>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_7_2", en = FALSE, height = fig_height)
+save_figs("Kuvio_7_2", en = TRUE, height = fig_height)
 
 
 ```
@@ -207,7 +207,7 @@ save_figs("Kuvio_7_2", en = FALSE, height = fig_height)
 
 dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-# save_figs("Kuvio_2_3_manu", en = FALSE)
+# save_figs("Kuvio_2_3_manu", en = TRUE)
 
 # save_trip_plot_data("manu")
 
@@ -233,7 +233,7 @@ rel_plot2(data_main10_g_weighted, "manu")
 dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
 
 
-# save_figs("Kuvio_2_4_manu_ex26", en = FALSE)
+# save_figs("Kuvio_2_4_manu_ex26", en = TRUE)
 
 # save_trip_plot_data("manu_ex26")
 
@@ -266,7 +266,7 @@ data_main10_g_weighted %>%
     prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
   the_legend_bot()
 
-save_figs("Kuvio_7_3", en = FALSE, height = fig_height)
+save_figs("Kuvio_7_3", en = TRUE, height = fig_height)
 
 
 ```
@@ -275,7 +275,7 @@ save_figs("Kuvio_7_3", en = FALSE, height = fig_height)
 
 dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
 
-# save_figs("Kuvio_2_5_service", en = FALSE)
+# save_figs("Kuvio_2_5_service", en = TRUE)
 
 
 
@@ -514,7 +514,7 @@ data_main |>
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 
 data_main |> 
   filter(geo %in% c("SE", "FI", "DK", "US", "DE"),

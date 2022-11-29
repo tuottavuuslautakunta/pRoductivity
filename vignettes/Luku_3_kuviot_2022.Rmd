@@ -77,7 +77,12 @@ dat_kuviot[["Kuvio_3_1"]] |>
   labs(y = "<- Yritysten tehdty työtunnit lisääntyvät") +
   guides(color = guide_legend(nrow = 2))
 
-save_figs("Kuvio_3_1", height = fig_height)
+save_figs("Kuvio_3_1", height = fig_height, en = FALSE)
+save_figs("Kuvio_3_1", height = fig_height, en = TRUE, fi = FALSE,
+          plot = last_plot() + 
+             scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Cost competitiveness improves ->")))
 
 ```
 
@@ -96,7 +101,12 @@ dat_kuviot[["Kuvio_3_2"]] |>
   labs(y = "<- Yritysten tehdty työtunnit lisääntyvät") +
   guides(color = guide_legend(nrow = 2))
 
-save_figs("Kuvio_3_2", height = fig_height)
+save_figs("Kuvio_3_2", height = fig_height, en = FALSE)
+save_figs("Kuvio_3_2", height = fig_height, en = TRUE, fi = FALSE,
+          plot = last_plot() + 
+             scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Cost competitiveness improves ->")))
 
 ```
 
@@ -123,7 +133,12 @@ figs_3 <- purrr::map(dat_kuviot[c("Kuvio_3_3_a", "Kuvio_3_3_b", "Kuvio_3_3_c")],
 
 purrr::map(figs_3, ~.x)
 
-purrr::imap(figs_3, ~save_figs(.y, plot = .x, , height = fig_height))
+purrr::imap(figs_3, ~save_figs(.y, plot = .x, , height = fig_height, en = FALSE))
+purrr::imap(figs_3, ~save_figs(.y, plot = .x + 
+             scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Cost competitiveness improves ->")), 
+             height = fig_height, en = TRUE, fi = FALSE))
 
 ```
 
@@ -156,7 +171,13 @@ figs_5 <- purrr::map(dat_kuviot[c("Kuvio_3_5_a", "Kuvio_3_5_b", "Kuvio_3_5_c")],
 
 purrr::map(figs_5, ~.x)
 
-purrr::imap(figs_5, ~save_figs(.y, plot = .x, , height = fig_height))
+
+purrr::imap(figs_5, ~save_figs(.y, plot = .x, , height = fig_height, en = FALSE))
+purrr::imap(figs_5, ~save_figs(.y, plot = .x + 
+             scale_y_continuous(position = "right", 
+                     sec.axis = sec_axis(~. * -1 + 200, 
+                                         name = "Cost competitiveness improves ->")), 
+             height = fig_height, en = TRUE, fi = FALSE))
 # 
 # dat <- dat_kuviot[[c("Kuvio_3_5_c")]]
 

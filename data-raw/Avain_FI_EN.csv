@@ -98,7 +98,7 @@ Tehdyt työtunnit (asteikko oikealla);Hours worked (scale on right)
 Kustannuskilpailukyky paranee ->;Cost competitiveness improves ->
 <- Yritysten tehdyt työtunnit lisääntyvät;<- Hours worked within enterprises increase
 Reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla);Real unit labour costs (inverted scale on left) 
-Teollisuuden työtunnit suhteessä 20?69?vuotiaaseen väestöön (asteikko oikealla);Hours worked within manufacturing relative to population aged 20?69 (scale of right)
+Teollisuuden työtunnit suhteessä 20-69-vuotiaaseen väestöön (asteikko oikealla);Hours worked within manufacturing relative to population aged 20-69 (right)
 Kustannuskilpailukyky paranee ->;Cost competitiveness improves ->
 <- Yritysten tehdyt työtunnit lisääntyvät;<- Hours worked within enterprises increase
 Suhteelliset reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla);Relative real unit labour costs (inverted scale on left) 
@@ -141,7 +141,7 @@ prosenttia;percent
 prosenttia;percent
 prosenttia;percent
 Konvergenssi-komponentti;Convergence component
-Hajonnan muutos (asteikko oikealla);Change in disperison (scale on right)
+Hajonnan muutos (asteikko oikealla);Change in dispersion (scale on right)
 suhdeluku;ratio
 suhdeluku;ratio
 suhdeluku;ratio
@@ -177,35 +177,18 @@ Iso-Britannia;United Kingdom
 Digitaalinen teollisuus;Digital manufacturing
 Ei-digitaalinen teollisuus;Non-digital manufacturing
 Digitaaliset palvelut;Digital services
-Ei-digitaaliset palvelu;Non-digital services
+Ei-digitaaliset palvelut;Non-digital services
 Suomi;Finland
 Verrokkimaat;Reference  countries
-Indeksi;Index
-Digitaalinen teollisuus;Digital manufacturing
-Ei-digitaalinen teollisuus;Non-digital manufacturing
-Digitaaliset palvelut;Digital services
-Ei-digitaaliset palvelu;Non-digital services
+indeksi;Index
 Suomi;Finland
 Verrokkimaat;Reference  countries
 90-10 suhde;90-10 ratio
-Digitaalinen teollisuus;Digital manufacturing
-Ei-digitaalinen teollisuus;Non-digital manufacturing
-Digitaaliset palvelut;Digital services
-Ei-digitaaliset palvelu;Non-digital services
 Suomi;Finland
 Verrokkimaat;Reference  countries
 taso;level
-Digitaalinen teollisuus;Digital manufacturing
-Ei-digitaalinen teollisuus;Non-digital manufacturing
-Digitaaliset palvelut;Digital services
-Ei-digitaaliset palvelu;Non-digital services
 Suomi;Finland
 Verrokkimaat;Reference  countries
-prosenttia;percent
-Digitaalinen teollisuus;Digital manufacturing
-Ei-digitaalinen teollisuus;Non-digital manufacturing
-Digitaaliset palvelut;Digital services
-Ei-digitaaliset palvelu;Non-digital services
 Suomi;Finland
 Verrokkimaat;Reference  countries
 prosenttia;percent
@@ -251,5 +234,5 @@ Saksa;Germany
 Ranska;France
 milj. €;mEUR
 %;percent
-Yrityksiltä saatu t&k-rahoitus (milj. €, vasen);R&D funding from enterprises (scale on left)
-Yritysrahoituksen osuus (%, oikea);Share of funding from enterprises (scale on right)
+Yrityksiltä saatu t&k-rahoitus (milj. €, vasen);R&D funding from enterprises (left)
+Yritysrahoituksen osuus (%, oikea);Share of  enterprises (right)

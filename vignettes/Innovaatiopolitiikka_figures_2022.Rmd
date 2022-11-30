@@ -66,11 +66,12 @@ fig_height <- 10
 dat_kuviot[["Kuvio_8_2"]] |> 
   gather(series, value, -Vuosi) |> 
   mutate(vuosi = as.numeric(Vuosi)) |> 
+  select(-Vuosi) |>
   ggplot(aes(vuosi, value)) +
   
-  geom_col(data = ~filter(.x, str_detect(series, "milj")), 
+  geom_col(data = ~filter(.x, str_detect(series, "mil|left")), 
            mapping = aes(fill = series)) +
-  geom_line(data = ~mutate(filter(.x, str_detect(series, "%")), value = 10 * value),
+  geom_line(data = ~mutate(filter(.x, str_detect(series, "%|right")), value = 10 * value),
             mapping = aes(colour = series)) +
   geom_h0() +
   scale_y_continuous(sec.axis = sec_axis(~ . / 10, name = "%")) +
@@ -78,7 +79,8 @@ dat_kuviot[["Kuvio_8_2"]] |>
   the_title_blank("xl") +
   the_legend_bot() +
   labs(y = "milj. €") +
-  theme(legend.direction = "vertical") 
+  theme(legend.direction = "vertical") +
+  guides(colour = guide_legend("title", nrow = 2, ncol =1, byrow = TRUE), fill = guide_legend("title", ncol =1, nrow = 2, byrow = TRUE))
 
 save_figs("Kuvio_8_2", height = fig_height)
 

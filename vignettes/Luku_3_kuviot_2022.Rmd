@@ -88,7 +88,7 @@ save_figs("Kuvio_3_1", height = fig_height, en = TRUE, fi = FALSE,
 
 ```{r}
 
-dat_kuviot[["Kuvio_3_2"]] |> 
+dat_kuviot[["Kuvio_3_2"]] |>
   mutate(`Reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` = -1 * `Reaaliset yksikkötyökustannukset (käännetty asteikko vasemmalla)` + 200) |> 
   gather(vars, value, -vuosi) |> 
   ggplot(aes(vuosi, value, colour = vars)) +
@@ -214,7 +214,7 @@ dat_kuviot[["Kuvio_3_10"]] |>
   ggplot(aes(vuosi, value, colour = vars)) +
   geom_line() +
   scale_y_continuous(
-                   sec.axis = sec_axis(~. * 2, name = "%")) +
+                   sec.axis = sec_axis(~. * 2, name = "")) +
   the_title_blank("xl") +
   labs(y = "%") +
   geom_h0()  +

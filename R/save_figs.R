@@ -13,7 +13,8 @@ save_figs <- function(filename,
                      plot = last_plot(),
                      width = 13.5,
                      height = 13.5,
-                     en = TRUE, fi = TRUE){
+                     en = TRUE, fi = TRUE,
+                     translated = FALSE){
   plot1 <- plot +
     ggptt::the_title_blank(c("x", "t", "l")) +
     theme(plot.caption = element_blank())
@@ -37,8 +38,11 @@ save_figs <- function(filename,
                   plot = plot_slide_half, width = 16, height = 12, units = "cm")}
 
   if (en){
+    if (!translated) {
+      plot1 = ggptt::translate_plot(plot1, fig_translation)
+    }
   ggplot2::ggsave(here::here("figures/pdf_en", paste0(filename, "_en.pdf")),
-                  plot = ggptt::translate_plot(plot1, fig_translation),
+                  plot = plot1,
                   width = width, height = height, units = "cm")}
 
 

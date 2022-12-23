@@ -92,6 +92,13 @@ Imputed values:
 Countries used in weighting (from weight_geos): "AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", 
 "HU", "LT", "FR", "IT", "NL", "NO", "PT", "SE", "CY", "PL", "SI", "SK"
 
+# Prodtivity levels
+
+- data_main10_groups_level
+
+Data from [The GGDC Productivity Level Database](https://www.rug.nl/ggdc/productivity/pld/) 2005 benchmark is used to set 
+productivity levels on benchmark year.
+
 ## Syntethic Control Analysis
 
 Series from Syntethic Control Analysis are estimated in data-raw/synth_data.R

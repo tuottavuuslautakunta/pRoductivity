@@ -1,5 +1,7 @@
 
-# map
+# The GGDC Productivity Level Database
+# 2005 benchmark
+# https://www.rug.nl/ggdc/productivity/pld/
 
 library(tidyverse)
 

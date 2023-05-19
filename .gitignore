@@ -6,3 +6,5 @@ inst/doc
 /vignettes/fig_report
 .849C9593-D756-4E56-8D6E-42412F2A707B
 /data
+vignettes/**/*.png
+

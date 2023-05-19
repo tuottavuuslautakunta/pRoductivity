@@ -87,10 +87,10 @@ dat_eurostat_nace_23_imput <-
   group_by(geo, time, nace_r2) %>%
   summarise_all(sum) %>%
   group_by(geo, time) %>%
-  mutate_if(is.numeric, ~if_else((nace_r2 == "C20_C21" & is.na(.)),
+  mutate(across(where(is.numeric), ~if_else((nace_r2 == "C20_C21" & is.na(.)),
                                  .[nace_r2 == "C"] - sum(.[nace_r2 %in% c("C10-C12", "C13-C15", "C16-C18","C19",
                                                           "C22_C23", "C24_C25", "C26", "C27", "C28", "C29_C30",
-                                                         "C31-C33")]), .)) %>%
+                                                         "C31-C33")]), .))) %>%
   ungroup()
 
 

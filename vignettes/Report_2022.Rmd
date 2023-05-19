@@ -56,7 +56,7 @@ Työn tuottavuuden kasvu keskimäärin vuodesta 2015
 
 ```{r bar_change, fig.height=10}
 
-order_fun <- function(.x, .y) mean(.x[.y == "private"])
+order_fun <- function(.x, .y) mean(coalesce(.x, Inf)[.y == "private"])
 
 data_main10_groups %>% 
   group_by(geo, nace0) %>% 
@@ -66,7 +66,8 @@ data_main10_groups %>%
   ungroup() %>% 
   mutate(
     nace0 = fct_relevel(nace0, "private"),
-    geo = fct_reorder2(geo, values, nace0, .fun = order_fun)) %>% 
+    geo = fct_reorder2(geo, values, nace0, .fun = order_fun, .na_rm = FALSE)
+  ) %>% 
   ggplot(aes(geo, values, label = round(values, 1))) +
   geom_col(position = "dodge") +
   facet_wrap(~ nace0) +
@@ -79,13 +80,17 @@ data_main10_groups %>%
 
 ```
 
+## Työn tuottavuus Suomessa
+
 ```{r}
 
 data_main10_groups |> 
   filter(geo == "FI") |> 
   select(geo, nace0, time, lp_ind) |> 
   ggplot(aes(time, lp_ind, colour = nace0)) +
-    geom_line()
+    geom_line() +
+      the_title_blank(c("x", "l")) +
+    labs(y = glue("Indeksi, {base_year} = 100"))
   
 
 ```

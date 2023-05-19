@@ -95,7 +95,7 @@ dat_oecd_levels %>%
        caption = "Lähde: OECD") 
 
 
-save_figs("Kuvio_1_2", height = fig_height)
+# save_figs("Kuvio_1_2", height = fig_height)
 
 
 ```

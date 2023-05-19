@@ -351,7 +351,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level(geos = geo_level, "private")
 
-save_figs("Kuvio_2_1", en = TRUE)
+save_figs("Kuvio_2_1_lp_level_private", en = TRUE)
 
 # data_main10_groups_level |> 
 #   mutate(lp_level05 = lp_fp05_eur) |> 
@@ -378,7 +378,7 @@ data_main10_groups_level |>
   filter(time >= 1995) |> 
   plot_lp_level(geos = geo_level, "manu")
 
-save_figs("Kuvio_2_4", en = TRUE)
+save_figs("Kuvio_2_4_lp_level_manu", en = TRUE)
 
 ```
 
@@ -389,7 +389,7 @@ data_main10_groups_level |>
   filter(time >= 1995) |> 
   plot_lp_level(geos = geo_level, "service")
 
-save_figs("Kuvio_2_5", en = TRUE)
+save_figs("Kuvio_2_5_lp_level_service", en = TRUE)
 
 ```
 ## Tuottavuuden taso - palveluiden alatoimialat

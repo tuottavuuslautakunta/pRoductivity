@@ -33,7 +33,7 @@ plot_lp_level <- function(data, geos, nace, y = lp_level05){
 
 #' @describeIn plot_lp_level
 #' @export
-plot_lp_level_rel <- function(data, geos, nace){
+plot_lp_level_rel <- function(data, geos, nace, rel_geo = "US"){
 
   size_values <-
     c(2.5,1.5,1.5,1.5,1.5,1.5,0.5,0.5)[1:length(geos)]
@@ -46,7 +46,7 @@ plot_lp_level_rel <- function(data, geos, nace){
     droplevels() |>
     complete(time, nesting(geo, geo_name), nace0) |>
     group_by(time, nace0) |>
-    mutate(lp_level05 = 100 * lp_level05 / lp_level05[geo == "US"]) |>
+    mutate(lp_level05 = 100 * lp_level05 / lp_level05[geo == rel_geo]) |>
     ungroup() |>
     mutate(geo = fct_relevel(geo, geo_level)) |>
     mutate(geo_name = fct_recode(geo, !!!countries)) |>

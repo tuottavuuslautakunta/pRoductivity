@@ -8,6 +8,19 @@ devtools::load_all()
 start_year <- 1995
 base_year <- 2007
 
+## Updating data
+
+update <- TRUE
+
+if (update){
+
+  source("data-raw/get_eurostat_data.R")
+  source("data-raw/get_eurostat_data.R")
+  source("data-raw/get_oecd_sna.R")
+
+}
+
+
 ## Countries and classifications
 
 countries0 <- c("AT", "BG", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "BE", "HU", "LT", "LV",
@@ -71,11 +84,7 @@ geo_digi_3 = c("SE", "NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES", "PT", "DK")
 usethis::use_data(geo_digi_oecd, geo_digi_1, geo_digi_2, geo_digi_3, overwrite = TRUE)
 
 
-## Data used
-# update:
-# source("data-raw/get_eurostat_data_10.R")
-# source("data-raw/get_eurostat_data.R")
-# source("data-raw/get_oecd_sna.R")
+
 
 data("dat_eurostat_nace_imput", "dat_oecd_sna_nace_imput")
 
@@ -286,8 +295,8 @@ data_main10_groups_level <-
   mutate(lp_ind = rebase(lp_ind, time, first(na.omit(time_org))),
          lp_hist = rebase(values, time, first(na.omit(time_org))),
          lp_ind = coalesce(lp_ind, lp_hist)) |>
-  # USA täytyy fiksata myöhemmin, nyt historiasarjassa uudempi privatelle, joten otetaan siitä kokonaan
-  mutate(lp_ind = if_else(geo == "US" & nace0 == "private", lp_hist, lp_ind)) |>
+  # # USA täytyy fiksata myöhemmin, nyt historiasarjassa uudempi privatelle, joten otetaan siitä kokonaan
+  # mutate(lp_ind = if_else(geo == "US" & nace0 == "private", lp_hist, lp_ind)) |>
   # vuoden 20005 indeksiin ja markkinahinnoin
   mutate(lp_ind = rebase(lp_ind, time, 2005),
          lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,

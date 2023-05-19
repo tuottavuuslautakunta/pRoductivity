@@ -4,26 +4,89 @@ library(tidyverse)
 
 # Labels
 
-labels_klems_0 <- scan("http://www.euklems.net/TCB/2018/ALL_output_Readme_17ii.txt",
-                       what =  character(),
-                       sep = "\n")
+# labels_klems_0 <- scan("http://www.euklems.net/TCB/2018/ALL_output_Readme_17ii.txt",
+#                        what =  character(),
+#                        sep = "\n")
 
 
 
 
 # data
 
+# Data is from https://euklems-intanprod-llee.luiss.it/download/
+# links change in releases
+# Variable list: https://www.dropbox.com/s/ziu7wpl8pgqhq51/Variable%20List.xlsx?dl=1
+
 tmp <- tempfile(fileext = ".rds")
-download.file("https://www.dropbox.com/s/8osl84xzo6952pt/growth%20accounts.rds?dl=1", destfile = tmp, mode = "wb")
+
+## 	Growth Accounts Basic
+
+
+download.file("https://www.dropbox.com/s/ctwlo8yplnwngbk/growth%20accounts.rds?dl=1", destfile = tmp, mode = "wb")
 
 dat_klems_luiss_0 <- readRDS(tmp)
+
+
 
 dat_klems_luiss <-
   dat_klems_luiss_0 |>
   mutate(year = as.numeric(year)) |>
   mutate(across(where(is.character), as_factor)) |>
-  rename(geo = geo_code, time = year)
+  rename(geo = geo_code, time = year, vars = var, values = value, nace_r2 = nace_r2_code)
 
+data_luiss_groups <- dat_klems_luiss |>
+  mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
+  filter(nace_r2 %in% main_nace_sna) |>
+  # complete(geo, time, vars, nace_r2_code) |>
+  group_by(geo, geo_name, time, vars) %>%
+  summarise(private = sum(values[!(nace_r2 %in% c("TOTAL", "C26"))]),
+            private_ex26 = private - values[nace_r2 == "C26"],
+            manu = sum(values[nace_r2 == "C"]),
+            manu_ex26 = manu - values[nace_r2 == "C26"],
+            service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
+  ungroup() %>%
+  gather(nace0, values, private, private_ex26, manu, manu_ex26, service) %>%
+  mutate(nace0 = as_factor(nace0))
 
+## Intangibles
 
-use_data(dat_klems_luiss,  overwrite = TRUE)
+download.file("https://www.dropbox.com/s/1v6t3733mru5t4g/intangibles%20analytical.rds?dl=1", destfile = tmp, mode = "wb")
+
+dat_klems_luiss_intan_0 <- readRDS(tmp)
+
+attr(attributes(dat_klems_luiss_intan_0), "label")
+
+# Muuttujien nimet
+labels_intan <-
+  sapply(dat_klems_luiss_intan_0, attr, "label") |>
+  as_tibble(rownames = "label")
+
+# View(labels_intan)
+
+dat_klems_luiss_intan <-
+  dat_klems_luiss_intan_0 |>
+  mutate(year = as.numeric(year)) |>
+  mutate(across(where(is.character), as_factor)) |>
+  # to drop labels
+  mutate(across(where(is.numeric), as.numeric)) |>
+  rename(geo = geo_code, time = year, nace_r2 = nace_r2_code) |>
+  pivot_longer(cols = !c(nace_r2:time), names_to = "vars", values_to = "values") |>
+  mutate(vars = as_factor(vars))
+
+data_luiss_intan_groups <- dat_klems_luiss_intan |>
+  mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
+  filter(nace_r2 %in% main_nace_sna) |>
+  # complete(geo, time, vars, nace_r2_code) |>
+  group_by(geo, geo_name, time, vars) %>%
+  summarise(
+    total = values[nace_r2 == "TOTAL"],
+    private = sum(values[!(nace_r2 %in% c("TOTAL", "C26"))]),
+            private_ex26 = private - values[nace_r2 == "C26"],
+            manu = sum(values[nace_r2 == "C"]),
+            manu_ex26 = manu - values[nace_r2 == "C26"],
+            service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
+  ungroup() %>%
+  gather(nace0, values, total, private, private_ex26, manu, manu_ex26, service) %>%
+  mutate(nace0 = as_factor(nace0))
+
+usethis::use_data(data_luiss_intan_groups, data_luiss_groups,  overwrite = TRUE)

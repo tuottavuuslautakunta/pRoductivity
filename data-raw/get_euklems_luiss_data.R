@@ -2,6 +2,9 @@
 library(readr)
 library(tidyverse)
 
+devtools::load_all()
+
+
 # Labels
 
 # labels_klems_0 <- scan("http://www.euklems.net/TCB/2018/ALL_output_Readme_17ii.txt",
@@ -22,7 +25,7 @@ tmp <- tempfile(fileext = ".rds")
 ## 	Growth Accounts Basic
 
 
-download.file("https://www.dropbox.com/s/ctwlo8yplnwngbk/growth%20accounts.rds?dl=1", destfile = tmp, mode = "wb")
+download.file("https://www.dropbox.com/s/ri1ezv4tq4o9mmm/growth%20accounts.rds?dl=1", destfile = tmp, mode = "wb")
 
 dat_klems_luiss_0 <- readRDS(tmp)
 
@@ -50,7 +53,7 @@ data_luiss_groups <- dat_klems_luiss |>
 
 ## Intangibles
 
-download.file("https://www.dropbox.com/s/1v6t3733mru5t4g/intangibles%20analytical.rds?dl=1", destfile = tmp, mode = "wb")
+download.file("https://www.dropbox.com/s/um2yu23712lx1hi/intangibles%20analytical.rds?dl=1", destfile = tmp, mode = "wb")
 
 dat_klems_luiss_intan_0 <- readRDS(tmp)
 
@@ -71,22 +74,74 @@ dat_klems_luiss_intan <-
   mutate(across(where(is.numeric), as.numeric)) |>
   rename(geo = geo_code, time = year, nace_r2 = nace_r2_code) |>
   pivot_longer(cols = !c(nace_r2:time), names_to = "vars", values_to = "values") |>
-  mutate(vars = as_factor(vars))
+  mutate(vars = as_factor(vars)) |>
+  # fix vars names so that VA names are equal with investment names in same indicator group
+  mutate(vars = fct_recode(vars,
+                           I_VA = "VA_CP",
+                           I_VAadj = "VAadj",
+                           Ipyp_VA = "VA_PYP",
+                           Ipyp_VAadj = "VAadj_pyp",
+                           Iq_VA = "VA_Q",
+                           Iq_VAadj = "VAadj_q",
+                           Ip_VA = "VA_PI",
+                           Ip_VAadj = "VAadj_pi")) |>
+  separate(vars, c("ind" ,"vars"), sep = "_", extra = "merge")
 
-data_luiss_intan_groups <- dat_klems_luiss_intan |>
+data_luiss_intan_groups_detail <-
+  dat_klems_luiss_intan |>
+  # only cp and pyp series that can be summarised
+  filter(ind %in% c("HK", "HKpyp", "I", "Ipyp", "K", "Kpyp")) |>
   mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
-  filter(nace_r2 %in% main_nace_sna) |>
+  filter(nace_r2 %in% main_nace_sna,
+         !(vars %in% c("EconComp", "Innovprop"))) |>
   # complete(geo, time, vars, nace_r2_code) |>
-  group_by(geo, geo_name, time, vars) %>%
+  group_by(geo, geo_name, time, ind, vars) %>%
   summarise(
     total = values[nace_r2 == "TOTAL"],
     private = sum(values[!(nace_r2 %in% c("TOTAL", "C26"))]),
-            private_ex26 = private - values[nace_r2 == "C26"],
-            manu = sum(values[nace_r2 == "C"]),
-            manu_ex26 = manu - values[nace_r2 == "C26"],
-            service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
+    private_ex26 = private - values[nace_r2 == "C26"],
+    manu = sum(values[nace_r2 == "C"]),
+    manu_ex26 = manu - values[nace_r2 == "C26"],
+    service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))]),
+    inform = values[nace_r2 == "J"]) %>%
   ungroup() %>%
-  gather(nace0, values, total, private, private_ex26, manu, manu_ex26, service) %>%
-  mutate(nace0 = as_factor(nace0))
+  gather(nace0, values, total, private, private_ex26, manu, manu_ex26, service, inform) %>%
+  mutate(nace0 = as_factor(nace0)) |>
+  pivot_wider(names_from = ind, values_from = values, names_prefix = "ind_") |>
+  group_by(geo, geo_name, nace0, vars) |>
+  mutate(ind_Iq = fp(ind_I, ind_Ipyp, time, 2000)) %>%
+  ungroup() %>%
+  pivot_longer(cols = starts_with("ind_"), names_to = "ind", values_to = "values", names_prefix = "ind_")
+
+data_luiss_intan_groups_main <-
+  dat_klems_luiss_intan |>
+  # only cp and pyp series that can be summarised
+  filter(ind %in% c("HK", "HKpyp", "I", "Ipyp", "K", "Kpyp")) |>
+  mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
+  filter(nace_r2 %in% main_nace_sna) |>
+  # complete(geo, time, vars, nace_r2_code) |>
+  # To fix error in Innovprop main series are calculated
+  filter(vars != "Innovprop") %>%
+  mutate(vars = fct_recode(vars, Innovprop = "RD", Innovprop = "Design", Innovprop = "NFP", Innovprop = "OIPP")) %>%
+  filter(!(vars %in% c("Brand", "Design", "NFP", "OIPP", "OrgCap", "RD", "Train"))) %>%
+  group_by(geo, geo_name, time, ind, vars, nace_r2) %>%
+  summarise(values = sum(values)) %>%
+  group_by(geo, geo_name, time, ind, vars) %>%
+  summarise(
+    total = values[nace_r2 == "TOTAL"],
+    private = sum(values[!(nace_r2 %in% c("TOTAL", "C26"))]),
+    private_ex26 = private - values[nace_r2 == "C26"],
+    manu = sum(values[nace_r2 == "C"]),
+    manu_ex26 = manu - values[nace_r2 == "C26"],
+    service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))]),
+    inform = values[nace_r2 == "J"]) %>%
+  ungroup() %>%
+  gather(nace0, values, total, private, private_ex26, manu, manu_ex26, service, inform) %>%
+  mutate(nace0 = as_factor(nace0)) |>
+  pivot_wider(names_from = ind, values_from = values, names_prefix = "ind_") |>
+  group_by(geo, geo_name, nace0, vars) |>
+  mutate(ind_Iq = fp(ind_I, ind_Ipyp, time, 2000)) %>%
+  ungroup() %>%
+  pivot_longer(cols = starts_with("ind_"), names_to = "ind", values_to = "values", names_prefix = "ind_")
 
 usethis::use_data(data_luiss_intan_groups, data_luiss_groups,  overwrite = TRUE)

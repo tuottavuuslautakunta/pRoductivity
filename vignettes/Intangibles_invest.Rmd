@@ -28,13 +28,23 @@ library(pttdatahaku)
 
 set_ptt()
 
+
 geo_intan <- c("BE", "DK", "DE", "ES", "FR", "IT", "NL", "AT", "FI", "SE", "UK", "NO", "US")
 geo_ea7 <- c("BE", "DE", "ES", "FR", "IT", "NL", "AT")
+geo_main <- c("FI", "SE", "US", "DK", geo_ea7)
 
-var_intans <- c("EconComp", "Innovprop", "OrgCap", "RD", "Soft_DB", "Brand", "Design", "NFP", "OIPP", "Train")
+var_intans0 <- c("EconComp", "Innovprop", "Soft_DB")
+var_intans_det <- c("OrgCap", "RD", "Soft_DB", "Brand", "Design", "NFP", "OIPP", "Train")
 var_agg <- c("Intang", "NatAcc", "NonNatAcc", "Tang", "TangNRes")
 
+
+
 ```
+
+## Tietoja
+
+Aineistolla on virhe "Innovprop" sarjassa, siksi se on laskettu alieristä 
+data_luiss_intan_groups_main taulussa.
 
 ## Investment ratio
 
@@ -44,11 +54,12 @@ Koko taloudessa aineettomien investointiaste
 
 ```{r, fig.height=10, fig.width=8}
 
-data_luiss_intan_groups |> 
+data_luiss_intan_groups_main |> 
   filter_recode(
-    geo = c("FI", "SE", "US", geo_ea7),
+    geo = geo_main,
     nace0 = c("total", "private", "manu", "service"),
-    vars = c("I_Intang", "I_Tang", "VAadj")
+    vars = c("Intang", "Tang", "VAadj"),
+    ind = "I"
   ) |> 
   mutate(geo = fct_other(geo, drop = geo_ea7, other_level = "EA 7")) |> 
   group_by(geo, nace0, vars, time) |> 
@@ -67,15 +78,16 @@ data_luiss_intan_groups |>
 ```
 
 
-Aineettomat, viisi suurinta
+Aineettomat, pääryhmät
 
 ```{r, fig.height=10, fig.width=8}
 
-data_luiss_intan_groups |> 
+data_luiss_intan_groups_main |> 
   filter_recode(
-    geo = c("FI", "SE", "US", geo_ea7),
+    geo = geo_main,
     nace0 = c("total", "private", "manu", "service"),
-    vars = c(paste0("I_", var_intans[1:5]), "VAadj")
+    vars = c(var_intans0, "VAadj"),
+    ind = "I"
   ) |> 
   mutate(geo = fct_other(geo, drop = geo_ea7, other_level = "EA 7")) |> 
   group_by(geo, nace0, vars, time) |> 
@@ -97,11 +109,12 @@ Aineettomat, loput
 
 ```{r, fig.height=10, fig.width=8}
 
-data_luiss_intan_groups |> 
+data_luiss_intan_groups_detail |> 
   filter_recode(
-    geo = c("FI", "SE", "US", geo_ea7),
+    geo = geo_main,
     nace0 = c("total", "private", "manu", "service"),
-    vars = c(paste0("I_", var_intans[6:10]), "VAadj")
+    vars = c(var_intans_det, "VAadj"),
+    ind = "I"
   ) |> 
   mutate(geo = fct_other(geo, drop = geo_ea7, other_level = "EA 7")) |> 
   group_by(geo, nace0, vars, time) |> 
@@ -118,6 +131,8 @@ data_luiss_intan_groups |>
   labs(y = "%")
 
 ```
+
+
 
 ## Capital stock
 

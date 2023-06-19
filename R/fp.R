@@ -1,7 +1,7 @@
 
 #' @export
 #' @examples
-#' fp(cp = c(NA, NA, NA), pp = c(NA, NA, NA), time = c(2014:2016), year = 2015)
+#' fp(cp = c(NA, 94, 96, 98), pp = c(NA, NA, 95, 98), time = c(1994:1997), year = 1997)
 #'
 #'
 
@@ -42,6 +42,6 @@ fp <- function (cp, pp, time, year)
   y <- cp[time == year] * ind/ind[time == year]
   # y <- rep_len(NA, length(non_na_ind))
   # y[non_na_ind] <- y0
-  y[1:(start - 1)] <- NA
+  if (start > 1) y[1:(start - 1)] <- NA
   y
 }

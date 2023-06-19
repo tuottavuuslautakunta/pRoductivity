@@ -121,8 +121,10 @@ data_luiss_intan_groups_main <-
   filter(nace_r2 %in% main_nace_sna) |>
   # complete(geo, time, vars, nace_r2_code) |>
   # To fix error in Innovprop main series are calculated
-  filter(vars != "Innovprop") %>%
-  mutate(vars = fct_recode(vars, Innovprop = "RD", Innovprop = "Design", Innovprop = "NFP", Innovprop = "OIPP")) %>%
+  filter(!(vars %in% c("Innovprop", "EconComp"))) %>%
+  mutate(vars = fct_recode(vars,
+                           Innovprop = "RD", Innovprop = "Design", Innovprop = "NFP", Innovprop = "OIPP",
+                           EconComp = "OrgCap", EconComp = "Brand", EconComp = "Train")) %>%
   filter(!(vars %in% c("Brand", "Design", "NFP", "OIPP", "OrgCap", "RD", "Train"))) %>%
   group_by(geo, geo_name, time, ind, vars, nace_r2) %>%
   summarise(values = sum(values)) %>%
@@ -144,4 +146,6 @@ data_luiss_intan_groups_main <-
   ungroup() %>%
   pivot_longer(cols = starts_with("ind_"), names_to = "ind", values_to = "values", names_prefix = "ind_")
 
-usethis::use_data(data_luiss_intan_groups, data_luiss_groups,  overwrite = TRUE)
+usethis::use_data(data_luiss_intan_groups_detail, data_luiss_groups, data_luiss_intan_groups_main,  overwrite = TRUE)
+
+data_luiss_intan_groups_main %>% write.csv2(file = "data_luiss_intan_groups_main.csv")

@@ -32,6 +32,7 @@ set_ptt()
 geo_intan <- c("BE", "DK", "DE", "ES", "FR", "IT", "NL", "AT", "FI", "SE", "UK", "NO", "US")
 geo_ea7 <- c("BE", "DE", "ES", "FR", "IT", "NL", "AT")
 geo_main <- c("FI", "SE", "US", "DK", geo_ea7)
+geo_main2 <- c("FI", "SE", "US", "DK")
 
 var_intans0 <- c("EconComp", "Innovprop", "Soft_DB")
 var_intans_det <- c("OrgCap", "RD", "Soft_DB", "Brand", "Design", "NFP", "OIPP", "Train")
@@ -132,6 +133,169 @@ data_luiss_intan_groups_detail |>
 
 ```
 
+## Volyymi
+
+USA:lle puuttuu edellisen vuoden hintasarjat
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_main2,
+    nace0 = c("total", "private", "manu", "service"),
+    vars = c("Intang", "Tang"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |> 
+  mutate(values = 100 * values / values[time == 2000]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(nace0~vars) +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100")
+
+```
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("total", "private", "manu", "service"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(vars~nace0, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("private", "private_ex26", "manu", "manu_ex26", "service", "inform"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(vars~nace0, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
+
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("private", "private_ex26", "manu", "manu_ex26", "service", "inform"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = nace0)) +
+  geom_line() +
+  facet_grid(vars~geo, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("private", "private_ex26"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = nace0)) +
+  geom_line() +
+  facet_grid(vars~geo, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("manu", "manu_ex26"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = nace0)) +
+  geom_line() +
+  facet_grid(vars~geo, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
+
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    # geo = "FI",
+    geo = geo_main2,
+    nace0 = c("service", "inform"),
+    # nace0 = c("manu"),
+    vars = c("Innovprop", "EconComp", "Soft_DB"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |>
+  mutate(values = 100 * values / values[time == 2000]) |>
+  ungroup() %>%
+  ggplot(aes(time, values, colour = nace0)) +
+  geom_line() +
+  facet_grid(vars~geo, scales = "free_y") +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100") 
+
+```
 
 
 ## Capital stock
@@ -140,12 +304,14 @@ Aineettomat ja aineelliset suhteessa BKT:seen
 
 ```{r, fig.height=10, fig.width=8}
 
-data_luiss_intan_groups |> 
+data_luiss_intan_groups_main |> 
+  unite("vars", ind, vars, sep = "_") %>% 
   filter_recode(
     geo = c("FI", "SE", "US", geo_ea7),
     nace0 = c("total", "private", "manu", "service"),
-    vars = c("K_Intang", "K_Tang", "VAadj")
+    vars = c("K_Intang", "K_Tang", "I_VAadj")
   ) |> 
+  separate(vars, c("ind", "vars"), sep = "_") %>% 
   mutate(geo = fct_other(geo, drop = geo_ea7, other_level = "EA 7")) |> 
   group_by(geo, nace0, vars, time) |> 
   summarise(values = sum(values)) |> 
@@ -157,6 +323,32 @@ data_luiss_intan_groups |>
   geom_line() +
   facet_grid(nace0~vars, scales = "free") +
   scale_linewidth_discrete(range = c(2,1)) +
+  the_title_blank("xl") +
+  labs(y = "%")
+
+```
+
+```{r, fig.height=10, fig.width=8}
+
+data_luiss_intan_groups_main |> 
+  unite("vars", ind, vars, sep = "_") %>% 
+  filter_recode(
+    geo = c("FI", "SE", "US", geo_ea7),
+    nace0 = c("total", "private", "manu", "service"),
+    vars = c("K_Innovprop", "K_EconComp", "K_Soft_DB", "I_VAadj")
+  ) |> 
+  separate(vars, c("ind", "vars"), sep = "_", extra = "merge") %>% 
+  mutate(geo = fct_other(geo, drop = geo_ea7, other_level = "EA 7")) |> 
+  group_by(geo, nace0, vars, time) |> 
+  summarise(values = sum(values)) |> 
+  group_by(geo, nace0,  time) |> 
+  mutate(values = 100 * values /values[vars == "VAadj"]) |> 
+  ungroup() |> 
+  filter(vars != "VAadj") |> 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(nace0~vars, scales = "free") +
+  # scale_linewidth_discrete(range = c(2,1)) +
   the_title_blank("xl") +
   labs(y = "%")
 

@@ -1,0 +1,200 @@
+---
+title: "Intangible capital"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Intangible capital}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  message=FALSE, 
+  echo=FALSE, 
+  warning=FALSE
+)
+
+```
+
+```{r setup}
+# library(pRoductivity)
+devtools::load_all()
+
+library(tidyverse)
+library(ggptt)
+library(pttdatahaku)
+
+set_board_theme()
+
+
+geo_intan <- c("BE", "DK", "DE", "ES", "FR", "IT", "NL", "AT", "FI", "SE", "UK", "NO", "US")
+geo_ea7 <- c("BE", "DE", "ES", "FR", "IT", "NL", "AT")
+geo_main <- c("FI", "SE", "US", "DK", geo_ea7)
+geo_main2 <- c("FI", "SE", "US", "DK", "DE", "FR")
+
+var_intans0 <- c("EconComp", "Innovprop", "Soft_DB")
+var_intans_det <- c("OrgCap", "RD", "Soft_DB", "Brand", "Design", "NFP", "OIPP", "Train")
+var_agg <- c("Intang", "NatAcc", "NonNatAcc", "Tang", "TangNRes")
+
+
+
+```
+
+## Tietoja
+
+Aineistolla on virhe "Innovprop" sarjassa, siksi se on laskettu alieristä 
+data_luiss_intan_groups_main taulussa.
+
+## Investment ratio
+
+Tilinpidon ja kaikki investoinnit suhteessa BKT:seen Suomessa.
+
+
+
+```{r, fig.height=10, fig.width=8}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = "FI",
+    nace0 = c("private", "private_ex26"),
+    vars = c("NatAcc", "NonNatAcc", "Tang", "VAadj", "VA"),
+    ind = "I"
+  ) |> 
+  spread(vars, values) |> 
+  mutate(share_na_in = 100 * NatAcc / VAadj,
+         share_all_in = 100 * (NatAcc + NonNatAcc) / VAadj,
+         share_all = 100 * (NatAcc + NonNatAcc + Tang) / VAadj) |> 
+  select(time, geo, geo_name, nace0, share_na_in, share_all_in, share_all) |> 
+  gather(vars, values, starts_with("share_")) |> 
+  ggplot(aes(time, values, colour = vars, linetype = nace0)) +
+  geom_line() +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "%") +
+  scale_y_continuous(limits = c(0,30), expand = c(0,0))
+
+```
+
+```{r, fig.height=10, fig.width=8}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_intan,
+    nace0 = c("private"),
+    vars = c("Intang", "VAadj"),
+    ind = "I"
+  ) |> 
+  mutate(geo_name = countrycode::countrycode(geo, "eurostat", "cldr.short.fi")) |> 
+  spread(vars, values) |> 
+  mutate(values = 100 * Intang / VAadj) |> 
+  prod_ind_plot_high("values", NA, "Suomi", c("Ruotsi", "Tanska", "Saksa", "Ranska", "USA") ) +
+  # ggplot(aes(time, values, colour = geo)) +
+  # geom_line() +
+  # geom_h0() +
+  # the_title_blank("xl") +
+  labs(y = "%") +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0))
+
+```
+
+```{r, fig.height=10, fig.width=8}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_intan,
+    nace0 = c("private_ex26"),
+    vars = c("Intang", "VAadj"),
+    ind = "I"
+  ) |> 
+  mutate(geo_name = countrycode::countrycode(geo, "eurostat", "cldr.short.fi")) |> 
+  spread(vars, values) |> 
+  mutate(values = 100 * Intang / VAadj) |> 
+  prod_ind_plot_high("values", NA, "Suomi", c("Ruotsi", "Tanska", "Saksa", "Ranska", "USA") ) +
+  # ggplot(aes(time, values, colour = geo)) +
+  # geom_line() +
+  # geom_h0() +
+  # the_title_blank("xl") +
+  labs(y = "%") +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0))
+
+```
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_main2,
+    nace0 = c("private"),
+    vars = c("Intang"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |> 
+  mutate(values = 100 * values / values[time == 2000]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(nace0~vars) +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100")
+
+```
+
+```{r}
+
+dat_klems_luiss_intan |> 
+  filter_recode(
+    geo = geo_main2,
+    nace_r2 = c("MARKTxAG"),
+    vars = c("Intang"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace_r2, vars, ind) |> 
+  mutate(values = 100 * values / values[time == 2000]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100")
+
+```
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_main2,
+    nace0 = c("private_ex26"),
+    vars = c("Intang"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |> 
+  mutate(values = 100 * values / values[time == 2000]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  facet_grid(nace0~vars) +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100")
+
+```
+```{r}
+
+dat_klems_luiss |> 
+  filter_recode(
+    geo = geo_main2,
+    nace_r2 = c("MARKTxAG"),
+    vars = c("VATFP_I")
+  ) |> 
+  group_by(geo, nace_r2, vars) |> 
+  mutate(values = 100 * values / values[time == 1995]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2000 = 100")
+
+```

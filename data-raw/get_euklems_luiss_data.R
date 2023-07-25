@@ -51,6 +51,28 @@ data_luiss_groups <- dat_klems_luiss |>
   gather(nace0, values, private, private_ex26, manu, manu_ex26, service) %>%
   mutate(nace0 = as_factor(nace0))
 
+data_luiss_groups_tfp <-
+  dat_klems_luiss |>
+  filter(vars %in% c("VA_CP", "VATFP_I")) |>
+  mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
+  filter(nace_r2 %in% main_nace_sna) |>
+  # complete(geo, time, vars, nace_r2_code) |>
+  spread(vars, values) |>
+  group_by(geo, geo_name, time) |>
+  summarise(vacp_private = sum(VA_CP[!(nace_r2 %in% c("TOTAL", "C26"))]),
+            vacp_private_ex26 = vacp_private - VA_CP[nace_r2 == "C26"],
+            vacp_manu = sum(VA_CP[nace_r2 == "C"]),
+            vacp_manu_ex26 = vacp_manu - VA_CP[nace_r2 == "C26"],
+            vacp_service = sum(VA_CP[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))]),
+            tfp_private = weighted.mean(VATFP_I[!(nace_r2 %in% c("TOTAL", "C26"))], VA_CP[!(nace_r2 %in% c("TOTAL", "C26"))]),
+            tfp_private_ex26 = (tfp_private * vacp_private - VATFP_I[nace_r2 == "C26"] * VA_CP[nace_r2 == "C26"]) / (vacp_private - VA_CP[nace_r2 == "C26"]),
+            tfp_manu = VATFP_I[nace_r2 == "C"],
+            tfp_manu_ex26 = (tfp_manu * vacp_manu - VATFP_I[nace_r2 == "C26"] * VA_CP[nace_r2 == "C26"]) / (vacp_manu - VA_CP[nace_r2 == "C26"]),
+            tfp_service = weighted.mean(VATFP_I[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))], VATFP_I[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
+  ungroup() %>%
+  gather(nace0, values, -geo, - geo_name, -time) %>%
+  mutate(nace0 = as_factor(nace0))
+
 ## Intangibles
 
 download.file("https://www.dropbox.com/s/um2yu23712lx1hi/intangibles%20analytical.rds?dl=1", destfile = tmp, mode = "wb")

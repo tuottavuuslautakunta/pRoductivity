@@ -38,7 +38,7 @@ prod_ind_plot_high <- function(data, plot_var, base_year, high_country, high_cou
     scale_colour_manual(values = c(tula_pal(length(c(high_country, high_countries))), "grey75")) +
     guides(colour = guide_legend()) +
     the_title_blank(c("x", "l")) +
-    labs(y = glue("Indeksi, {base_year} = 100"))
+    labs(y = glue::glue("Indeksi, {base_year} = 100"))
 }
 
 

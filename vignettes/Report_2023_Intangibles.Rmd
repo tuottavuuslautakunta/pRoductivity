@@ -183,11 +183,11 @@ data_luiss_intan_groups_main |>
 ```
 ```{r}
 
-dat_klems_luiss |> 
+dat_klems_luiss_ext |> 
   filter_recode(
     geo = geo_main2,
     nace_r2 = c("MARKTxAG"),
-    vars = c("VATFP_I")
+    vars = c("LP1TFP_BU_I")
   ) |> 
   group_by(geo, nace_r2, vars) |> 
   mutate(values = 100 * values / values[time == 1995]) |> 
@@ -198,3 +198,74 @@ dat_klems_luiss |>
   labs(y = "Index, 2000 = 100")
 
 ```
+
+```{r}
+
+data_luiss_groups_tfp |> 
+  filter_recode(
+    geo = geo_main2,
+    nace0 = c("private"),
+    vars = c("tfp")
+  ) |> 
+  group_by(geo, nace0, vars) |> 
+  mutate(values = 100 * values / values[time == 2007]) |> 
+  ungroup() %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  geom_line() +
+  the_title_blank("xl") +
+  labs(y = "Index, 2007 = 100")
+```
+
+
+```{r}
+
+
+data_luiss_groups_tfp2 |> 
+  ggplot(aes(time, tfp, colour = geo)) +
+  geom_line()
+```
+
+```{r}
+
+bind_rows(data_luiss_groups_tfp |> 
+  filter(vars == "tfp",
+         nace0 == "private") |> 
+    group_by(geo) |> 
+    mutate(values = rebase(values, time, 1995)) |> 
+    ungroup(),
+# data_luiss_groups_tfp2 |> 
+#   rename(values = tfp) |> 
+#   mutate(vars = "ftp2"),
+dat_klems_luiss_ext |> 
+  filter_recode(
+    geo = geo_main2,
+    nace_r2 = c("MARKTxAG"),
+    vars = c("LP1TFP_BU_I")
+  ) ) |>
+  group_by(geo, nace_r2, vars) |> 
+  mutate(values = 100 * values / values[time == 2008]) |> 
+  ungroup() |> 
+    filter_recode(geo = geo_main2) |> 
+  ggplot(aes(time, values, colour = vars)) +
+  facet_wrap(~geo) +
+  geom_line()
+  
+
+  
+
+```
+```{r}
+
+data_luiss_groups_tfp |>
+  filter(vars == "tfp",
+         nace0 %in% c("private", "private_ex26")) |> 
+   filter_recode(geo = geo_main2) |> 
+    group_by(geo, nace0, vars) |> 
+  mutate(values = 100 * values / values[time == 2008]) |> 
+  ungroup() |> 
+    ggplot(aes(time, values, colour = nace0)) +
+  facet_wrap(~geo) +
+  geom_line()
+
+```
+

@@ -31,10 +31,10 @@ prod_ind_plot_high <- function(data, plot_var, base_year, high_country, high_cou
          high_names = fct_relevel(high_names, c(high_country, high_countries), after = 0),
          high_size = fct_other(high_names, keep = c(high_country, "muut"), other_level = "muut high"),
          geo_name = fct_relevel(geo_name, c(high_countries, high_country), after = Inf)) %>%
-    ggplot(aes(time, plot_var, group = geo_name, colour = high_names, size = high_size)) +
+    ggplot(aes(time, plot_var, group = geo_name, colour = high_names, linewidth = high_size)) +
     # geom_line(alpha = 0.7) +
     geom_line() +
-    scale_size_manual(values = c(2.5, 1, 1.5), guide = "none") +
+    scale_linewidth_manual(values = c(2.5, 1, 1.5), guide = "none") +
     scale_colour_manual(values = c(tula_pal(length(c(high_country, high_countries))), "grey75")) +
     guides(colour = guide_legend()) +
     the_title_blank(c("x", "l")) +

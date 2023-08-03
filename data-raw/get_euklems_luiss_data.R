@@ -147,8 +147,24 @@ dat_klems_luiss_intan <-
                            Ip_VAadj = "VAadj_pi")) |>
   separate(vars, c("ind" ,"vars"), sep = "_", extra = "merge")
 
-data_luiss_intan_groups_detail <-
+# US do not have Ipyp series that are used for aggragation. They are calcultated for cp ja q series.
+
+dat_klems_luiss_intan_fix_us <-
   dat_klems_luiss_intan |>
+  filter(geo == "US") |>
+  pivot_wider(names_from = ind, values_from = values, names_prefix = "tmp_") |>
+  group_by(geo, nace_r2, vars) |>
+  mutate(tmp_Ipyp = statfitools::pp(tmp_I, tmp_Iq, time)) |>
+  ungroup() |>
+  pivot_longer(cols = starts_with("tmp_"), names_prefix = "tmp_", names_to = "ind", values_to = "values")
+
+dat_klems_luiss_intan_us_fixed <-
+  dat_klems_luiss_intan |>
+  filter(geo != "US") |>
+  bind_rows(dat_klems_luiss_intan_fix_us)
+
+data_luiss_intan_groups_detail <-
+  dat_klems_luiss_intan_us_fixed |>
   # only cp and pyp series that can be summarised
   filter(ind %in% c("HK", "HKpyp", "I", "Ipyp", "K", "Kpyp")) |>
   mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
@@ -174,7 +190,7 @@ data_luiss_intan_groups_detail <-
   pivot_longer(cols = starts_with("ind_"), names_to = "ind", values_to = "values", names_prefix = "ind_")
 
 data_luiss_intan_groups_main <-
-  dat_klems_luiss_intan |>
+  dat_klems_luiss_intan_us_fixed |>
   # only cp and pyp series that can be summarised
   filter(ind %in% c("HK", "HKpyp", "I", "Ipyp", "K", "Kpyp")) |>
   mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>

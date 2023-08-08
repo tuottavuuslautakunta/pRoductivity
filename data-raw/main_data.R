@@ -15,7 +15,7 @@ update <- FALSE
 if (update){
 
   source("data-raw/get_eurostat_data.R")
-  source("data-raw/get_eurostat_data.R")
+  source("data-raw/get_eurostat_data_10.R")
   source("data-raw/get_oecd_sna.R")
 
 }
@@ -160,10 +160,6 @@ data_total <-
   mutate(geo_name = fct_recode(geo, !!!countries),
          geo_name = fct_relevel(geo_name, rev(names(countries))))
 
-
-
-
-
 usethis::use_data(data_main, data_total, overwrite = TRUE)
 
 
@@ -210,6 +206,8 @@ data_main10_groups <- data_main10 %>%
          lp_10 = b1g__clv10_mnac / EMP_DC__THS_HW,
          lp_ind = 100 * lp_10/lp_10[time == base_year]) %>%
   ungroup() %>%
+  # Poistetaan pelkästään summattu volyymisarja
+  select(-B1G__CLV15_MNAC) |>
   complete(nesting(geo, geo_name), nace0, time) %>%
   group_by(geo, nace0) %>%
   mutate(lp_ind =  rebase(lp_ind, time, base_year),

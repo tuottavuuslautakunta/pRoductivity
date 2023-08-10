@@ -44,7 +44,8 @@ high_country <- "Suomi"
 high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
 geos2022 <- c("Suomi", "Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska", "Ranska", "Italia", "Iso-Britannia", "Alankomaat", "Norja")
 
-geo_level <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", "Saksa" = "DE", "Tanska" = "DK", "Ranska" = "FR") 
+geo_level <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", 
+               "Saksa" = "DE", "Tanska" = "DK", "Ranska" = "FR", "Italia" = "IT", "Espanja" = "ES") 
 
 plot_start_year <- 2000
 
@@ -422,6 +423,8 @@ data_ted |>
 
 ```
 
+## Yksityinen sektori
+
 ```{r}
 
 
@@ -431,7 +434,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level(geos = geo_level, "private")
 
-# save_figs("Kuvio_2_1", en = TRUE)
+save_figs("Kuvio_1_1", en = TRUE)
 
 # data_main10_groups_level |> 
 #   mutate(lp_level05 = lp_fp05_eur) |> 
@@ -451,6 +454,7 @@ data_main10_groups_level |>
 
 ```
 
+## Teollisuus
 
 ```{r}
 
@@ -462,10 +466,11 @@ data_main10_groups_level |>
   plot_lp_level(geos = geo_level, "manu", y = lp_level08) +
   labs(y = "Indeksi, Yhdysvallat 2008 = 100, logaritminen asteikko")
 
-# save_figs("Kuvio_7_a", en = TRUE)
+save_figs("Kuvio_1_2", en = TRUE)
 
 ```
 
+## Palvelut
 
 ```{r}
 
@@ -477,9 +482,10 @@ data_main10_groups_level |>
   plot_lp_level(geos = geo_level, "service", y = lp_level08) +
   labs(y = "Indeksi, Yhdysvallat 2008 = 100, logaritminen asteikko")
 
-# save_figs("Kuvio_7_b", en = TRUE)
+save_figs("Kuvio_1_3", en = TRUE)
 
 ```
+
 ## Tuottavuuden taso - palveluiden alatoimialat
 
 ```{r}
@@ -545,6 +551,8 @@ data_main |>
 # save_figs("level_service_price", en = TRUE)
 
 ```
+
+### Nimellinen
 
 ```{r}
 

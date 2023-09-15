@@ -222,6 +222,42 @@ data_luiss_intan_groups_main <-
   ungroup() %>%
   pivot_longer(cols = starts_with("ind_"), names_to = "ind", values_to = "values", names_prefix = "ind_")
 
-usethis::use_data(data_luiss_intan_groups_detail, data_luiss_groups, data_luiss_intan_groups_main, data_luiss_groups_tfp,  overwrite = TRUE)
+
+## 	Capital accounts
+
+
+download.file("https://www.dropbox.com/s/pg7svgbxc1dz976/capital%20accounts.rds?dl=1", destfile = tmp, mode = "wb")
+
+dat_klems_luiss_capital0 <- readRDS(tmp)
+
+
+
+dat_klems_luiss_capital <-
+  dat_klems_luiss_capital0 |>
+  mutate(year = as.numeric(year)) |>
+  mutate(across(where(is.character), as_factor)) |>
+  # to drop labels
+  mutate(across(where(is.numeric), as.numeric)) |>
+  rename(geo = geo_code, time = year, nace_r2 = nace_r2_code) |>
+  pivot_longer(cols = !c(nace_r2:time), names_to = c("ind" ,"vars"), values_to = "values", names_pattern = '(.*?)_(.*)') |>
+  mutate(vars = as_factor(vars))
+
+data_luiss_groups_capital <- dat_klems_luiss_capital |>
+  filter(ind %in% c("I", "Ipyp", "K", "KPYP")) |>
+  mutate(nace_r2 = forcats::fct_recode(nace_r2, TOTAL = "TOT")) |>
+  filter(nace_r2 %in% main_nace_sna) |>
+  # complete(geo, time, vars, nace_r2_code) |>
+  group_by(geo, geo_name, time, ind, vars) %>%
+  summarise(private = sum(values[!(nace_r2 %in% c("TOTAL", "C26"))]),
+            private_ex26 = private - values[nace_r2 == "C26"],
+            manu = sum(values[nace_r2 == "C"]),
+            manu_ex26 = manu - values[nace_r2 == "C26"],
+            service = sum(values[nace_r2 %in% c(c("G", "H", "I", "J", "M", "N"))])) %>%
+  ungroup() %>%
+  gather(nace0, values, private, private_ex26, manu, manu_ex26, service) %>%
+  mutate(nace0 = as_factor(nace0))
+
+
+usethis::use_data(data_luiss_intan_groups_detail, data_luiss_groups, data_luiss_intan_groups_main, data_luiss_groups_tfp, data_luiss_groups_capital,  overwrite = TRUE)
 
 data_luiss_intan_groups_main %>% write.csv2(file = "data_luiss_intan_groups_main.csv")

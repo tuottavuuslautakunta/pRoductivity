@@ -1,0 +1,165 @@
+---
+title: "Raportin 2023 muut kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+# 
+# dat_kuviot <-
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot_muut_2023.xlsx")
+#   ) %>%
+#   mutate(time = as.numeric(time)) %>%
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Kuviot_muut_2023.xlsx")
+
+dat_kuviot <-
+  set_names(readxl::excel_sheets(file_kuviot)) %>%
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x) |> 
+         mutate(time = as.numeric(time)) )
+# 
+# 
+# geo_klems <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", 
+#                "Saksa" = "DE", "Tanska" = "DK", 
+#                "Italia" = "IT", "Espanja" = "ES", "Alankomaat" = "NL",
+#                "Belgia" = "BE", "Iso-Britannia" = "UK") 
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+
+```{r}
+
+dat_kuviot[["Kuvio_1_5"]] |> 
+  select(-time) |> 
+  gather(vars, values, -periodi) |> 
+  mutate(vars = as_factor(vars))%>%{
+  ggplot(droplevels(filter(., vars != "Työn tuottavuus")), aes(periodi, values, fill = vars)) +
+  geom_col() +
+  geom_point(data = (filter(., vars == "Työn tuottavuus")), aes(periodi, values, colour = vars, fill = NULL)) +
+  the_title_blank("xyl") +
+      the_legend_bot() +
+  scale_colour_manual(values = "grey30") +
+  geom_h0() +
+      guides(fill = guide_legend(override.aes = list(colour = NA), nrow = 3), colour = guide_legend())}
+
+save_figs("Kuvio_5")
+
+```
+
+
+```{r}
+
+dat_kuviot[["Kuvio_4_2"]] |> 
+  mutate(across(contains("velka"), ~(.x * -0.5 +2))) %>% 
+  gather(vars, values, -time) %>% 
+  ggplot(aes(time, values, colour = vars)) +
+  geom_line() +
+  scale_y_continuous(sec.axis = sec_axis(~ . * -2 +4, breaks = seq.int(-6,6,2))) +
+  the_legend_bot() +
+  labs(y = "%") +
+  the_title_blank("xl") +
+  geom_hline(yintercept = c(0, 2), colour = tula_pal(2))
+
+save_figs("Kuvio_4_2", height = fig_height)
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_4_3"]] |>   
+  mutate(across(contains("Työtunnit"), ~(rebase(.x, time, 2015)))) |> 
+  mutate(across(where(is.numeric), ~.x-100)) |> 
+  mutate(across(contains("Reaaliset"), ~(.x * -2))) %>%
+    mutate(across(where(is.numeric), ~.x+100)) |> 
+  gather(vars, values, -time) %>% 
+  ggplot(aes(time, values, colour = vars)) +
+  geom_line() +
+  scale_y_continuous(sec.axis = sec_axis(~(.-100) * -0.5 +100, breaks = seq.int(85,100, 5))) +
+  the_legend_bot() +
+  labs(y = "Indeksi, 2015 = 100") +
+  the_title_blank("xl")
+
+save_figs("Kuvio_4_3", height = fig_height)
+
+```
+```{r}
+
+dat_kuviot[["Kuvio_7"]] |> 
+  mutate(geo = fct_reorder(geo, values)) |> 
+  ggplot(aes(geo, values)) +
+  geom_col() +
+  coord_flip() +
+  the_title_blank("xy") +
+  geom_h0()
+
+save_figs("Kuvio_7")
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_8"]] |> 
+  mutate(geo = fct_reorder(geo, values)) |> 
+  ggplot(aes(geo, values)) +
+  geom_col() +
+  coord_flip() +
+  the_title_blank("xy") +
+  geom_h0()
+
+save_figs("Kuvio_8")
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_20"]] |>
+  gather(vars, values, -time) %>% 
+  mutate(values = 100 * values) |> 
+  mutate(vars = fct_relevel(vars, c("ANSI", "SANI"))) |> 
+  ggplot(aes(time, values, colour = vars)) +
+  geom_line() +
+  the_title_blank("xyl") +
+  the_legend_bot() 
+
+save_figs("Kuvio_20")
+
+```
+

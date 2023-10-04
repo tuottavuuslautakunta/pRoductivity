@@ -23,7 +23,7 @@ plot_lp_level <- function(data, geos, nace, y = lp_level05){
     ggplot(aes(time, {{y}}, colour = geo_name, size = geo_name)) +
     geom_line() +
     scale_size_manual(name = "legend", values = size_values)+
-    scale_y_log10(breaks = seq(0, 200, 10)) +
+    scale_y_log10(breaks = seq(0, 400, 10)) +
     scale_colour_manual(name = "legend", values = colour_values) +
     guides(colour = guide_legend(nrow = 2)) +
     the_legend_bot() +
@@ -42,7 +42,7 @@ plot_lp_level_rel <- function(data, geos, nace, rel_geo = "US"){
 
   data |>
     filter(geo %in% geos,
-           nace0 == nace) |>
+           nace0 %in% nace) |>
     droplevels() |>
     complete(time, nesting(geo, geo_name), nace0) |>
     group_by(time, nace0) |>

@@ -78,7 +78,8 @@ dat_kuviot[["Kuvio_1_5"]] |>
       the_legend_bot() +
   scale_colour_manual(values = "grey30") +
   geom_h0() +
-      guides(fill = guide_legend(override.aes = list(colour = NA), nrow = 3), colour = guide_legend())}
+      guides(fill = guide_legend(override.aes = list(colour = NA), nrow = 3), colour = guide_legend()) +
+      theme(panel.grid.major.x = element_blank())}
 
 save_figs("Kuvio_5")
 
@@ -98,7 +99,7 @@ dat_kuviot[["Kuvio_4_2"]] |>
   the_title_blank("xl") +
   geom_hline(yintercept = c(0, 2), colour = tula_pal(2))
 
-save_figs("Kuvio_4_2", height = fig_height)
+save_figs("Kuvio_21", height = fig_height)
 
 ```
 
@@ -117,15 +118,16 @@ dat_kuviot[["Kuvio_4_3"]] |>
   labs(y = "Indeksi, 2015 = 100") +
   the_title_blank("xl")
 
-save_figs("Kuvio_4_3", height = fig_height)
+save_figs("Kuvio_22", height = fig_height)
 
 ```
 ```{r}
 
 dat_kuviot[["Kuvio_7"]] |> 
   mutate(geo = fct_reorder(geo, values)) |> 
-  ggplot(aes(geo, values)) +
-  geom_col() +
+  mutate(high = geo == "Suomi") |> 
+  ggplot(aes(geo, values, fill = high)) +
+  geom_col(show.legend = FALSE) +
   coord_flip() +
   the_title_blank("xy") +
   geom_h0()
@@ -138,8 +140,9 @@ save_figs("Kuvio_7")
 
 dat_kuviot[["Kuvio_8"]] |> 
   mutate(geo = fct_reorder(geo, values)) |> 
-  ggplot(aes(geo, values)) +
-  geom_col() +
+  mutate(high = geo == "Suomi") |> 
+  ggplot(aes(geo, values, fill = high)) +
+  geom_col(show.legend = FALSE) +
   coord_flip() +
   the_title_blank("xy") +
   geom_h0()
@@ -159,7 +162,62 @@ dat_kuviot[["Kuvio_20"]] |>
   the_title_blank("xyl") +
   the_legend_bot() 
 
-save_figs("Kuvio_20")
+save_figs("Kuvio_19")
 
 ```
 
+```{r}
+
+lines <- c("Muuttumaton", "Perus", "Optimistinen")
+
+dat_kuviot[["Kuvio_14"]] |>
+  gather(vars, values, -time) %>% 
+  mutate(vars = fct_rev(as_factor(vars))) %>%{
+  ggplot(droplevels(filter(., !(vars %in% lines))), aes(time, values, fill = vars)) +
+  geom_area() +
+  geom_line(data = (filter(., vars %in% lines)), aes(time, values, colour = vars, fill = NULL)) +
+  the_title_blank("xyl") +
+      the_legend_bot() +
+  scale_colour_manual(values = rev(c("grey25", "grey50", "grey75"))) +
+  geom_h0() +
+      guides(fill = guide_legend(override.aes = list(colour = NA), nrow = 3), colour = guide_legend(nrow = 3)) +
+      theme(panel.grid.major.x = element_blank())}
+
+
+save_figs("Kuvio_14")
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_15"]] |>
+  gather(vars, values, -time) %>% 
+  # mutate(vars = fct_rev(as_factor(vars))) |> 
+  # mutate(vars = fct_relevel(vars, c("ANSI", "SANI"))) |> 
+  ggplot(aes(time, values, colour = vars)) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  geom_h0() +
+  guides(colour = guide_legend(nrow = 2)) +
+  labs(y = "Miljoonaa euroa, vuoden 2010 hinnoin, suhteessa työntunteihin")
+
+save_figs("Kuvio_15")
+
+```
+
+```{r}
+
+dat_kuviot[["Kuvio_16"]] |>
+  gather(vars, values, -time) %>% 
+  ggplot(aes(time, values, colour = vars)) +
+  geom_line() +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  geom_h0() +
+  guides(colour = guide_legend(nrow = 2)) +
+  labs(y = "")
+
+save_figs("Kuvio_16")
+
+```

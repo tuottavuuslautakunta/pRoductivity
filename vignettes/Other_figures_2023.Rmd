@@ -111,6 +111,7 @@ dat_kuviot[["Kuvio_4_3"]] |>
   mutate(across(contains("Reaaliset"), ~(.x * -2))) %>%
     mutate(across(where(is.numeric), ~.x+100)) |> 
   gather(vars, values, -time) %>% 
+  mutate(vars = fct_rev(vars)) |> 
   ggplot(aes(time, values, colour = vars)) +
   geom_line() +
   scale_y_continuous(sec.axis = sec_axis(~(.-100) * -0.5 +100, breaks = seq.int(85,100, 5))) +

@@ -21,7 +21,7 @@ library(stringr)
 
 fig_translation_0 <- read.csv2("data-raw/Avain_FI_EN.csv", encoding = "latin1")|>
   distinct() |>
-  mutate(across(.fns = ~str_replace(.x, "\\\\n" ,"\\\n")))
+  mutate(across(everything(), .fns = ~str_replace(.x, "\\\\n" ,"\\\n")))
 
 fig_translation <- purrr::set_names(fig_translation_0$Englanti, fig_translation_0$Suomi)
 

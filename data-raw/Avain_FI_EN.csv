@@ -1,5 +1,6 @@
 Suomi;Englanti
 Vuoden 2015 hinnoin, 1000 $, ostovoimakorjattu,\nlogaritminen asteikko;2015 prices, USD 1,000, purchasing power parity adjusted,\nlogarithmic scale
+logaritminen asteikko;logarithmic scale
 <- Tuottavuus paranee;<- Productivity improves
 Suomi;Finland
 Ranska;France
@@ -10,7 +11,7 @@ Tanska;Denmark
 Saksa;Germany
 Alankomaat;Netherlands
 Ruotsi;Sweden
-Yhdysvallat;United States
+Indeksi;Index
 Indeksi, Yhdysvallat = 100;Index, Yhdysvallat = 100
 Suomi;Finland
 Ranska;France
@@ -67,6 +68,7 @@ Nimellinen, omassa valuutassa;Nominal, own currency
 Nimellinen, vaihtosuhdekorjattu;Nominal, terms-of-trade adjusted
 Nimellinen, samassa valuutassa;Nominal, same currency
 Reaalinen;Real
+keskiarvo;average for
 Indeksi, keskiarvo 2000-2021 = 100;Index, average for 2000-2021 = 100
 Palkansaajakorvaukset;Employee compensation
 Tuottavuus;Productivity

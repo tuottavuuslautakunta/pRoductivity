@@ -43,7 +43,10 @@ save_figs <- function(filename,
     }
   ggplot2::ggsave(here::here("figures/pdf_en", paste0(filename, "_en.pdf")),
                   plot = plot1,
-                  width = width, height = height, units = "cm")}
+                  width = width, height = height, units = "cm")
+  ggplot2::ggsave(here::here("figures/png_en", paste0(filename, "_en.png")),
+                  plot = plot1,  width = width, height = height, units = "cm")
+  }
 
 
 }

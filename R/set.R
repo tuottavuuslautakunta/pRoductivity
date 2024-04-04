@@ -24,7 +24,7 @@ set_board_theme <- function(base_size = 11){
     attach(e, name = "prod_sets", warn.conflicts = FALSE)
   }
   attach(as.environment("prod_sets"), pos = 2L, name = "prod_sets")
-  old_theme <- ggplot2::theme_set(theme)
+  old_theme <- ggplot2::theme_set(ggplot2::theme_bw())
   assign("old_theme", old_theme, pos = "prod_sets")
 
   pal <- tula_pal

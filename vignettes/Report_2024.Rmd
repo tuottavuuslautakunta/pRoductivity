@@ -1,0 +1,689 @@
+---
+title: "Raportin 2024 kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "fig_report2024/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(patchwork)
+library(ficomp)
+library(gt)
+library(tidyselect)
+library(pttdatahaku)
+
+devtools::load_all()
+
+# set_board_theme(base_size = 8)
+set_board_theme(base_size = 10)
+
+# Data
+
+data("data_main_groups", "data_main10_groups", "synth_est_results", "synth10_est_results")
+data("weights_ecfin27", "weights_ecfin37", package = "ficomp")
+
+
+fig_height <- 10
+
+high_country <- "Suomi"
+high_countries <- c("Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska")
+geos2022 <- c("Suomi", "Ruotsi", "Euroalue-12", "Saksa", "Yhdysvallat", "Tanska", "Ranska", "Italia", "Iso-Britannia", "Alankomaat", "Norja")
+
+geo_level <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", 
+               "Saksa" = "DE", "Tanska" = "DK", "Ranska" = "FR", "Italia" = "IT", "Espanja" = "ES") 
+
+geo_intan <- c("BE", "DK", "DE", "ES", "FR", "IT", "NL", "AT", "FI", "SE", "UK", "NO", "US")
+
+plot_start_year <- 2000
+
+```
+
+# Työn tuottavuus
+
+Työn tuottavuuden kasvu keskimäärin vuodesta 2015 
+
+```{r bar_change, fig.height=10}
+
+order_fun <- function(.x, .y) mean(coalesce(.x, Inf)[.y == "private"])
+
+data_main10_groups %>% 
+  group_by(geo, nace0) %>% 
+  filter(time >= 2015) %>% 
+  transmute(lp_change = 100 * (lp_ind / lag(lp_ind) -1)) %>% 
+  summarise(values = mean(lp_change, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(
+    nace0 = fct_relevel(nace0, "private"),
+    geo = fct_reorder2(geo, values, nace0, .fun = order_fun, .na_rm = FALSE)
+  ) %>% 
+  ggplot(aes(geo, values, label = round(values, 1))) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ nace0) +
+  geom_text(colour = "black", hjust = "top", nudge_y = 0.5) +
+  coord_flip()
+  # spread(nace0, values) %>% 
+  # arrange(-private) %>% 
+  # gt() %>% 
+  # fmt_number(columns = vars(private, manu, service), decimals = 1)
+
+```
+
+## Työn tuottavuus Suomessa
+
+```{r}
+
+data_main10_groups |> 
+  filter(geo == "FI") |> 
+  select(geo, nace0, time, lp_ind) |> 
+  ggplot(aes(time, lp_ind, colour = nace0)) +
+    geom_line() +
+      the_title_blank(c("x", "l")) +
+    labs(y = glue("Indeksi, {base_year} = 100"))
+  
+
+```
+
+
+
+## Yksityinen sektori
+
+```{r private, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, weight_data = data_main10_g_weighted, nace = "private", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+# save_figs(filename = "Kuvio_2_1_private", en = TRUE)
+
+# save_trip_plot_data("private")
+
+```
+
+
+
+
+```{r private_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "private")
+
+
+```
+
+```{r}
+
+nace = "private"
+plot_var = "lp_ind"
+
+data_main10_g_weighted %>% 
+    filter(time >= plot_start_year,
+           nace0 == nace,
+           geo_name %in% c(geos2022)) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, setdiff(geos2022, high_country)) +
+  the_legend_bot()
+
+# save_figs("Kuvio_5_1", en = TRUE, height = fig_height)
+
+
+```
+
+
+## Yksityinen sektori ilman elektroniikkateollisuutta
+
+```{r private_ex26, fig.height=10}
+
+dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "private_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+# save_figs("Kuvio_2_2_private_ex26", en = TRUE)
+
+# save_trip_plot_data("private_ex26")
+
+
+
+```
+
+
+
+
+
+```{r private_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "private_ex26")
+
+
+```
+
+
+
+```{r}
+
+nace = "private_ex26"
+plot_var = "lp_ind"
+
+data_main_g_weighted%>% 
+    filter(time >= plot_start_year,
+           nace0 == nace,
+           geo_name %in% c(geos2022)) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, setdiff(geos2022, high_country)) +
+  the_legend_bot()
+
+# save_figs("Kuvio_5_2", en = TRUE, height = fig_height)
+
+
+```
+
+
+
+
+
+## Teollisuus
+
+```{r}
+
+nace = "manu"
+plot_var = "lp_ind"
+
+data_main10_g_weighted %>% 
+    filter(time >= plot_start_year,
+           nace0 == nace,
+           geo %in% c(geo_level)) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
+  the_legend_bot()
+
+# save_figs("Kuvio_7_2", en = TRUE, height = fig_height)
+
+
+```
+
+```{r manu, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "manu", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+# save_figs("Kuvio_2_3_manu", en = TRUE)
+
+# save_trip_plot_data("manu")
+
+```
+
+
+
+
+```{r manu_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "manu")
+
+
+```
+
+
+
+## Teollisuus ilman elektroniikkateollisuutta
+
+```{r manu_ex26, fig.height=10}
+
+dip_plot(synth_obj = synth_est_results, data_main_g_weighted, nace = "manu_ex26", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+
+# save_figs("Kuvio_2_4_manu_ex26", en = TRUE)
+
+# save_trip_plot_data("manu_ex26")
+
+```
+
+
+
+
+```{r manu_ex26_weight, fig.height=4}
+
+
+rel_plot2(data_main_g_weighted, "manu_ex26")
+
+
+```
+
+
+
+## Palvelut
+
+```{r}
+
+nace = "service"
+plot_var = "lp_ind"
+
+data_main10_g_weighted %>% 
+    filter(time >= plot_start_year,
+           nace0 == nace,
+           geo %in% c(geo_level)) %>%
+    prod_ind_plot_high(plot_var, base_year, high_country, setdiff(names(geo_level), high_country)) +
+  the_legend_bot()
+
+# save_figs("Kuvio_7_3", en = TRUE, height = fig_height)
+
+
+```
+
+```{r service, fig.height=10}
+
+dip_plot(synth_obj = synth10_est_results, data_main10_g_weighted, nace = "service", plot_var = "lp_ind", base_year, high_country, high_countries)
+
+# save_figs("Kuvio_2_5_service", en = TRUE)
+
+
+
+```
+
+
+
+```{r service_weight, fig.height=4}
+
+
+rel_plot2(data_main10_g_weighted, "service")
+
+
+```
+## OECD digitalisuus jaolla
+
+```{r}
+
+data_digi |> 
+  ggplot(aes(time, lp_ind, colour = geo)) +
+  facet_wrap(~ d_class) +
+  geom_line()
+
+```
+
+Siistitty ja imputoitu kuvio
+
+```{r}
+
+digi_geo_labs <- 
+  c(Bench_1 = "Verrokkimaat 1",
+    Bench_2 = "Verrokkimaat 2",
+    Bench_OECD = "Verrokkimaat OECD",
+    FI = "Suomi")
+
+d_class_labs <- 
+  c(nd_manu = "Ei-digitaalinen teollisuus",
+    d_manu = "Digitaalinen teollisuus",
+    nd_serv = "Ei-digitaalinen palvelu",
+    d_serv = "Digitaalinen palvelu"
+    )
+
+data_digi |> 
+  filter(geo != "Bench_3") |>
+  group_by(geo, d_class) |> 
+  # Vuodelle 2014 on yksi puuttuvat avainto non-digi teollisuudessa. Se imputoitu. xout imputoi 1-20 havainnot eli ei lopun NA arvoja.
+  mutate(lp_ind = imputeTS::na_interpolation(lp_ind, method = "linear", xout = 1:20)) |> 
+  mutate(geo = recode(geo, !!!digi_geo_labs),
+         d_class = fct_relevel(d_class, names(d_class_labs)),
+         d_class = recode_factor(d_class, !!!d_class_labs)) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2004)) |>
+  ungroup() |> 
+  ggplot(aes(time, lp_ind, colour = geo)) +
+  facet_wrap(~ d_class) +
+  geom_line() +
+  scale_x_continuous(labels = no_century) +
+  labs(y = "indeksi, 2004 = 100") +
+  the_title_blank("xl") +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2))
+
+
+cat("Verrokkimaat 1: ", paste0(countrycode::countrycode(geo_digi_1, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
+    "Verrokkimaat 2: ", paste0(countrycode::countrycode(geo_digi_2, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n",
+    "Verrokkimaat OECD: ", paste0(countrycode::countrycode(geo_digi_oecd, "eurostat", destination = "cldr.short.fi"), collapse = ", "), "\n")
+
+# save_figs("Kuvio_3_4")
+
+```
+
+## Tuottavuuden taso
+
+
+## Yksityinen sektori
+
+```{r}
+
+
+
+data_main10_groups_level |> 
+  filter(time >= 1980) |> 
+  plot_lp_level(geos = geo_level, "private")
+
+save_figs("Kuvio_1", en = TRUE)
+
+# data_main10_groups_level |> 
+#   mutate(lp_level05 = lp_fp05_eur) |> 
+#   filter(time >= 1980) |> 
+#   plot_lp_level(geos = geo_level, "private")
+
+```
+
+```{r}
+
+data_main10_groups_level |> 
+  # Arvio yhdysvalloista koko talouden tuottavuuden perusteella
+  add_row(geo = rep("US", 3), time = rep(2022, 3), 
+          geo_name = rep("Yhdysvallat", 3),
+          nace0 = c("private", "manu", "service"), 
+          lp_level05 = c(123.2630116, 134.667241, 128.3577154
+)) |> 
+  filter(time >= 1980) |> 
+  plot_lp_level_rel(geos = geo_level, nace = "private")
+
+save_figs("Kuvio_13", en = TRUE)
+# data_main10_groups_level |> filter(geo == "US", time >= 1995) |> select(geo, time, nace0, lp_level05) |> spread(nace0, lp_level05) 
+
+```
+
+```{r}
+
+
+data_main10_groups_level |> 
+  add_row(geo = rep("US", 3), time = rep(2022, 3), 
+          geo_name = rep("Yhdysvallat", 3),
+          nace0 = c("private", "manu", "service"), 
+          lp_level05 = c(123.2630116, 134.667241, 128.3577154
+)) |> 
+  filter(time >= 1980) |> 
+  plot_lp_level_rel(geos = geo_level, nace = c("manu", "service")) +
+  facet_wrap(~nace0)
+
+
+```
+
+
+## Teollisuus
+
+```{r}
+
+data_main10_groups_level |> 
+  filter(time >= 1995) |> 
+  # group_by(nace0) |>
+  # mutate(lp_level08 = 100* lp_level05 / lp_level05[time == 2008 & geo == "US"] ) |>
+  # ungroup() |>
+  plot_lp_level(geos = geo_level, "manu", y = lp_level05) +
+  labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
+
+save_figs("Kuvio_2", en = TRUE)
+
+```
+
+## Palvelut
+
+```{r}
+
+data_main10_groups_level |> 
+  filter(time >= 1995) |> 
+  # group_by(nace0) |>
+  # mutate(lp_level08 = 100* lp_level05 / lp_level05[time == 2008 & geo == "US"] ) |>
+  # ungroup() |>
+  plot_lp_level(geos = geo_level, "service", y = lp_level05) +
+  labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
+
+save_figs("Kuvio_3", en = TRUE)
+
+```
+
+## Tuottavuuden taso - palveluiden alatoimialat
+
+```{r}
+
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CLV15_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,
+         lp_fp05_eur = lp_fp05 / exh_eur[time == 2005]) |>
+  mutate(lp_level05 = lp_fp05_eur / go_level05) |>
+  group_by(nace_r2) |> 
+  mutate(lp_level05 = 100 * lp_level05 / lp_level05[geo == "US" & time == 2005]) |> 
+  ungroup() |>
+  mutate(nace_r2 = recode(nace_r2, G = "Kauppa", H = "Kuljetus", I = "Majoitus- ja\nravitsemistoiminta",
+                          J = "Informaatio ja viestintä", M = "Ammatillinen, tieteellinen\nja tekninen toiminta",
+                          N = "Hallinto- ja tukipalvelut")) |>
+  mutate(geo = as_factor(recode(geo, !!!set_names(names(countries), countries)))) |>
+  mutate(geo = fct_relevel(geo, "Ruotsi", "Saksa", "Suomi", "Tanska", "USA")) |>
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, lp_level05, colour = geo)) +
+  facet_wrap(~nace_r2) +
+  geom_line() +
+  # geom_h0() +
+  scale_y_log10(breaks = seq(0, 300, 50)) +
+  scale_x_continuous(labels = no_century) +
+  the_legend_bot() +
+  theme(strip.text.x = ggplot2::element_text(size = ggplot2::rel(0.8))) +
+  the_title_blank("xl") +
+  labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
+
+# save_figs("Kuvio_2_6", height = fig_height + 4, en = TRUE)
+
+```
+
+```{r, eval=FALSE}
+
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CLV15_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         p_ind = (B1G__CP_MNAC / B1G__CLV15_MNAC),
+         p_ind_05 = rebase(p_ind, time, 2005)) |>
+  ungroup() |>
+  mutate(p_level05 = p_ind_05 / go_level05) |>
+  mutate(nace_r2 = eurostat::label_eurostat(nace_r2, "nace_r2")) |> 
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, p_level05, colour = geo)) +
+  facet_wrap(~nace_r2, scales = "free") +
+  geom_line() +
+  geom_h0() +
+  the_title_blank() +
+  the_legend_bot()
+
+# save_figs("level_service_price", en = TRUE)
+
+```
+
+### Nimellinen
+
+```{r}
+
+data_main |> 
+  filter(geo %in% c("SE", "FI", "DK", "US", "DE"),
+         !(nace_r2 %in% c("C", "F", "C26", "TOTAL"))) |> 
+  left_join(select(exh_eur_a, geo, time, exh_eur = values), by = c("geo", "time")) |>
+  left_join(data_ggdc_10_go_level05, by = c("geo", "nace_r2")) |>
+  mutate(lp_ind = B1G__CP_MNAC / EMP_DC__THS_HW) |>
+  group_by(geo, nace_r2) |> 
+  mutate(lp_ind = rebase(lp_ind, time, 2005),
+         lp_fp05 = (B1G__CP_MNAC / EMP_DC__THS_HW)[time == 2005] * lp_ind / 100,
+         lp_fp05_eur = lp_fp05 / exh_eur[time == 2005]) |>
+  ungroup() |>
+  mutate(lp_level05 = lp_fp05_eur / go_level05) |>
+  mutate(nace_r2 = eurostat::label_eurostat(nace_r2, "nace_r2")) |> 
+  mutate(nace_r2 = as_factor(nace_r2)) |> 
+  ggplot(aes(time, lp_level05, colour = geo)) +
+  facet_wrap(~nace_r2, scales = "free") +
+  geom_line() +
+  geom_h0() +
+  the_title_blank() +
+  the_legend_bot()
+
+# save_figs("level_service_cp", en = TRUE)
+
+```
+
+## Aineettomat
+
+```{r}
+
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = "FI",
+    nace0 = c("private", "private_ex26"),
+    vars = c("NatAcc", "NonNatAcc", "Tang", "VAadj", "VA"),
+    ind = "I"
+  ) |> 
+  spread(vars, values) |> 
+  mutate(share_na_in = 100 * NatAcc / VAadj,
+         share_all_in = 100 * (NatAcc + NonNatAcc) / VAadj,
+         share_all = 100 * (NatAcc + NonNatAcc + Tang) / VAadj) |> 
+  select(time, geo, geo_name, nace0, share_na_in, share_all_in, share_all) |> 
+  gather(vars, values, starts_with("share_")) |> 
+  filter_recode(
+    vars = c(
+      "Kaikki investonnit" = "share_all", 
+      "Kaikki aineettomat" = "share_all_in",
+      "Aineettomat tilinpidossa" = "share_na_in"
+    ),
+    nace0 = c(
+      "Markkinasektori" = "private",
+      "pl. elektroniikkateollisuus" = "private_ex26"
+    )
+  ) |> 
+  ggplot(aes(time, values, colour = vars, linetype = nace0, linewidth = nace0)) +
+  geom_line() +
+  geom_h0() +
+  the_title_blank("xl") +
+  labs(y = "%") +
+  scale_y_continuous(limits = c(0,30), expand = c(0,0)) +
+  scale_linewidth_discrete(range = c(2,1.3)) +
+  the_legend_bot() +
+  guides(
+    colour = guide_legend(nrow = 3),
+    linetype = guide_legend(nrow = 3, override.aes = list(colour = "grey")),
+    linewidth = guide_legend(nrow = 3, override.aes = list(colour = "grey"))
+  )
+  
+save_figs("Kuvio_9")
+
+```
+
+### Investointiaste yksityisellä sektorilla ja ilman elektroniikkateollisuutta
+
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_intan,
+    nace0 = c("Markkinasektori" = "private", "pl. elektroniikkateollisuus" = "private_ex26"),
+    vars = c("Intang", "VAadj"),
+    ind = "I"
+  ) |> 
+  mutate(geo_name = countrycode::countrycode(geo, "eurostat", "cldr.short.fi")) |> 
+  spread(vars, values) |> 
+  mutate(values = 100 * Intang / VAadj) |> 
+  prod_ind_plot_high("values", NA, "Suomi", c("Ruotsi", "Tanska", "Saksa", "Ranska", "USA") ) +
+  facet_wrap(~nace0) +
+  # ggplot(aes(time, values, colour = geo)) +
+  # geom_line() +
+  # geom_h0() +
+  # the_title_blank("xl") +
+  labs(y = "%") +
+  scale_y_continuous(limits = c(0,25), expand = c(0,0)) +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2))
+
+save_figs("Kuvio_10")
+
+```
+
+```{r}
+
+data_luiss_intan_groups_main |> 
+  filter_recode(
+    geo = geo_intan,
+    nace0 = c("private", "private_ex26"),
+    vars = c("Intang"),
+    ind = "Iq"
+  ) |> 
+  group_by(geo, nace0, vars, ind) |> 
+  mutate(values = 100 * values / values[time == 2007]) |> 
+  ungroup() %>% 
+   mutate(geo_name = countrycode::countrycode(geo, "eurostat", "cldr.short.fi")) |> 
+  filter_recode(
+        nace0 = c(
+      "Markkinasektori" = "private",
+      "pl. elektroniikkateollisuus" = "private_ex26"
+    )
+  ) |> 
+  prod_ind_plot_high("values", NA, "Suomi", c("Ruotsi", "Tanska", "Saksa", "Ranska", "USA") ) +
+  # ggplot(aes(time, values, colour = geo)) +
+  # geom_line() +
+  # geom_h0() +
+  # the_title_blank("xl") +
+
+  # scale_y_continuous(limits = c(0,25), expand = c(0,0))
+  facet_wrap(~nace0) +
+  the_title_blank("xl") +
+  labs(y = "Indeksi, 2007 = 100") +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2))
+
+save_figs("Kuvio_11")
+
+```
+
+```{r}
+
+
+
+data_luiss_groups_tfp |> 
+  filter_recode(
+    geo = geo_intan,
+    nace0 = c("private", "private_ex26"),
+    vars = c("tfp")
+  ) |> 
+  group_by(geo, nace0, vars) |> 
+  mutate(values = 100 * values / values[time == 2007]) |> 
+  ungroup() %>% 
+   mutate(geo_name = countrycode::countrycode(geo, "eurostat", "cldr.short.fi")) |> 
+    filter_recode(
+        nace0 = c(
+      "Markkinasektori" = "private",
+      "pl. elektroniikkateollisuus" = "private_ex26"
+    )
+  ) |> 
+  prod_ind_plot_high("values", NA, "Suomi", c("Ruotsi", "Tanska", "Saksa", "Ranska", "USA") ) +
+  # ggplot(aes(time, values, colour = geo)) +
+  # geom_line() +
+  # geom_h0() +
+  # the_title_blank("xl") +
+
+  # scale_y_continuous(limits = c(0,25), expand = c(0,0))
+  facet_wrap(~nace0) +
+  the_title_blank("xl") +
+  labs(y = "Indeksi, 2007 = 100") +
+  the_legend_bot() +
+  guides(colour = guide_legend(nrow = 2))
+
+save_figs("Kuvio_12")
+
+```

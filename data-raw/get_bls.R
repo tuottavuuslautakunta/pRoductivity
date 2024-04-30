@@ -4,7 +4,7 @@ library(blsR)
 library(bea.R)
 
 # key set in .Rprofile
-beakey <- getOption("bea.key")
+beakey <- Sys.getenv("BEA_API_KEY")
 
 k <- query_popular_series()
 get_series_tables(
@@ -51,9 +51,10 @@ data_main10_groups |>
     facet_wrap(~vars)
 
 # Datasets
-beaSets(beaKey = getOption("bea.key"))
 
+bea_datasets <- beaSets(beaKey = beakey)
 
+bea_datasets[[1]] |> View()
 
 beaParams("NIPA", beaKey = beakey)
 beaParamVals("NIPA", "TableID", beaKey = beakey)
@@ -83,16 +84,31 @@ beaParamVals("GDPbyIndustry", "TableID", beaKey = beakey)
 beaParamVals("GDPbyIndustry", "Industry", beaKey = beakey)
 
 beaSpecs <- list(
-  'UserID' = getOption("bea.key") ,
+  'UserID' = beakey ,
   'Method' = 'GetData',
   'datasetname' = 'GDPbyIndustry',
-  'TableID' = 6,
+  'TableName' = "T10101",
   "Industry" = 11,
   'Frequency' = 'A',
-  'Year' = 'X',
-  'ResultFormat' = 'json'
+  'Year' = 'X'
 )
 
-bea_va_comp <- beaGet(beaSpecs)
+bea_va_comp <- beaGet(beaSpec = beaSpecs, asTable = TRUE)
+
+userSpecList <- list('UserID' = beakey ,
+                     'Method' = 'GetData',
+                     'datasetname' = 'NIPA',
+                     'Frequency' = 'A',
+                     'TableID' = '68',
+                     'Year' = 'X')
+BDT <- beaGet(beaSpec = userSpecList, asTable = TRUE)
 
 
+userSpecList <- list('UserID' = beakey ,
+                     'Method' = 'GetData',
+                     'datasetname' = 'NIPA',
+                     'Frequency' = 'A',
+                     'TableID' = '68',
+                     'Year' = 'X')
+resp <- beaGet(userSpecList)
+BDT <- bea2Tab(resp)

@@ -7,8 +7,7 @@
 ssca_plot(
   title,
   ssca_obj,
-  legend_arg = c("Suomi", "Synteettinen kontrolli",
-    "Yksi maa jätetty pois maajoukosta")
+  legend_arg = c("Suomi", "Synteettinen kontrolli", "Yksi maa jätetty pois maajoukosta")
 )
 }
 \arguments{

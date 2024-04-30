@@ -40,6 +40,9 @@ weight_geos <- setdiff(countries, c("JP", "EA12", "LV", "IE", "UK"))
 main_nace_sna <- c(VTOT = "TOTAL", VC = "C", V26 = "C26",  VF = "F", VG = "G", VH = "H",
                    VI = "I", VJ = "J", VM = "M", VN = "N")
 
+main_nace_sna_new <- c("_T" = "TOTAL", C = "C", C26 = "C26",  F = "F", G = "G", H = "H",
+                   I = "I", J = "J", M = "M", N = "N")
+
 main_nace10_sna <- c(TOTAL = "TOTAL", C = "C", F = "F", G = "G-I", H = "G-I",
                    I = "G-I", J = "J", M = "M_N", N = "M_N")
 
@@ -73,7 +76,7 @@ nace_stan <- c(
 # OECD non-digital (nd_manu, nd_serv) / digital (d_manu, d_serv) classification
 d_class <- read.csv2("data-raw/d_class.csv")
 
-usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace10_sna, nace_stan, d_class, overwrite = TRUE)
+usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace_sna_new, main_nace10_sna, nace_stan, d_class, overwrite = TRUE)
 
 geo_digi_oecd = c("SE", "NO", "FR", "BE", "PT")
 geo_digi_1 = c("FR", "BE","AT", "IT", "NL")

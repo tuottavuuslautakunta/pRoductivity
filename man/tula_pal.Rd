@@ -12,3 +12,6 @@ tula_pal(n)
 \description{
 A colour palette for TULA
 }
+\examples{
+scales::show_col(tula_pal(13))
+}

@@ -6,13 +6,11 @@ library(countrycode)
 
 devtools::load_all()
 
-dataset_list <- get_datasets()
 
-dataset_list %>%
-  filter(id %in% c("SNA_TABLE1", "SNA_TABLE6A", "SNA_TABLE7A")) %>%
-  knitr::kable()
-sna1_str <- get_data_structure("SNA_TABLE1")
-sna6a_str <- get_data_structure("SNA_TABLE6A")
+# sna1_str <- get_data_structure("OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE1_EXPENDITURE,1.0")
+# str(sna1_str, max.level = 1)
+# sna6a_str <- get_data_structure("OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE6,1.0")
+# str(sna6a_str, max.level = 1)
 # sna7a_str <- get_data_structure("SNA_TABLE7A")
 #
 # sna6a_str$ACTIVITY
@@ -27,12 +25,16 @@ sna_activity <- setNames(names(main_nace_sna_new), main_nace_sna_new)
 # Transactions
 
 sna1_transact <- c(
-  B1GQ = "B1_GA", #"Gross domestic product",
-  D1 = "D11", #"Compensation of employees, total",
+  B1GQ = "B1GQ", #"Gross domestic product",
+  # D1 = "D1", #"Compensation of employees, total",
   P6 = "P6", #"Exports of goods and services",
   P61 = "P61", #"Exports of goods",
   P62 = "P62", #"Exports of services",
   B11 = "B11") #"External balance of goods and services"
+
+sna1_2_transact <- c(
+  D1 = "D1") #"Compensation of employees, total",
+
 
 sna6a_transact <- c(
   B1G = "B1G", #"Gross Value added",
@@ -40,8 +42,8 @@ sna6a_transact <- c(
 )
 
 sna7a_transact <- c(
-  EMP_DC = "ETOA", # "Total empoyment",
-  SAL_DC = "EEMA" #"Employees",
+  EMP_DC = "EMP", # "Total empoyment",
+  SAL_DC = "SAL" #"Employees",
 )
 
 
@@ -53,39 +55,41 @@ sna_measures <-   c(
 )
 
 sna7a_measures <-   c(
-  THS_PER = "PER",   # Persons
-  THS_HW = "HRS",   # Hours
-  THS_JOBS = "JOB"  # JObs
+  THS_PER = "PS",   # Persons
+  THS_HW = "H",   # Hours
+  THS_JOBS = "JB"  # JObs
 )
 
 
 
-dat_oecd_sna1_0 <- get_dataset(dataset = "SNA_TABLE1")
-                               ,
-                               filter = list(sna_geo, sna1_transact, sna_measures))
+filter_sna1 <- list("A", sna_geo, "", "", sna1_transact, "", "", "", "XDC", sna_measures, "", "")
+dat_oecd_sna1_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE1_EXPENDITURE,1.0",
+                               filter = make_oecd_filter(filter_sna1))
 
-filter_sna6 <- list("A", sna_geo, "", "", sna6a_transact, "", sna_activity, "", "", sna_measures, "", "") |>
-  map(~paste(.x, collapse = "+")) |>
-  paste(collapse = ".")
+filter_sna1_2 <- list("A", sna_geo, "", "", sna1_2_transact, "", "_T", "", "XDC", sna_measures["CP_MNAC"], "", "")
+dat_oecd_sna1_2_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE1_INCOME,1.0",
+                               filter = make_oecd_filter(filter_sna1_2))
 
-# dat_oecd_sna6a_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE6,1.0",
-#                                 filter = "A.FIN+DNK+AUS...D1+B1G..C26+C16T18+_T+B+C...V+LR+Y..")
-
+filter_sna6 <- list("A", sna_geo, "", "", sna6a_transact, "", sna_activity, "", "", sna_measures, "", "")
 dat_oecd_sna6a_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE6,1.0",
-                                filter = filter_sna6)
+                                filter = make_oecd_filter(filter_sna6))
 
-dat_oecd_sna7a_0 <- get_dataset(dataset = "SNA_TABLE7A",
-                                filter = list(sna_geo, sna7a_transact, sna_activity, sna7a_measures))
+# dat_oecd_sna7a_0 <- get_dataset(dataset = "SNA_TABLE7A",
+#                                 filter = list(sna_geo, sna7a_transact, sna_activity, sna7a_measures))
+
+filter_sna7a <- list("A", sna_geo, "", "", sna7a_transact, "", sna_activity, "", sna7a_measures, "", "", "")
+dat_oecd_sna7a_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE7,1.0",
+                                filter = make_oecd_filter(filter_sna7a))
 
 
-dat_oecd_sna <- dat_oecd_sna1_0 %>%
+dat_oecd_sna1_1 <- dat_oecd_sna1_0 %>%
   transmute(
-    time = as.numeric(Time),
-    geo = as_factor(countrycode(LOCATION, "iso3c", "eurostat", nomatch = NULL)),
+    time = as.numeric(TIME_PERIOD),
+    geo = as_factor(countrycode(REF_AREA, "iso3c", "eurostat", nomatch = NULL)),
     na_item = fct_recode(TRANSACTION, !!!sna1_transact),
     unit = fct_recode(PRICE_BASE, !!!sna_measures),
     currency = as_factor(CURRENCY),
-    values = as.numeric(ObsValue)) %>%
+    values = as.numeric(ObsValue))  %>%
   mutate(nace_r2 = "TOTAL")  %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
@@ -94,6 +98,21 @@ dat_oecd_sna <- dat_oecd_sna1_0 %>%
   droplevels() %>%
   complete(time, geo)
 
+dat_oecd_sna1_2 <- dat_oecd_sna1_2_0 %>%
+  transmute(
+    time = as.numeric(TIME_PERIOD),
+    geo = as_factor(countrycode(REF_AREA, "iso3c", "eurostat", nomatch = NULL)),
+    na_item = fct_recode(TRANSACTION, !!!sna1_2_transact),
+    unit = fct_recode(PRICE_BASE, !!!sna_measures["CP_MNAC"]),
+    currency = as_factor(CURRENCY),
+    values = as.numeric(ObsValue))  %>%
+  mutate(nace_r2 = "TOTAL")  %>%
+  unite(vars, na_item, unit, sep = "__") %>%
+  mutate(vars = as_factor(vars)) %>%
+  spread(vars, values) %>%
+  filter(time >= start_year) %>%
+  droplevels() %>%
+  complete(time, geo)
 
 dat_oecd_sna6a <- dat_oecd_sna6a_0 %>%
   transmute(
@@ -110,12 +129,13 @@ dat_oecd_sna6a <- dat_oecd_sna6a_0 %>%
 
 dat_oecd_sna7a <- dat_oecd_sna7a_0 %>%
   transmute(
-    time = as.numeric(Time),
-    geo = as_factor(countrycode(LOCATION, "iso3c", "eurostat", nomatch = NULL)),
+    time = as.numeric(TIME_PERIOD),
+    geo = as_factor(countrycode(REF_AREA, "iso3c", "eurostat", nomatch = NULL)),
     nace_r2 = fct_recode(ACTIVITY, !!!sna_activity),
-    na_item = fct_recode(TRANSACT, !!!sna7a_transact),
-    unit = fct_recode(MEASURE, !!!sna7a_measures),
-    values = as.numeric(ObsValue)) %>%
+    na_item = fct_recode(TRANSACTION, !!!sna7a_transact),
+    unit = fct_recode(UNIT_MEASURE, !!!sna7a_measures),
+    currency = as_factor(CURRENCY),
+    values = as.numeric(ObsValue))  %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
   spread(vars, values) |>
@@ -164,7 +184,9 @@ dat_oecd_sna_nace_imput <-
 #   # filter(!(nace_r2 == "M" & time < 2004)) %>%
 #   visdat::vis_dat()
 
-data_oecd_total <- dat_oecd_sna %>%
+data_oecd_total <-
+  dat_oecd_sna1_1 %>%
+  left_join(dat_oecd_sna1_2, by = c("time", "geo", "currency", "nace_r2")) %>%
   filter(time >= start_year) %>%
   droplevels() %>%
   complete(time, geo, nace_r2)

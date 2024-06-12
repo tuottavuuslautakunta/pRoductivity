@@ -1,7 +1,7 @@
 
 library(tidyverse)
-library(blsR)
-library(bea.R)
+# library(blsR)
+# library(bea.R)
 
 # key set in .Rprofile
 beakey <- Sys.getenv("BEA_API_KEY")
@@ -112,3 +112,6 @@ userSpecList <- list('UserID' = beakey ,
                      'Year' = 'X')
 resp <- beaGet(userSpecList)
 BDT <- bea2Tab(resp)
+
+
+

@@ -16,7 +16,7 @@ if (update){
 
   source("data-raw/get_eurostat_data.R")
   source("data-raw/get_eurostat_data_10.R")
-  source("data-raw/get_oecd_sna.R")
+  source("data-raw/get_oecd_sna_new.R")
 
 }
 
@@ -32,8 +32,8 @@ countries <- setNames(countries0, countrycode::countrycode(countries0, "eurostat
 
 countries_synth <- c("FI", "SE", "NO", "DK", "BE", "NL", "AT", "PT", "DE", "IT", "FR", "ES")
 
-# weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
-weight_geos <- setdiff(countries, c("JP", "EA12", "LV", "IE", "UK"))
+weight_geos <- setdiff(countries, c("US", "JP", "EA12", "IE", "LV", "UK"))
+# weight_geos <- setdiff(countries, c("JP", "EA12", "LV", "IE", "UK"))
 
 
 

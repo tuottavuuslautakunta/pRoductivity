@@ -134,7 +134,6 @@ dat_oecd_sna7a <- dat_oecd_sna7a_0 %>%
     nace_r2 = fct_recode(ACTIVITY, !!!sna_activity),
     na_item = fct_recode(TRANSACTION, !!!sna7a_transact),
     unit = fct_recode(UNIT_MEASURE, !!!sna7a_measures),
-    currency = as_factor(CURRENCY),
     values = as.numeric(ObsValue))  %>%
   unite(vars, na_item, unit, sep = "__") %>%
   mutate(vars = as_factor(vars)) %>%
@@ -165,7 +164,9 @@ dat_oecd_sna_nace_imput <-
   # Approx EMP_DC__THS_HW base on EMP_DC__THS_PER and SAL_DC__THS_HW and SAL_DC__THS_PER
   mutate(EMP_DC__THS_HW = if_else(is.na(EMP_DC__THS_HW), EMP_DC__THS_PER * SAL_DC__THS_HW / SAL_DC__THS_PER, EMP_DC__THS_HW)) %>%
   # drop M and N for Japan for missing
-  filter(!(geo == "JP" & nace_r2 %in% c("M", "N")))
+  filter(!(geo == "JP" & nace_r2 %in% c("M", "N"))) %>%
+  # drop attributes from columns
+  mutate(across(where(is.numeric), ~{ attributes(.) <- NULL; . }))
 
 
 # visdat::vis_dat(dat_oecd_sna_nace_imput)

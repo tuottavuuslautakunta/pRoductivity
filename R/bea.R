@@ -27,7 +27,7 @@ bea_get_data <- function(params, api_key = NULL){
   params <-
     c(
       Method = "GetData",
-      params)
+      lapply(params, paste0, collapse = ","))
 
   dat <- bea_response(api_key = api_key, params)
 
@@ -139,7 +139,12 @@ bea_response <- function(api_key = NULL, params, result = "data"){
     data <- httr::content(response, "text", encoding = "UTF-8")
     json_data <- jsonlite::fromJSON(data)  # Convert JSON response to an R object
     if (result == "data"){
-      dat <- as.data.frame(json_data$BEAAPI$Results$Data[[1]])
+      res_data <- json_data$BEAAPI$Results$Data
+      if (is.data.frame(res_data)){
+        dat <- res_data
+      } else {
+        dat <- as.data.frame(res_data[[1]])
+      }
     } else if (result == "parameter") {
       dat <- as.data.frame(json_data$BEAAPI$Results$Parameter)
     } else if (result == "parameter_values") {

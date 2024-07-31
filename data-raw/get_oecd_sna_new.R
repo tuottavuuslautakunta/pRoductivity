@@ -61,22 +61,22 @@ sna7a_measures <-   c(
 )
 
 
-
+# Annual GDP and components - expenditure approach
 filter_sna1 <- list("A", sna_geo, "", "", sna1_transact, "", "", "", "XDC", sna_measures, "", "")
 dat_oecd_sna1_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE1_EXPENDITURE,1.0",
                                filter = make_oecd_filter(filter_sna1))
 
+# Annual GDP and components - income approach
 filter_sna1_2 <- list("A", sna_geo, "", "", sna1_2_transact, "", "_T", "", "XDC", sna_measures["CP_MNAC"], "", "")
 dat_oecd_sna1_2_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE1_INCOME,1.0",
                                filter = make_oecd_filter(filter_sna1_2))
 
+# Annual value added and its components by economic activity
 filter_sna6 <- list("A", sna_geo, "", "", sna6a_transact, "", sna_activity, "", "", sna_measures, "", "")
 dat_oecd_sna6a_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE6,1.0",
                                 filter = make_oecd_filter(filter_sna6))
 
-# dat_oecd_sna7a_0 <- get_dataset(dataset = "SNA_TABLE7A",
-#                                 filter = list(sna_geo, sna7a_transact, sna_activity, sna7a_measures))
-
+# Annual employment by detailed economic activity, domestic concept
 filter_sna7a <- list("A", sna_geo, "", "", sna7a_transact, "", sna_activity, "", sna7a_measures, "", "", "")
 dat_oecd_sna7a_0 <- get_dataset(dataset = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE7,1.0",
                                 filter = make_oecd_filter(filter_sna7a))

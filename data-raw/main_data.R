@@ -102,11 +102,7 @@ data_main <-
   # filter(time >= start_time_main,
   #        geo %in% countries) %>%
   mutate(geo_name = fct_recode(geo, !!!countries),
-         geo = as_factor(geo)) |>
-  # Korjataan OECD:n USA:n kiinetähintaisten sarjojen puute BEA datalla, mutta käytetään vain hintaindeksi,
-  left_join(select(dat_bea, geo, time, nace_r2, B1G__P), by = join_by(geo, time, nace_r2)) |>
-  mutate(B1G__CLV15_MNAC = coalesce(B1G__CLV15_MNAC, B1G__CP_MNAC / B1G__P)) |>
-  select(-B1G__P)
+         geo = as_factor(geo))
 
 
 # visdat::vis_dat(data_main)

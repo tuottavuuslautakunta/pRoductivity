@@ -142,7 +142,7 @@ rel_plot2(data_main10_g_weighted, "private")
 nace = "private_ex26"
 plot_var = "lp_ind"
 
-data_main_g_weighted%>% 
+data_main_g_weighted %>% 
     filter(time >= plot_start_year,
            nace0 == nace,
            geo_name %in% c(geos2022)) %>%

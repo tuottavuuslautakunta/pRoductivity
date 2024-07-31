@@ -145,7 +145,13 @@ dat_oecd_sna_nace <-
   dat_oecd_sna6a %>%
   left_join(dat_oecd_sna7a, by = c("time", "geo", "nace_r2")) %>%
   filter(time >= start_year) %>%
-  complete(time, geo, nace_r2)
+  complete(time, geo, nace_r2)|>
+  # Korjataan OECD:n USA:n kiinetähintaisten sarjojen puute BEA datalla, mutta käytetään vain hintaindeksi,
+  left_join(select(dat_bea, geo, time, nace_r2, B1G__P), by = join_by(geo, time, nace_r2)) |>
+  mutate(B1G__CLV15_MNAC = coalesce(B1G__CLV15_MNAC, B1G__CP_MNAC / B1G__P)) |>
+  group_by(geo, nace_r2) |>
+  mutate(B1G__PYP_MNAC = coalesce(B1G__PYP_MNAC, statfitools::pp(B1G__CP_MNAC, B1G__CLV15_MNAC, time))) |>
+  select(-B1G__P)
 
 
 dat_oecd_sna_nace_imput <-

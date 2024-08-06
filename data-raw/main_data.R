@@ -79,8 +79,8 @@ d_class <- read.csv2("data-raw/d_class.csv")
 usethis::use_data(start_year, base_year, countries, countries_synth, main_nace_sna, main_nace_sna_new, main_nace10_sna, nace_stan, d_class, overwrite = TRUE)
 
 geo_digi_oecd = c("SE", "NO", "FR", "BE", "PT")
-geo_digi_1 = c("FR", "BE","AT", "IT", "NL")
-geo_digi_2 = c("SE", "NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES", "PT")
+geo_digi_1 = c("AT", "BE", "FR", "NL")
+geo_digi_2 = c("NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES")
 geo_digi_3 = c("SE", "NO", "FR", "BE", "AT", "IT", "NL", "DE", "ES", "PT", "DK")
 
 

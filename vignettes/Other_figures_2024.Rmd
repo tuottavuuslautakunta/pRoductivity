@@ -1,0 +1,97 @@
+---
+title: "Raportin 2023 muut kuviot"
+author: "Janne Huovari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_document
+
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(
+  fig.path = "fig_report/",
+  fig.width = 10,
+  fig.height = 8,
+  collapse = TRUE,
+  comment = "#>", 
+  echo = FALSE, 
+  comment = FALSE, 
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(glue)
+library(ggptt)
+library(tidyselect)
+library(patchwork)
+
+devtools::load_all()
+
+set_board_theme(base_size = 10)
+
+# Data
+
+
+
+# 
+# dat_kuviot <-
+#   readxl::read_xlsx(
+#     path = here::here("data-raw/Kuviot_muut_2023.xlsx")
+#   ) %>%
+#   mutate(time = as.numeric(time)) %>%
+#   gather(vars, values, -time)
+
+file_kuviot <- here::here("data-raw/Kuviot_muut_2024.xlsx")
+
+dat_kuviot <-
+  set_names(readxl::excel_sheets(file_kuviot)) %>%
+  map(~readxl::read_xlsx(file_kuviot, sheet = .x) )
+# 
+# 
+# geo_klems <- c("Suomi" = "FI", "Ruotsi" = "SE", "Yhdysvallat" = "US", 
+#                "Saksa" = "DE", "Tanska" = "DK", 
+#                "Italia" = "IT", "Espanja" = "ES", "Alankomaat" = "NL",
+#                "Belgia" = "BE", "Iso-Britannia" = "UK") 
+
+
+high_country <- "Suomi"
+
+fig_height <- 10
+
+# plot_start_year <- 2000
+
+```
+
+```{r}
+
+
+dat_kuviot[["Kuvio_1"]] |>
+  pivot_longer(!time, names_to = c("geo", "vars") , values_to = "values", names_sep = "_") %>% 
+  mutate(geo = fct_relevel(geo, "Suomi")) %>% 
+  ggplot(aes(time, values, colour = geo)) +
+  facet_wrap(~ vars) +
+  geom_line() +
+  the_title_blank("xyl") +
+  the_legend_bot() 
+
+save_figs("Kuvio_1", height = fig_height)
+```
+
+```{r}
+
+
+dat_kuviot[["Kuvio_4"]] |>
+  pivot_longer(!time, names_to = c("geo") , values_to = "values") %>% 
+  mutate(geo = fct_relevel(geo, "Suomi"),
+         high = geo == "Suomi") %>% 
+  ggplot(aes(time, values, colour = geo, linewidth = high)) +
+  geom_line() +
+  scale_linewidth_manual(values = c(1,2), guide = "none") +
+  the_title_blank("xyl") +
+  the_legend_bot() +
+  geom_h0()
+
+save_figs("Kuvio_4", height = fig_height)
+```
+

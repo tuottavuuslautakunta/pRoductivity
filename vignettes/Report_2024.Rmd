@@ -325,7 +325,7 @@ data_main10_groups_level |>
   filter(time >= 1980) |> 
   plot_lp_level(geos = geo_level, "private")
 
-save_figs("Kuvio_1", en = TRUE)
+save_figs("Kuvio_2", en = TRUE, height = 12)
 
 # data_main10_groups_level |> 
 #   mutate(lp_level05 = lp_fp05_eur) |> 

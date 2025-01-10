@@ -72,8 +72,9 @@ dat_kuviot[["Kuvio_1"]] |>
   ggplot(aes(time, values, colour = geo)) +
   facet_wrap(~ vars) +
   geom_line() +
-  the_title_blank("xyl") +
-  the_legend_bot() 
+  the_title_blank("xl") +
+  the_legend_bot() +
+  ylab("Indeksi, 2019 = 100")
 
 save_figs("Kuvio_1", height = fig_height)
 ```

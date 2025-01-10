@@ -380,7 +380,7 @@ data_main10_groups_level |>
   plot_lp_level(geos = geo_level, "manu", y = lp_level05) +
   labs(y = "Indeksi, Yhdysvallat 2005 = 100, logaritminen asteikko")
 
-save_figs("Kuvio_2", en = TRUE)
+save_figs("Kuvio_manu", en = TRUE)
 
 ```
 

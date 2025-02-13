@@ -1,0 +1,47 @@
+---
+title: "Tuottavuuslautakunnan indikaattorit"
+format: revealjs
+editor: visual
+---
+
+## Työn tuotavuus
+
+-   <https://github.com/tuottavuuslautakunta/pRoductivity>
+
+-   Luotettavasti mitattava markkinasektori ("C", "F", "G", "H", "I", "J", "M", "N")
+
+-   Arvonlisäys / työtunnit
+
+    -   Markkinasektori (ja ilman C26), teollisuus (ja ilman C26) ja palvelut.
+
+-   Indeksi ja taso (PPP 2005).
+
+Lähteet: Eurostat, OECD, GGDC ([Productivity Level Database](https://www.rug.nl/ggdc/productivity/pld/)) 
+
+## Työn tuottavuus - ongelmat
+
+-   Yhdysvaltojen datat toimialoittain:
+
+    -   OECD:llä vuoteen 2021
+
+    -   BEA ei enää julkaise toimialoittaisia tunteja. BLS:llä tunnit ja tuottavuuslukuja, mutta ei arvonlisäpohjaisia (tai arvonlisiä) toimialoittain.
+
+-   GGDC tasosta tuoreempi tieto 2017, mutta virheellinen?
+
+## Hintakilpailukyky
+
+-   <https://github.com/pttry/ficomp>
+
+-   Koko talous
+
+-   Nimellinen, reaalinen ja vaihtosuhdekorjattu yksikkötyökustannus, ja näiden hajotelma. Kilpailukykyindikaattoreista: <https://julkaisut.valtioneuvosto.fi/handle/10024/162585>.
+
+-   Suhteessa verrokkimaihin, kaksoiskauppainot.
+
+-   Lähteet: Eurostat, OECD, ECFIN.
+
+## Muuta tehtävää
+
+-   rProductivity ja ficomp yhdistäminen
+
+-   Siivoaminen
